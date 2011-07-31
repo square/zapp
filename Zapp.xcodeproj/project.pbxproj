@@ -1,0 +1,293 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 46;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		A8B31D3513E4D610001D593D /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A8B31D3413E4D610001D593D /* Cocoa.framework */; };
+		A8B31D3F13E4D611001D593D /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = A8B31D3D13E4D611001D593D /* InfoPlist.strings */; };
+		A8B31D4113E4D611001D593D /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = A8B31D4013E4D611001D593D /* main.m */; };
+		A8B31D4513E4D611001D593D /* Credits.rtf in Resources */ = {isa = PBXBuildFile; fileRef = A8B31D4313E4D611001D593D /* Credits.rtf */; };
+		A8B31D4813E4D611001D593D /* ZappAppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = A8B31D4713E4D611001D593D /* ZappAppDelegate.m */; };
+		A8B31D4B13E4D611001D593D /* MainMenu.xib in Resources */ = {isa = PBXBuildFile; fileRef = A8B31D4913E4D611001D593D /* MainMenu.xib */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXFileReference section */
+		A8B31D3013E4D610001D593D /* Zapp.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Zapp.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		A8B31D3413E4D610001D593D /* Cocoa.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Cocoa.framework; path = System/Library/Frameworks/Cocoa.framework; sourceTree = SDKROOT; };
+		A8B31D3713E4D610001D593D /* AppKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AppKit.framework; path = System/Library/Frameworks/AppKit.framework; sourceTree = SDKROOT; };
+		A8B31D3813E4D610001D593D /* CoreData.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreData.framework; path = System/Library/Frameworks/CoreData.framework; sourceTree = SDKROOT; };
+		A8B31D3913E4D610001D593D /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
+		A8B31D3C13E4D611001D593D /* Zapp-Info.plist */ = {isa = PBXFileReference; path = "Zapp-Info.plist"; sourceTree = "<group>"; };
+		A8B31D3E13E4D611001D593D /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
+		A8B31D4013E4D611001D593D /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
+		A8B31D4213E4D611001D593D /* Zapp-Prefix.pch */ = {isa = PBXFileReference; path = "Zapp-Prefix.pch"; sourceTree = "<group>"; };
+		A8B31D4413E4D611001D593D /* en */ = {isa = PBXFileReference; lastKnownFileType = text.rtf; name = en; path = en.lproj/Credits.rtf; sourceTree = "<group>"; };
+		A8B31D4613E4D611001D593D /* ZappAppDelegate.h */ = {isa = PBXFileReference; path = ZappAppDelegate.h; sourceTree = "<group>"; };
+		A8B31D4713E4D611001D593D /* ZappAppDelegate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ZappAppDelegate.m; sourceTree = "<group>"; };
+		A8B31D4A13E4D611001D593D /* en */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = en; path = en.lproj/MainMenu.xib; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		A8B31D2D13E4D610001D593D /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				A8B31D3513E4D610001D593D /* Cocoa.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		A8B31D2513E4D610001D593D = {
+			isa = PBXGroup;
+			children = (
+				A8B31D3A13E4D610001D593D /* Zapp */,
+				A8B31D3313E4D610001D593D /* Frameworks */,
+				A8B31D3113E4D610001D593D /* Products */,
+			);
+			sourceTree = "<group>";
+		};
+		A8B31D3113E4D610001D593D /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				A8B31D3013E4D610001D593D /* Zapp.app */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		A8B31D3313E4D610001D593D /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				A8B31D3413E4D610001D593D /* Cocoa.framework */,
+				A8B31D3613E4D610001D593D /* Other Frameworks */,
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
+		A8B31D3613E4D610001D593D /* Other Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				A8B31D3713E4D610001D593D /* AppKit.framework */,
+				A8B31D3813E4D610001D593D /* CoreData.framework */,
+				A8B31D3913E4D610001D593D /* Foundation.framework */,
+			);
+			name = "Other Frameworks";
+			sourceTree = "<group>";
+		};
+		A8B31D3A13E4D610001D593D /* Zapp */ = {
+			isa = PBXGroup;
+			children = (
+				A8B31D4613E4D611001D593D /* ZappAppDelegate.h */,
+				A8B31D4713E4D611001D593D /* ZappAppDelegate.m */,
+				A8B31D4913E4D611001D593D /* MainMenu.xib */,
+				A8B31D3B13E4D610001D593D /* Supporting Files */,
+			);
+			path = Zapp;
+			sourceTree = "<group>";
+		};
+		A8B31D3B13E4D610001D593D /* Supporting Files */ = {
+			isa = PBXGroup;
+			children = (
+				A8B31D3C13E4D611001D593D /* Zapp-Info.plist */,
+				A8B31D3D13E4D611001D593D /* InfoPlist.strings */,
+				A8B31D4013E4D611001D593D /* main.m */,
+				A8B31D4213E4D611001D593D /* Zapp-Prefix.pch */,
+				A8B31D4313E4D611001D593D /* Credits.rtf */,
+			);
+			name = "Supporting Files";
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		A8B31D2F13E4D610001D593D /* Zapp */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = A8B31D4E13E4D611001D593D /* Build configuration list for PBXNativeTarget "Zapp" */;
+			buildPhases = (
+				A8B31D2C13E4D610001D593D /* Sources */,
+				A8B31D2D13E4D610001D593D /* Frameworks */,
+				A8B31D2E13E4D610001D593D /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = Zapp;
+			productName = Zapp;
+			productReference = A8B31D3013E4D610001D593D /* Zapp.app */;
+			productType = "com.apple.product-type.application";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		A8B31D2713E4D610001D593D /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				ORGANIZATIONNAME = "Square, Inc";
+			};
+			buildConfigurationList = A8B31D2A13E4D610001D593D /* Build configuration list for PBXProject "Zapp" */;
+			compatibilityVersion = "Xcode 3.2";
+			developmentRegion = English;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				en,
+			);
+			mainGroup = A8B31D2513E4D610001D593D;
+			productRefGroup = A8B31D3113E4D610001D593D /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				A8B31D2F13E4D610001D593D /* Zapp */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		A8B31D2E13E4D610001D593D /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				A8B31D3F13E4D611001D593D /* InfoPlist.strings in Resources */,
+				A8B31D4513E4D611001D593D /* Credits.rtf in Resources */,
+				A8B31D4B13E4D611001D593D /* MainMenu.xib in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		A8B31D2C13E4D610001D593D /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				A8B31D4113E4D611001D593D /* main.m in Sources */,
+				A8B31D4813E4D611001D593D /* ZappAppDelegate.m in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin PBXVariantGroup section */
+		A8B31D3D13E4D611001D593D /* InfoPlist.strings */ = {
+			isa = PBXVariantGroup;
+			children = (
+				A8B31D3E13E4D611001D593D /* en */,
+			);
+			name = InfoPlist.strings;
+			sourceTree = "<group>";
+		};
+		A8B31D4313E4D611001D593D /* Credits.rtf */ = {
+			isa = PBXVariantGroup;
+			children = (
+				A8B31D4413E4D611001D593D /* en */,
+			);
+			name = Credits.rtf;
+			sourceTree = "<group>";
+		};
+		A8B31D4913E4D611001D593D /* MainMenu.xib */ = {
+			isa = PBXVariantGroup;
+			children = (
+				A8B31D4A13E4D611001D593D /* en */,
+			);
+			name = MainMenu.xib;
+			sourceTree = "<group>";
+		};
+/* End PBXVariantGroup section */
+
+/* Begin XCBuildConfiguration section */
+		A8B31D4C13E4D611001D593D /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				ARCHS = "$(ARCHS_STANDARD_64_BIT)";
+				COPY_PHASE_STRIP = NO;
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_ENABLE_OBJC_EXCEPTIONS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
+				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_MISSING_PROTOTYPES = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				MACOSX_DEPLOYMENT_TARGET = 10.6;
+				ONLY_ACTIVE_ARCH = YES;
+				SDKROOT = macosx;
+			};
+			name = Debug;
+		};
+		A8B31D4D13E4D611001D593D /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				ARCHS = "$(ARCHS_STANDARD_64_BIT)";
+				COPY_PHASE_STRIP = YES;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_ENABLE_OBJC_EXCEPTIONS = YES;
+				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_MISSING_PROTOTYPES = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				MACOSX_DEPLOYMENT_TARGET = 10.6;
+				SDKROOT = macosx;
+			};
+			name = Release;
+		};
+		A8B31D4F13E4D611001D593D /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = "Zapp/Zapp-Prefix.pch";
+				INFOPLIST_FILE = "Zapp/Zapp-Info.plist";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				WRAPPER_EXTENSION = app;
+			};
+			name = Debug;
+		};
+		A8B31D5013E4D611001D593D /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = "Zapp/Zapp-Prefix.pch";
+				INFOPLIST_FILE = "Zapp/Zapp-Info.plist";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				WRAPPER_EXTENSION = app;
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		A8B31D2A13E4D610001D593D /* Build configuration list for PBXProject "Zapp" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				A8B31D4C13E4D611001D593D /* Debug */,
+				A8B31D4D13E4D611001D593D /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		A8B31D4E13E4D611001D593D /* Build configuration list for PBXNativeTarget "Zapp" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				A8B31D4F13E4D611001D593D /* Debug */,
+				A8B31D5013E4D611001D593D /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = A8B31D2713E4D610001D593D /* Project object */;
+}
