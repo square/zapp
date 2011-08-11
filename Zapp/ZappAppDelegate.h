@@ -8,10 +8,26 @@
 
 #import <Cocoa/Cocoa.h>
 
-@interface ZappAppDelegate : NSObject <NSApplicationDelegate> {
-    NSWindow *_window;
-}
+@class ZappBackgroundView;
+@class ZappRepositoriesController;
 
-@property (strong) IBOutlet NSWindow *window;
+@interface ZappAppDelegate : NSObject <NSApplicationDelegate, NSOutlineViewDelegate>
+
+@property (nonatomic, strong) IBOutlet NSArrayController *buildsController;
+@property (nonatomic, strong) IBOutlet NSArrayController *logController;
+@property (nonatomic, strong) IBOutlet NSPopUpButton *platformPopup;
+@property (nonatomic, strong) IBOutlet NSProgressIndicator *progressIndicator;
+@property (nonatomic, strong) IBOutlet NSTextField *progressLabel;
+@property (nonatomic, strong) IBOutlet NSWindow *progressPanel;
+@property (nonatomic, strong) IBOutlet ZappRepositoriesController *repositoriesController;
+@property (nonatomic, strong) IBOutlet ZappBackgroundView *searchBackgroundView;
+@property (nonatomic, strong) IBOutlet NSPopUpButton *schemePopup;
+@property (nonatomic, strong) IBOutlet ZappBackgroundView *sourceListBackgroundView;
+@property (nonatomic, strong) IBOutlet NSTableView *sourceListView;
+@property (nonatomic, strong) IBOutlet NSWindow *window;
+
+- (IBAction)build:(id)sender;
+- (IBAction)chooseLocalPath:(id)sender;
+- (IBAction)clone:(id)sender;
 
 @end

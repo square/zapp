@@ -7,28 +7,56 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		A848E80613ECA621004A55DA /* ZappRepository.m in Sources */ = {isa = PBXBuildFile; fileRef = A848E80513ECA621004A55DA /* ZappRepository.m */; };
+		A8783CE413F114130001493A /* Zapp.icns in Resources */ = {isa = PBXBuildFile; fileRef = A8783CE313F114130001493A /* Zapp.icns */; };
+		A8A49ED313EB99FB00A0338E /* ZappRepositoriesController.m in Sources */ = {isa = PBXBuildFile; fileRef = A8A49ED213EB99FB00A0338E /* ZappRepositoriesController.m */; };
 		A8B31D3513E4D610001D593D /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A8B31D3413E4D610001D593D /* Cocoa.framework */; };
 		A8B31D3F13E4D611001D593D /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = A8B31D3D13E4D611001D593D /* InfoPlist.strings */; };
 		A8B31D4113E4D611001D593D /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = A8B31D4013E4D611001D593D /* main.m */; };
 		A8B31D4513E4D611001D593D /* Credits.rtf in Resources */ = {isa = PBXBuildFile; fileRef = A8B31D4313E4D611001D593D /* Credits.rtf */; };
 		A8B31D4813E4D611001D593D /* ZappAppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = A8B31D4713E4D611001D593D /* ZappAppDelegate.m */; };
 		A8B31D4B13E4D611001D593D /* MainMenu.xib in Resources */ = {isa = PBXBuildFile; fileRef = A8B31D4913E4D611001D593D /* MainMenu.xib */; };
+		A8DA279113ECA4ED001305B4 /* ZappBuild.m in Sources */ = {isa = PBXBuildFile; fileRef = A8DA279013ECA4ED001305B4 /* ZappBuild.m */; };
+		A8E7858513EBB0B000811365 /* status-available-flat-etched.tif in Resources */ = {isa = PBXBuildFile; fileRef = A8E7858313EBB0B000811365 /* status-available-flat-etched.tif */; };
+		A8E7858613EBB0B000811365 /* status-away-flat-etched.tif in Resources */ = {isa = PBXBuildFile; fileRef = A8E7858413EBB0B000811365 /* status-away-flat-etched.tif */; };
+		A8E7858A13EBB20E00811365 /* ZappBackgroundView.m in Sources */ = {isa = PBXBuildFile; fileRef = A8E7858913EBB20E00811365 /* ZappBackgroundView.m */; };
+		A8E785AB13EC614B00811365 /* ZappLocalURLFormatter.m in Sources */ = {isa = PBXBuildFile; fileRef = A8E785AA13EC614B00811365 /* ZappLocalURLFormatter.m */; };
+		A8E785AE13EC620C00811365 /* ZappSSHURLFormatter.m in Sources */ = {isa = PBXBuildFile; fileRef = A8E785AD13EC620C00811365 /* ZappSSHURLFormatter.m */; };
+		A8E785B113EC6C4E00811365 /* Repositories.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = A8E785AF13EC6C4E00811365 /* Repositories.xcdatamodeld */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		A82B17CD13EB2583009F0B40 /* iPhoneSimulatorRemoteClient.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = iPhoneSimulatorRemoteClient.h; sourceTree = "<group>"; };
+		A848E80413ECA621004A55DA /* ZappRepository.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ZappRepository.h; sourceTree = "<group>"; };
+		A848E80513ECA621004A55DA /* ZappRepository.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ZappRepository.m; sourceTree = "<group>"; };
+		A8783CE313F114130001493A /* Zapp.icns */ = {isa = PBXFileReference; lastKnownFileType = image.icns; path = Zapp.icns; sourceTree = "<group>"; };
+		A8A49ED113EB99FB00A0338E /* ZappRepositoriesController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ZappRepositoriesController.h; sourceTree = "<group>"; };
+		A8A49ED213EB99FB00A0338E /* ZappRepositoriesController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ZappRepositoriesController.m; sourceTree = "<group>"; };
 		A8B31D3013E4D610001D593D /* Zapp.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Zapp.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		A8B31D3413E4D610001D593D /* Cocoa.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Cocoa.framework; path = System/Library/Frameworks/Cocoa.framework; sourceTree = SDKROOT; };
 		A8B31D3713E4D610001D593D /* AppKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AppKit.framework; path = System/Library/Frameworks/AppKit.framework; sourceTree = SDKROOT; };
 		A8B31D3813E4D610001D593D /* CoreData.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreData.framework; path = System/Library/Frameworks/CoreData.framework; sourceTree = SDKROOT; };
 		A8B31D3913E4D610001D593D /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
-		A8B31D3C13E4D611001D593D /* Zapp-Info.plist */ = {isa = PBXFileReference; path = "Zapp-Info.plist"; sourceTree = "<group>"; };
+		A8B31D3C13E4D611001D593D /* Zapp-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "Zapp-Info.plist"; sourceTree = "<group>"; };
 		A8B31D3E13E4D611001D593D /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
 		A8B31D4013E4D611001D593D /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
-		A8B31D4213E4D611001D593D /* Zapp-Prefix.pch */ = {isa = PBXFileReference; path = "Zapp-Prefix.pch"; sourceTree = "<group>"; };
+		A8B31D4213E4D611001D593D /* Zapp-Prefix.pch */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "Zapp-Prefix.pch"; sourceTree = "<group>"; };
 		A8B31D4413E4D611001D593D /* en */ = {isa = PBXFileReference; lastKnownFileType = text.rtf; name = en; path = en.lproj/Credits.rtf; sourceTree = "<group>"; };
-		A8B31D4613E4D611001D593D /* ZappAppDelegate.h */ = {isa = PBXFileReference; path = ZappAppDelegate.h; sourceTree = "<group>"; };
+		A8B31D4613E4D611001D593D /* ZappAppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ZappAppDelegate.h; sourceTree = "<group>"; };
 		A8B31D4713E4D611001D593D /* ZappAppDelegate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ZappAppDelegate.m; sourceTree = "<group>"; };
 		A8B31D4A13E4D611001D593D /* en */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = en; path = en.lproj/MainMenu.xib; sourceTree = "<group>"; };
+		A8B31D5413E4DC0F001D593D /* ZappGlobals.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ZappGlobals.h; path = Zapp/ZappGlobals.h; sourceTree = "<group>"; };
+		A8DA278F13ECA4ED001305B4 /* ZappBuild.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ZappBuild.h; sourceTree = "<group>"; };
+		A8DA279013ECA4ED001305B4 /* ZappBuild.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ZappBuild.m; sourceTree = "<group>"; };
+		A8E7858313EBB0B000811365 /* status-available-flat-etched.tif */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = "status-available-flat-etched.tif"; sourceTree = "<group>"; };
+		A8E7858413EBB0B000811365 /* status-away-flat-etched.tif */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = "status-away-flat-etched.tif"; sourceTree = "<group>"; };
+		A8E7858813EBB20E00811365 /* ZappBackgroundView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ZappBackgroundView.h; sourceTree = "<group>"; };
+		A8E7858913EBB20E00811365 /* ZappBackgroundView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ZappBackgroundView.m; sourceTree = "<group>"; };
+		A8E785A913EC614B00811365 /* ZappLocalURLFormatter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ZappLocalURLFormatter.h; sourceTree = "<group>"; };
+		A8E785AA13EC614B00811365 /* ZappLocalURLFormatter.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ZappLocalURLFormatter.m; sourceTree = "<group>"; };
+		A8E785AC13EC620C00811365 /* ZappSSHURLFormatter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ZappSSHURLFormatter.h; sourceTree = "<group>"; };
+		A8E785AD13EC620C00811365 /* ZappSSHURLFormatter.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ZappSSHURLFormatter.m; sourceTree = "<group>"; };
+		A8E785B013EC6C4E00811365 /* Repositories.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = Repositories.xcdatamodel; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -46,6 +74,8 @@
 		A8B31D2513E4D610001D593D = {
 			isa = PBXGroup;
 			children = (
+				A8783CE313F114130001493A /* Zapp.icns */,
+				A8B31D5413E4DC0F001D593D /* ZappGlobals.h */,
 				A8B31D3A13E4D610001D593D /* Zapp */,
 				A8B31D3313E4D610001D593D /* Frameworks */,
 				A8B31D3113E4D610001D593D /* Products */,
@@ -82,9 +112,11 @@
 		A8B31D3A13E4D610001D593D /* Zapp */ = {
 			isa = PBXGroup;
 			children = (
-				A8B31D4613E4D611001D593D /* ZappAppDelegate.h */,
-				A8B31D4713E4D611001D593D /* ZappAppDelegate.m */,
+				A8DA278E13ECA422001305B4 /* View */,
+				A8DA278D13ECA417001305B4 /* Model */,
+				A8E785D013ECA3A100811365 /* Controller */,
 				A8B31D4913E4D611001D593D /* MainMenu.xib */,
+				A8E785AF13EC6C4E00811365 /* Repositories.xcdatamodeld */,
 				A8B31D3B13E4D610001D593D /* Supporting Files */,
 			);
 			path = Zapp;
@@ -93,13 +125,51 @@
 		A8B31D3B13E4D610001D593D /* Supporting Files */ = {
 			isa = PBXGroup;
 			children = (
+				A8E7858313EBB0B000811365 /* status-available-flat-etched.tif */,
+				A8E7858413EBB0B000811365 /* status-away-flat-etched.tif */,
 				A8B31D3C13E4D611001D593D /* Zapp-Info.plist */,
 				A8B31D3D13E4D611001D593D /* InfoPlist.strings */,
 				A8B31D4013E4D611001D593D /* main.m */,
 				A8B31D4213E4D611001D593D /* Zapp-Prefix.pch */,
+				A82B17CD13EB2583009F0B40 /* iPhoneSimulatorRemoteClient.h */,
 				A8B31D4313E4D611001D593D /* Credits.rtf */,
 			);
 			name = "Supporting Files";
+			sourceTree = "<group>";
+		};
+		A8DA278D13ECA417001305B4 /* Model */ = {
+			isa = PBXGroup;
+			children = (
+				A8DA278F13ECA4ED001305B4 /* ZappBuild.h */,
+				A8DA279013ECA4ED001305B4 /* ZappBuild.m */,
+				A848E80413ECA621004A55DA /* ZappRepository.h */,
+				A848E80513ECA621004A55DA /* ZappRepository.m */,
+			);
+			name = Model;
+			sourceTree = "<group>";
+		};
+		A8DA278E13ECA422001305B4 /* View */ = {
+			isa = PBXGroup;
+			children = (
+				A8E7858813EBB20E00811365 /* ZappBackgroundView.h */,
+				A8E7858913EBB20E00811365 /* ZappBackgroundView.m */,
+				A8E785A913EC614B00811365 /* ZappLocalURLFormatter.h */,
+				A8E785AA13EC614B00811365 /* ZappLocalURLFormatter.m */,
+				A8E785AC13EC620C00811365 /* ZappSSHURLFormatter.h */,
+				A8E785AD13EC620C00811365 /* ZappSSHURLFormatter.m */,
+			);
+			name = View;
+			sourceTree = "<group>";
+		};
+		A8E785D013ECA3A100811365 /* Controller */ = {
+			isa = PBXGroup;
+			children = (
+				A8B31D4613E4D611001D593D /* ZappAppDelegate.h */,
+				A8B31D4713E4D611001D593D /* ZappAppDelegate.m */,
+				A8A49ED113EB99FB00A0338E /* ZappRepositoriesController.h */,
+				A8A49ED213EB99FB00A0338E /* ZappRepositoriesController.m */,
+			);
+			name = Controller;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -128,6 +198,7 @@
 		A8B31D2713E4D610001D593D /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
+				LastUpgradeCheck = 0420;
 				ORGANIZATIONNAME = "Square, Inc";
 			};
 			buildConfigurationList = A8B31D2A13E4D610001D593D /* Build configuration list for PBXProject "Zapp" */;
@@ -155,6 +226,9 @@
 				A8B31D3F13E4D611001D593D /* InfoPlist.strings in Resources */,
 				A8B31D4513E4D611001D593D /* Credits.rtf in Resources */,
 				A8B31D4B13E4D611001D593D /* MainMenu.xib in Resources */,
+				A8E7858513EBB0B000811365 /* status-available-flat-etched.tif in Resources */,
+				A8E7858613EBB0B000811365 /* status-away-flat-etched.tif in Resources */,
+				A8783CE413F114130001493A /* Zapp.icns in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -167,6 +241,13 @@
 			files = (
 				A8B31D4113E4D611001D593D /* main.m in Sources */,
 				A8B31D4813E4D611001D593D /* ZappAppDelegate.m in Sources */,
+				A8A49ED313EB99FB00A0338E /* ZappRepositoriesController.m in Sources */,
+				A8E7858A13EBB20E00811365 /* ZappBackgroundView.m in Sources */,
+				A8E785AB13EC614B00811365 /* ZappLocalURLFormatter.m in Sources */,
+				A8E785AE13EC620C00811365 /* ZappSSHURLFormatter.m in Sources */,
+				A8E785B113EC6C4E00811365 /* Repositories.xcdatamodeld in Sources */,
+				A8DA279113ECA4ED001305B4 /* ZappBuild.m in Sources */,
+				A848E80613ECA621004A55DA /* ZappRepository.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -205,6 +286,7 @@
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				ARCHS = "$(ARCHS_STANDARD_64_BIT)";
+				CLANG_ENABLE_OBJC_ARC = YES;
 				COPY_PHASE_STRIP = NO;
 				GCC_C_LANGUAGE_STANDARD = gnu99;
 				GCC_DYNAMIC_NO_PIC = NO;
@@ -215,12 +297,15 @@
 					"$(inherited)",
 				);
 				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
+				GCC_TREAT_IMPLICIT_FUNCTION_DECLARATIONS_AS_ERRORS = YES;
+				GCC_TREAT_INCOMPATIBLE_POINTER_TYPE_WARNINGS_AS_ERRORS = YES;
+				GCC_TREAT_WARNINGS_AS_ERRORS = YES;
 				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
 				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
 				GCC_WARN_ABOUT_MISSING_PROTOTYPES = YES;
 				GCC_WARN_ABOUT_RETURN_TYPE = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				MACOSX_DEPLOYMENT_TARGET = 10.6;
+				MACOSX_DEPLOYMENT_TARGET = 10.7;
 				ONLY_ACTIVE_ARCH = YES;
 				SDKROOT = macosx;
 			};
@@ -231,16 +316,20 @@
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				ARCHS = "$(ARCHS_STANDARD_64_BIT)";
+				CLANG_ENABLE_OBJC_ARC = YES;
 				COPY_PHASE_STRIP = YES;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				GCC_C_LANGUAGE_STANDARD = gnu99;
 				GCC_ENABLE_OBJC_EXCEPTIONS = YES;
+				GCC_TREAT_IMPLICIT_FUNCTION_DECLARATIONS_AS_ERRORS = YES;
+				GCC_TREAT_INCOMPATIBLE_POINTER_TYPE_WARNINGS_AS_ERRORS = YES;
+				GCC_TREAT_WARNINGS_AS_ERRORS = YES;
 				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
 				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
 				GCC_WARN_ABOUT_MISSING_PROTOTYPES = YES;
 				GCC_WARN_ABOUT_RETURN_TYPE = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				MACOSX_DEPLOYMENT_TARGET = 10.6;
+				MACOSX_DEPLOYMENT_TARGET = 10.7;
 				SDKROOT = macosx;
 			};
 			name = Release;
@@ -248,6 +337,7 @@
 		A8B31D4F13E4D611001D593D /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				CLANG_ENABLE_OBJC_ARC = YES;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "Zapp/Zapp-Prefix.pch";
 				INFOPLIST_FILE = "Zapp/Zapp-Info.plist";
@@ -259,6 +349,7 @@
 		A8B31D5013E4D611001D593D /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				CLANG_ENABLE_OBJC_ARC = YES;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "Zapp/Zapp-Prefix.pch";
 				INFOPLIST_FILE = "Zapp/Zapp-Info.plist";
@@ -286,8 +377,22 @@
 				A8B31D5013E4D611001D593D /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
+
+/* Begin XCVersionGroup section */
+		A8E785AF13EC6C4E00811365 /* Repositories.xcdatamodeld */ = {
+			isa = XCVersionGroup;
+			children = (
+				A8E785B013EC6C4E00811365 /* Repositories.xcdatamodel */,
+			);
+			currentVersion = A8E785B013EC6C4E00811365 /* Repositories.xcdatamodel */;
+			path = Repositories.xcdatamodeld;
+			sourceTree = "<group>";
+			versionGroupType = wrapper.xcdatamodel;
+		};
+/* End XCVersionGroup section */
 	};
 	rootObject = A8B31D2713E4D610001D593D /* Project object */;
 }

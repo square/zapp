@@ -3,5 +3,8 @@
 //
 
 #ifdef __OBJC__
-    #import <Cocoa/Cocoa.h>
+#import <Cocoa/Cocoa.h>
+#import "ZappGlobals.h"
+#import "ZappRepository.h"
+#import "ZappBuild.h"
 #endif

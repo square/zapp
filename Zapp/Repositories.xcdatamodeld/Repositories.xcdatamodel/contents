@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<model name="" userDefinedModelVersionIdentifier="" type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="858" systemVersion="11A511" minimumToolsVersion="Automatic" macOSVersion="Automatic" iOSVersion="Automatic">
+    <entity name="Build" representedClassName="ZappBuild">
+        <attribute name="endTimestamp" optional="YES" attributeType="Date"/>
+        <attribute name="latestRevision" optional="YES" attributeType="String"/>
+        <attribute name="platform" optional="YES" attributeType="String"/>
+        <attribute name="scheme" optional="YES" attributeType="String"/>
+        <attribute name="startTimestamp" optional="YES" attributeType="Date"/>
+        <attribute name="status" optional="YES" attributeType="Integer 32" defaultValueString="0"/>
+        <relationship name="repository" optional="YES" minCount="1" maxCount="1" deletionRule="Nullify" destinationEntity="Repository" inverseName="builds" inverseEntity="Repository"/>
+    </entity>
+    <entity name="Repository" representedClassName="ZappRepository">
+        <attribute name="clonedAlready" optional="YES" attributeType="Boolean"/>
+        <attribute name="lastPlatform" optional="YES" attributeType="String"/>
+        <attribute name="lastScheme" optional="YES" attributeType="String"/>
+        <attribute name="localURL" optional="YES" attributeType="Transformable" valueTransformerName="NSKeyedUnarchiveFromDataTransformerName"/>
+        <attribute name="name" optional="YES" attributeType="String"/>
+        <attribute name="remoteURL" optional="YES" attributeType="Transformable" valueTransformerName="NSKeyedUnarchiveFromDataTransformerName"/>
+        <relationship name="builds" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="Build" inverseName="repository" inverseEntity="Build"/>
+    </entity>
+    <elements>
+        <element name="Build" positionX="412" positionY="189" width="128" height="150"/>
+        <element name="Repository" positionX="160" positionY="192" width="128" height="150"/>
+    </elements>
+</model>
