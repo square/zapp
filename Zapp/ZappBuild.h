@@ -29,7 +29,7 @@ typedef enum {
 @property (nonatomic) NSTimeInterval endTimestamp;
 @property (nonatomic, strong) NSString *latestRevision;
 @property (nonatomic, strong, readonly) NSArray *logLines;
-@property (nonatomic, strong) NSString *platform;
+@property (nonatomic, strong) NSDictionary *platform;
 @property (nonatomic, strong) ZappRepository *repository;
 @property (nonatomic, strong) NSString *scheme;
 @property (nonatomic, copy) NSDate *startDate;

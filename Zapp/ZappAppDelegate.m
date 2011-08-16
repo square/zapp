@@ -19,7 +19,7 @@
 @property (nonatomic, readonly) ZappRepository *selectedRepository;
 
 - (void)hideProgressPanel;
-- (void)scheduleBuildForRepository:(ZappRepository *)repository;
+- (ZappBuild *)scheduleBuildForRepository:(ZappRepository *)repository;
 - (void)showProgressPanelWithMessage:(NSString *)message;
 - (void)updateSourceListBackground:(NSNotification *)notification;
 
@@ -54,6 +54,8 @@
 - (IBAction)build:(id)sender;
 {
     [self scheduleBuildForRepository:self.selectedRepository];
+    [self.buildsController rearrangeObjects];
+    [self.buildsController setSelectionIndex:0];
 }
 
 - (IBAction)chooseLocalPath:(id)sender;
@@ -92,7 +94,7 @@
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(contextDidChange:) name:NSManagedObjectContextObjectsDidChangeNotification object:nil];
     self.buildQueue = [NSMutableOrderedSet orderedSet];
     
-    NSSortDescriptor *sortDescriptor = [NSSortDescriptor sortDescriptorWithKey:@"endTimestamp" ascending:NO];
+    NSSortDescriptor *sortDescriptor = [NSSortDescriptor sortDescriptorWithKey:@"startTimestamp" ascending:NO];
     self.buildsController.sortDescriptors = [NSArray arrayWithObject:sortDescriptor];
 
     self.searchBackgroundView.backgroundGradient = [[NSGradient alloc] initWithStartingColor:[NSColor colorWithDeviceWhite:0.929 alpha:1.0] endingColor:[NSColor colorWithDeviceWhite:0.851 alpha:1.0]];
@@ -128,10 +130,11 @@
     [[NSApplication sharedApplication] endSheet:self.progressPanel];
 }
 
-- (void)scheduleBuildForRepository:(ZappRepository *)repository;
+- (ZappBuild *)scheduleBuildForRepository:(ZappRepository *)repository;
 {
     ZappBuild *build = [repository createNewBuild];
     [self.buildQueue addObject:build];
+    build.startDate = [NSDate date];
     [repository runCommand:GitCommand withArguments:[NSArray arrayWithObjects:@"rev-parse", @"HEAD", nil] completionBlock:^(NSString *revision) {
         build.latestRevision = revision;
         // At some point, serialize this queue-style
@@ -139,6 +142,7 @@
             [self.buildQueue removeObject:build];
         }];
     }];
+    return build;
 }
 
 - (void)showProgressPanelWithMessage:(NSString *)message;

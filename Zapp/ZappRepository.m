@@ -17,8 +17,10 @@ NSString *const XcodebuildCommand = @"/usr/bin/xcodebuild";
 
 @interface ZappRepository ()
 
+@property (nonatomic, strong) NSMutableSet *enqueuedCommands;
 @property (nonatomic, strong, readwrite) NSArray *platforms;
 @property (nonatomic, strong, readwrite) NSArray *schemes;
+@property (nonatomic, strong, readwrite) NSString *workspacePath;
 
 - (void)registerObservers;
 - (void)unregisterObservers;
@@ -35,8 +37,10 @@ NSString *const XcodebuildCommand = @"/usr/bin/xcodebuild";
 @dynamic name;
 @dynamic remoteURL;
 
+@synthesize enqueuedCommands;
 @synthesize platforms;
 @synthesize schemes;
+@synthesize workspacePath;
 
 #pragma mark Class methods
 
@@ -57,15 +61,21 @@ NSString *const XcodebuildCommand = @"/usr/bin/xcodebuild";
 
 - (ZappBuild *)latestBuild;
 {
-    NSSortDescriptor *descriptor = [NSSortDescriptor sortDescriptorWithKey:@"endDate" ascending:NO];
+    NSSortDescriptor *descriptor = [NSSortDescriptor sortDescriptorWithKey:@"endTimestamp" ascending:NO];
     NSArray *descriptors = [NSArray arrayWithObject:descriptor];
     NSArray *orderedBuilds = [self.builds sortedArrayUsingDescriptors:descriptors];
     return orderedBuilds.count ? [orderedBuilds objectAtIndex:0] : nil;
 }
 
++ (NSSet *)keyPathsForValuesAffectingLatestBuild;
+{
+    return [NSSet setWithObjects:@"builds", nil];
+}
+
 - (NSArray *)platforms;
 {
-    if (!platforms) {
+    if (!platforms && ![self.enqueuedCommands containsObject:@"platforms"] && self.clonedAlready) {
+        [self.enqueuedCommands addObject:@"platforms"];
         [self runCommand:XcodebuildCommand withArguments:[NSArray arrayWithObject:@"-showsdks"] completionBlock:^(NSString *output) {
             NSRegularExpression *platformRegex = [NSRegularExpression regularExpressionWithPattern:@"Simulator - iOS (\\S+)" options:0 error:NULL];
             NSMutableArray *newPlatforms = [NSMutableArray array];
@@ -75,17 +85,28 @@ NSString *const XcodebuildCommand = @"/usr/bin/xcodebuild";
                 [newPlatforms addObject:[NSDictionary dictionaryWithObjectsAndKeys:version, @"version", @"ipad", @"device", [NSString stringWithFormat:ZappLocalizedString(@"iPad %@ Simulator"), version], @"description", nil]];
             }];
             self.platforms = newPlatforms;
+            if (!self.lastPlatform) {
+                self.lastPlatform = [self.platforms lastObject];
+            }
+            [self.enqueuedCommands removeObject:@"platforms"];
         }];
     }
     return platforms;
 }
 
++ (NSSet *)keyPathsForValuesAffectingPlatforms;
+{
+    return [NSSet setWithObjects:@"localURL", @"clonedAlready", nil];
+}
+
 - (NSArray *)schemes;
 {
-    if (!schemes) {
+    if (!schemes && ![self.enqueuedCommands containsObject:@"schemes"] && self.clonedAlready) {
+        [self.enqueuedCommands addObject:@"schemes"];
         [self runCommand:XcodebuildCommand withArguments:[NSArray arrayWithObject:@"-list"] completionBlock:^(NSString *output) {
             NSRange schemeRange = [output rangeOfString:@"Schemes:\n"];
             if (schemeRange.location == NSNotFound) {
+                [self.enqueuedCommands removeObject:@"schemes"];
                 return;
             }
             NSMutableArray *newSchemes = [NSMutableArray array];
@@ -95,9 +116,45 @@ NSString *const XcodebuildCommand = @"/usr/bin/xcodebuild";
                 [newSchemes addObject:[output substringWithRange:[result rangeAtIndex:1]]];
             }];
             self.schemes = newSchemes;
+            if (!self.lastScheme) {
+                self.lastScheme = [self.schemes lastObject];
+            }
+            [self.enqueuedCommands removeObject:@"schemes"];
         }];
     }
     return schemes;
+}
+
++ (NSSet *)keyPathsForValuesAffectingSchemes;
+{
+    return [NSSet setWithObjects:@"localURL", @"clonedAlready", nil];
+}
+
+- (NSString *)workspacePath;
+{
+    if (!workspacePath && ![self.enqueuedCommands containsObject:@"workspacePath"] && self.clonedAlready) {
+        [self.enqueuedCommands addObject:@"workspacePath"];
+        [self runCommand:XcodebuildCommand withArguments:[NSArray arrayWithObject:@"-list"] completionBlock:^(NSString *output) {
+            NSRange workspaceRange = [output rangeOfString:@"wrapper workspace:\n"];
+            if (workspaceRange.location == NSNotFound) {
+                [self.enqueuedCommands removeObject:@"workspacePath"];
+                return;
+            }
+            NSUInteger start = workspaceRange.location;
+            NSRegularExpression *workspaceRegex = [NSRegularExpression regularExpressionWithPattern:@"workspace:\\s+(.+)\n" options:0 error:NULL];
+            [workspaceRegex enumerateMatchesInString:output options:0 range:NSMakeRange(start, output.length - start) usingBlock:^(NSTextCheckingResult *result, NSMatchingFlags flags, BOOL *stop) {
+                self.workspacePath = [output substringWithRange:[result rangeAtIndex:1]];
+                *stop = YES;
+            }];
+            [self.enqueuedCommands removeObject:@"workspacePath"];
+        }];
+    }
+    return workspacePath;
+}
+
++ (NSSet *)keyPathsForValuesAffectingWorkspacePath;
+{
+    return [NSSet setWithObjects:@"localURL", @"clonedAlready", nil];
 }
 
 - (NSImage *)statusImage;
@@ -105,19 +162,60 @@ NSString *const XcodebuildCommand = @"/usr/bin/xcodebuild";
     return [NSImage imageNamed:self.latestBuild.status == ZappBuildStatusSucceeded ? @"status-available-flat-etched" : @"status-away-flat-etched"];
 }
 
++ (NSSet *)keyPathsForValuesAffectingStatusImage;
+{
+    return [NSSet setWithObject:@"latestBuild.status"];
+}
+
 #pragma mark ZappRepository
 
 - (ZappBuild *)createNewBuild;
 {
     ZappBuild *build = [NSEntityDescription insertNewObjectForEntityForName:@"Build" inManagedObjectContext:self.managedObjectContext];
-    [self willChangeValueForKey:@"builds"];
     [self addBuildsObject:build];
-    [self didChangeValueForKey:@"builds"];
     return build;
+}
+
+- (int)runCommandAndWait:(NSString *)command withArguments:(NSArray *)arguments errorOutput:(NSString **)errorString outputBlock:(void (^)(NSString *))block;
+{
+    NSAssert(![NSThread isMainThread], @"Can only run command and wait from a background thread");
+    NSTask *task = [NSTask new];
+    
+    NSPipe *outPipe = [NSPipe new];
+    NSFileHandle *outHandle = [outPipe fileHandleForReading];
+    [task setStandardOutput:outPipe];
+    
+    NSPipe *errorPipe = [NSPipe new];
+    NSFileHandle *errorHandle = [errorPipe fileHandleForReading];
+    [task setStandardError:errorPipe];
+    
+    NSData *inData = nil;
+    [task setLaunchPath:command];
+    [task setArguments:arguments];
+    [task setCurrentDirectoryPath:self.localURL.path];
+    
+    NSLog(@"Running %@ command\n%@ in\n%@", command, arguments, self.localURL);
+    
+    [task launch];
+    
+    while ((inData = [outHandle availableData]) && [inData length]) {
+        NSString *inString = [[NSString alloc] initWithData:inData encoding:NSUTF8StringEncoding];
+        block(inString);
+    }
+    
+    [task waitUntilExit];
+    
+    NSData *errorData = [errorHandle readDataToEndOfFile];
+    if (errorString) {
+        *errorString = [[NSString alloc] initWithData:errorData encoding:NSUTF8StringEncoding];
+    }
+    
+    return [task terminationStatus];
 }
 
 - (void)runCommand:(NSString *)command withArguments:(NSArray *)arguments completionBlock:(void (^)(NSString *))block;
 {
+    NSAssert([NSThread isMainThread], @"Can only spawn a command from the main thread");
     if (!self.localURL) {
         self.clonedAlready = NO;
         return;
@@ -131,48 +229,25 @@ NSString *const XcodebuildCommand = @"/usr/bin/xcodebuild";
     }
     
     [ZappRepositoryBackgroundQueue addOperationWithBlock:^() {
-        NSTask *task = [NSTask new];
-
-        NSPipe *outPipe = [NSPipe new];
-        NSFileHandle *outHandle = [outPipe fileHandleForReading];
-        [task setStandardOutput:outPipe];
+        NSString *errorString = nil;
         
-        NSPipe *errorPipe = [NSPipe new];
-        NSFileHandle *errorHandle = [errorPipe fileHandleForReading];
-        [task setStandardError:errorPipe];
+        NSMutableString *finalString = [NSMutableString string];
+        [self runCommandAndWait:command withArguments:arguments errorOutput:&errorString outputBlock:^(NSString *inString) {
+            [finalString appendString:inString];
+        }];
         
-        NSData *inData = nil;
-        NSMutableData *allData = [NSMutableData data];
-        
-        [task setLaunchPath:command];
-        [task setArguments:arguments];
-        [task setCurrentDirectoryPath:self.localURL.path];
-        
-        NSLog(@"Running git command\n%@ in\n%@", command, self.localURL);
-        
-        [task launch];
-        
-        while ((inData = [outHandle availableData]) && [inData length]) {
-            [allData appendData:inData];
-        }
-        
-        [task waitUntilExit];
-        
-        NSString *finalString = [[NSString alloc] initWithData:allData encoding:NSUTF8StringEncoding];
-        finalString = [finalString stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
-        
-        NSData *errorData = [errorHandle readDataToEndOfFile];
-        if (errorData.length) {
-            NSString *errorString = [[NSString alloc] initWithData:errorData encoding:NSUTF8StringEncoding];
+        if ([command isEqualToString:GitCommand] && errorString.length) {
             if ([errorString rangeOfString:@"Not a git repository"].location != NSNotFound) {
-                self.clonedAlready = NO;
+                [[NSOperationQueue mainQueue] addOperationWithBlock:^{
+                    self.clonedAlready = NO;
+                }];
                 return;
             }
         }
         
         [[NSOperationQueue mainQueue] addOperationWithBlock:^{
             self.clonedAlready = YES;
-            block(finalString);
+            block([finalString stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]]);
         }];
     }];
 }
@@ -183,16 +258,19 @@ NSString *const XcodebuildCommand = @"/usr/bin/xcodebuild";
 {
     [super awakeFromFetch];
     [self registerObservers];
+    self.enqueuedCommands = [NSMutableSet set];
 }
 
 - (void)awakeFromInsert;
 {
     [super awakeFromInsert];
     [self registerObservers];
+    self.enqueuedCommands = [NSMutableSet set];
 }
 
 - (void)didTurnIntoFault;
 {
+    self.enqueuedCommands = nil;
     [self unregisterObservers];
     [super didTurnIntoFault];
 }

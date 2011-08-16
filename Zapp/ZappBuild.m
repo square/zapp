@@ -14,6 +14,8 @@
 @property (nonatomic, readonly) NSURL *buildLogURL;
 @property (nonatomic, strong, readwrite) NSArray logLines;
 
+- (void)appendLogLine:(NSString *)logLine;
+
 @end
 
 @implementation ZappBuild
@@ -58,6 +60,10 @@
     [dateFormatter setDateStyle:NSDateFormatterMediumStyle];
     
     NSString *revision = [self.latestRevision substringToIndex:MIN(6, self.latestRevision.length)];
+    
+    if (self.status == ZappBuildStatusPending) {
+        return [NSString stringWithFormat:@"%@: %@", self.statusDescription, revision];
+    }
     
     return [NSString stringWithFormat:@"%@: %@ on %@", self.statusDescription, revision, [dateFormatter stringFromDate:self.startDate]];
 }
@@ -141,13 +147,56 @@
 {
     self.status = ZappBuildStatusRunning;
     self.startDate = [NSDate date];
-
-    [@"Line One\nLine Two" writeToURL:self.buildLogURL atomically:YES encoding:NSUTF8StringEncoding error:NULL];
+    self.scheme = self.repository.lastScheme;
+    self.platform = self.repository.lastPlatform;
+    
+    NSArray *arguments = [NSArray arrayWithObjects:@"-workspace", self.repository.workspacePath, @"-sdk", [NSString stringWithFormat:@"iphonesimulator%@", [self.platform objectForKey:@"version"]], @"-scheme", self.scheme, @"ARCHS=i386", @"ONLY_ACTIVE_ARCH=NO", nil];
+    
     self.logLines = nil;
+    ZappRepository *repository = self.repository;
+    [[ZappRepository sharedBackgroundQueue] addOperationWithBlock:^() {
+        NSString *errorOutput = nil;
+        NSError *error = nil;
+        [[NSFileManager defaultManager] createFileAtPath:self.buildLogURL.path contents:[NSData data] attributes:nil];
+        NSFileHandle *fileHandle = [NSFileHandle fileHandleForWritingToURL:self.buildLogURL error:&error];
+        NSLog(@"Opened file handle %@; error was %@", fileHandle, error);
+        int exitStatus = [repository runCommandAndWait:XcodebuildCommand withArguments:arguments errorOutput:&errorOutput outputBlock:^(NSString *output) {
+            [fileHandle writeData:[output dataUsingEncoding:NSUTF8StringEncoding]];
+            NSArray *newLogLines = [output componentsSeparatedByString:@"\n"];
+            [[NSOperationQueue mainQueue] addOperationWithBlock:^() {
+                for (NSString *line in newLogLines) {
+                    [self appendLogLine:line];
+                }
+            }];
+        }];
+        [fileHandle writeData:[errorOutput dataUsingEncoding:NSUTF8StringEncoding]];
+        [fileHandle closeFile];
+        NSArray *newLogLines = [errorOutput componentsSeparatedByString:@"\n"];
+        [[NSOperationQueue mainQueue] addOperationWithBlock:^() {
+            for (NSString *line in newLogLines) {
+                [self appendLogLine:line];
+            }
+            self.status = exitStatus > 0 ? ZappBuildStatusFailed : ZappBuildStatusSucceeded;
+            self.endDate = [NSDate date];
+            completionBlock();
+        }];
+    }];
+}
 
-    self.status = ZappBuildStatusSucceeded;
-    self.endDate = [NSDate date];
-    completionBlock();
+- (void)appendLogLine:(NSString *)logLine;
+{
+    if (![logLine length]) {
+        return;
+    }
+
+    NSMutableArray *mutableLogLines = (NSMutableArray *)self.logLines;
+    [self willChangeValueForKey:@"logLines"];
+    if (![mutableLogLines isKindOfClass:[NSMutableArray class]]) {
+        mutableLogLines = [NSMutableArray arrayWithArray:self.logLines];
+        self.logLines = mutableLogLines;
+    }
+    [mutableLogLines addObject:logLine];
+    [self didChangeValueForKey:@"logLines"];
 }
 
 @end
