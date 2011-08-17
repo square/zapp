@@ -10,15 +10,6 @@
 #import <CoreData/CoreData.h>
 
 
-typedef enum {
-    ZappBuildStatusPending,
-    ZappBuildStatusRunning,
-    ZappBuildStatusSucceeded,
-    ZappBuildStatusFailed,
-    ZappBuildStatusCount
-} ZappBuildStatus;
-
-
 @class ZappRepository;
 
 @interface ZappBuild : NSManagedObject

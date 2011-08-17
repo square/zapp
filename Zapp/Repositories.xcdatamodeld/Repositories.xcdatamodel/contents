@@ -13,6 +13,7 @@
         <attribute name="clonedAlready" optional="YES" attributeType="Boolean"/>
         <attribute name="lastPlatform" optional="YES" attributeType="Transformable" valueTransformerName=""/>
         <attribute name="lastScheme" optional="YES" attributeType="String"/>
+        <attribute name="latestBuildStatus" optional="YES" attributeType="Integer 32" defaultValueString="0"/>
         <attribute name="localURL" optional="YES" attributeType="Transformable" valueTransformerName=""/>
         <attribute name="name" optional="YES" attributeType="String"/>
         <attribute name="remoteURL" optional="YES" attributeType="Transformable" valueTransformerName=""/>
@@ -20,6 +21,6 @@
     </entity>
     <elements>
         <element name="Build" positionX="412" positionY="189" width="128" height="150"/>
-        <element name="Repository" positionX="160" positionY="192" width="128" height="150"/>
+        <element name="Repository" positionX="160" positionY="192" width="128" height="165"/>
     </elements>
 </model>

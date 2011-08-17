@@ -31,6 +31,7 @@
 @synthesize buildQueue;
 @synthesize buildsController;
 @synthesize logController;
+@synthesize logScrollView;
 @synthesize platformPopup;
 @synthesize progressIndicator;
 @synthesize progressLabel;
@@ -101,6 +102,26 @@
     self.searchBackgroundView.borderWidth = 1.0;
     self.searchBackgroundView.borderColor = [NSColor colorWithDeviceWhite:0.75 alpha:1.0];
     [self.searchBackgroundView setNeedsDisplay:YES];
+    
+    [self.logController addObserver:self forKeyPath:@"content" options:0 context:NULL];
+}
+
+#pragma mark NSKeyValueObserving
+
+- (void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary *)change context:(void *)context;
+{
+    if ([object isEqual:self.logController] && [keyPath isEqual:@"content"]) {
+        NSPoint newScrollOrigin;
+        
+        // assume that the scrollview is an existing variable
+        if ([[self.logScrollView documentView] isFlipped]) {
+            newScrollOrigin = NSMakePoint(0.0, NSMaxY([[self.logScrollView documentView] frame]) - NSHeight([[self.logScrollView contentView] bounds]));
+        } else {
+            newScrollOrigin = NSZeroPoint;
+        }
+        
+        [[self.logScrollView documentView] scrollPoint:newScrollOrigin];
+    }
 }
 
 #pragma mark Private methods
@@ -118,9 +139,7 @@
     } else {
         NSError *error = nil;
         [context save:&error];
-        if (error) {
-            NSLog(@"error saving context: %@", error);
-        }
+        NSAssert(!error, @"Should not have encountered error saving context");
     }
 }
 
@@ -135,7 +154,7 @@
     ZappBuild *build = [repository createNewBuild];
     [self.buildQueue addObject:build];
     build.startDate = [NSDate date];
-    [repository runCommand:GitCommand withArguments:[NSArray arrayWithObjects:@"rev-parse", @"HEAD", nil] completionBlock:^(NSString *revision) {
+    [repository runCommand:GitCommand withArguments:[NSArray arrayWithObjects:@"rev-parse", @"origin/master", nil] completionBlock:^(NSString *revision) {
         build.latestRevision = revision;
         // At some point, serialize this queue-style
         [build startWithCompletionBlock:^{

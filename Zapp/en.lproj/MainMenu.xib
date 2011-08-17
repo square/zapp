@@ -2,10 +2,10 @@
 <archive type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="8.00">
 	<data>
 		<int key="IBDocument.SystemTarget">1070</int>
-		<string key="IBDocument.SystemVersion">11A511</string>
+		<string key="IBDocument.SystemVersion">11C37</string>
 		<string key="IBDocument.InterfaceBuilderVersion">1910</string>
-		<string key="IBDocument.AppKitVersion">1138</string>
-		<string key="IBDocument.HIToolboxVersion">566.00</string>
+		<string key="IBDocument.AppKitVersion">1138.15</string>
+		<string key="IBDocument.HIToolboxVersion">567.00</string>
 		<object class="NSMutableDictionary" key="IBDocument.PluginVersions">
 			<string key="NS.key.0">com.apple.InterfaceBuilder.CocoaPlugin</string>
 			<string key="NS.object.0">1910</string>
@@ -3164,6 +3164,14 @@
 					<int key="connectionID">831</int>
 				</object>
 				<object class="IBConnectionRecord">
+					<object class="IBOutletConnection" key="connection">
+						<string key="label">logScrollView</string>
+						<reference key="source" ref="976324537"/>
+						<reference key="destination" ref="1013384031"/>
+					</object>
+					<int key="connectionID">879</int>
+				</object>
+				<object class="IBConnectionRecord">
 					<object class="IBActionConnection" key="connection">
 						<string key="label">add:</string>
 						<reference key="source" ref="943260180"/>
@@ -5598,7 +5606,7 @@
 			<nil key="activeLocalization"/>
 			<dictionary class="NSMutableDictionary" key="localizations"/>
 			<nil key="sourceID"/>
-			<int key="maxID">878</int>
+			<int key="maxID">879</int>
 		</object>
 		<object class="IBClassDescriber" key="IBDocument.Classes">
 			<array class="NSMutableArray" key="referencedPartialClassDescriptions">
@@ -5668,6 +5676,7 @@
 					<dictionary class="NSMutableDictionary" key="outlets">
 						<string key="buildsController">NSArrayController</string>
 						<string key="logController">NSArrayController</string>
+						<string key="logScrollView">NSScrollView</string>
 						<string key="platformPopup">NSPopUpButton</string>
 						<string key="progressIndicator">NSProgressIndicator</string>
 						<string key="progressLabel">NSTextField</string>
@@ -5687,6 +5696,10 @@
 						<object class="IBToOneOutletInfo" key="logController">
 							<string key="name">logController</string>
 							<string key="candidateClassName">NSArrayController</string>
+						</object>
+						<object class="IBToOneOutletInfo" key="logScrollView">
+							<string key="name">logScrollView</string>
+							<string key="candidateClassName">NSScrollView</string>
 						</object>
 						<object class="IBToOneOutletInfo" key="platformPopup">
 							<string key="name">platformPopup</string>

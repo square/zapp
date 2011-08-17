@@ -15,6 +15,7 @@
 
 @property (nonatomic, strong) IBOutlet NSArrayController *buildsController;
 @property (nonatomic, strong) IBOutlet NSArrayController *logController;
+@property (nonatomic, strong) IBOutlet NSScrollView *logScrollView;
 @property (nonatomic, strong) IBOutlet NSPopUpButton *platformPopup;
 @property (nonatomic, strong) IBOutlet NSProgressIndicator *progressIndicator;
 @property (nonatomic, strong) IBOutlet NSTextField *progressLabel;

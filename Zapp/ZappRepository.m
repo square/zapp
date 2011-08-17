@@ -33,6 +33,7 @@ NSString *const XcodebuildCommand = @"/usr/bin/xcodebuild";
 @dynamic clonedAlready;
 @dynamic lastPlatform;
 @dynamic lastScheme;
+@dynamic latestBuildStatus;
 @dynamic localURL;
 @dynamic name;
 @dynamic remoteURL;
@@ -58,19 +59,6 @@ NSString *const XcodebuildCommand = @"/usr/bin/xcodebuild";
 }
 
 #pragma mark Derived properties
-
-- (ZappBuild *)latestBuild;
-{
-    NSSortDescriptor *descriptor = [NSSortDescriptor sortDescriptorWithKey:@"endTimestamp" ascending:NO];
-    NSArray *descriptors = [NSArray arrayWithObject:descriptor];
-    NSArray *orderedBuilds = [self.builds sortedArrayUsingDescriptors:descriptors];
-    return orderedBuilds.count ? [orderedBuilds objectAtIndex:0] : nil;
-}
-
-+ (NSSet *)keyPathsForValuesAffectingLatestBuild;
-{
-    return [NSSet setWithObjects:@"builds", nil];
-}
 
 - (NSArray *)platforms;
 {
@@ -159,12 +147,12 @@ NSString *const XcodebuildCommand = @"/usr/bin/xcodebuild";
 
 - (NSImage *)statusImage;
 {
-    return [NSImage imageNamed:self.latestBuild.status == ZappBuildStatusSucceeded ? @"status-available-flat-etched" : @"status-away-flat-etched"];
+    return [NSImage imageNamed:self.latestBuildStatus == ZappBuildStatusSucceeded ? @"status-available-flat-etched" : @"status-away-flat-etched"];
 }
 
 + (NSSet *)keyPathsForValuesAffectingStatusImage;
 {
-    return [NSSet setWithObject:@"latestBuild.status"];
+    return [NSSet setWithObject:@"latestBuildStatus"];
 }
 
 #pragma mark ZappRepository
@@ -172,7 +160,9 @@ NSString *const XcodebuildCommand = @"/usr/bin/xcodebuild";
 - (ZappBuild *)createNewBuild;
 {
     ZappBuild *build = [NSEntityDescription insertNewObjectForEntityForName:@"Build" inManagedObjectContext:self.managedObjectContext];
+    [self willChangeValueForKey:@"latestBuild"];
     [self addBuildsObject:build];
+    [self didChangeValueForKey:@"latestBuild"];
     return build;
 }
 
@@ -193,8 +183,6 @@ NSString *const XcodebuildCommand = @"/usr/bin/xcodebuild";
     [task setLaunchPath:command];
     [task setArguments:arguments];
     [task setCurrentDirectoryPath:self.localURL.path];
-    
-    NSLog(@"Running %@ command\n%@ in\n%@", command, arguments, self.localURL);
     
     [task launch];
     

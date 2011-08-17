@@ -11,4 +11,12 @@
 
 #define ZappLocalizedString(str) NSLocalizedString(str, str)
 
+typedef enum {
+    ZappBuildStatusPending,
+    ZappBuildStatusRunning,
+    ZappBuildStatusSucceeded,
+    ZappBuildStatusFailed,
+    ZappBuildStatusCount
+} ZappBuildStatus;
+
 #endif

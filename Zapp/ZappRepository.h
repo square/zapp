@@ -25,7 +25,7 @@ extern NSString *const XcodebuildCommand;
 @property (nonatomic) BOOL clonedAlready;
 @property (nonatomic, strong) NSDictionary *lastPlatform;
 @property (nonatomic, strong) NSString *lastScheme;
-@property (nonatomic, readonly) ZappBuild *latestBuild;
+@property (nonatomic) ZappBuildStatus latestBuildStatus;
 @property (nonatomic, strong) NSURL *localURL;
 @property (nonatomic, strong) NSString *name;
 @property (nonatomic, strong, readonly) NSArray *platforms;
