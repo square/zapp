@@ -19,4 +19,7 @@ typedef enum {
     ZappBuildStatusCount
 } ZappBuildStatus;
 
+typedef void (^ZappOutputBlock)(NSString *output);
+typedef void (^ZappResultBlock)(int exitCode);
+
 #endif

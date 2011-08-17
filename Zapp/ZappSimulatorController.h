@@ -7,7 +7,22 @@
 //
 
 #import <Foundation/Foundation.h>
+#import "iPhoneSimulatorRemoteClient.h"
 
-@interface ZappSimulatorController : NSObject
+typedef enum {
+    ZappSimulatorControllerPlatformiPhone = 1,
+    ZappSimulatorControllerPlatformiPad = 2
+} ZappSimulatorControllerPlatform;
+
+@interface ZappSimulatorController : NSObject <DTiPhoneSimulatorSessionDelegate>
+
+@property (strong) NSURL *appURL;
+@property (strong) NSArray *arguments;
+@property (strong) NSDictionary *environment;
+@property ZappSimulatorControllerPlatform platform;
+@property (strong) NSString *sdk;
+@property (strong) NSString *simulatorOutputPath;
+
+- (BOOL)launchSessionWithOutputBlock:(ZappOutputBlock)outputBlock completionBlock:(ZappResultBlock)completionBlock;
 
 @end

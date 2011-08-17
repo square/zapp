@@ -7,12 +7,14 @@
 //
 
 #import "ZappBuild.h"
+#import "ZappSimulatorController.h"
 
 
 @interface ZappBuild ()
 
 @property (nonatomic, readonly) NSURL *buildLogURL;
 @property (nonatomic, strong, readwrite) NSArray logLines;
+@property (nonatomic, strong) ZappSimulatorController *simulatorController;
 
 - (void)appendLogLines:(NSString *)newLogLinesString;
 
@@ -29,6 +31,7 @@
 @dynamic status;
 @synthesize commitLog;
 @synthesize logLines;
+@synthesize simulatorController;
 
 #pragma mark Accessors
 
@@ -150,7 +153,7 @@
     self.scheme = self.repository.lastScheme;
     self.platform = self.repository.lastPlatform;
     
-    NSArray *arguments = [NSArray arrayWithObjects:@"-workspace", self.repository.workspacePath, @"-sdk", [NSString stringWithFormat:@"iphonesimulator%@", [self.platform objectForKey:@"version"]], @"-scheme", self.scheme, @"ARCHS=i386", @"ONLY_ACTIVE_ARCH=NO", nil];
+    NSArray *arguments = [NSArray arrayWithObjects:@"-workspace", self.repository.workspacePath, @"-sdk", [NSString stringWithFormat:@"iphonesimulator%@", [self.platform objectForKey:@"version"]], @"-scheme", self.scheme, @"ARCHS=i386", @"ONLY_ACTIVE_ARCH=NO", @"DSTROOT=build", @"install", nil];
     
     self.logLines = nil;
     ZappRepository *repository = self.repository;
@@ -167,11 +170,20 @@
         NSError *error = nil;
         [[NSFileManager defaultManager] createFileAtPath:self.buildLogURL.path contents:[NSData data] attributes:nil];
         NSFileHandle *fileHandle = [NSFileHandle fileHandleForWritingToURL:self.buildLogURL error:&error];
+        NSString __block *appPath = nil;
 
         // Step 1: Build
         int exitStatus = [repository runCommandAndWait:XcodebuildCommand withArguments:arguments errorOutput:&errorOutput outputBlock:^(NSString *output) {
             [fileHandle writeData:[output dataUsingEncoding:NSUTF8StringEncoding]];
             [self appendLogLines:output];
+            if (!appPath) {
+                NSRange appPathRange = [output rangeOfString:@"\"([^\"]+)\\.app\"" options:NSRegularExpressionSearch];
+                if (appPathRange.location != NSNotFound) {
+                    appPathRange.location++;
+                    appPathRange.length -= 2;
+                    appPath = [output substringWithRange:appPathRange];
+                }
+            }
         }];
         [fileHandle writeData:[errorOutput dataUsingEncoding:NSUTF8StringEncoding]];
         [fileHandle closeFile];
@@ -182,7 +194,25 @@
         }
         
         // Step 2: Run
-        
+        NSString __block *failureCount = nil;
+        NSRegularExpression *failureRegex = [NSRegularExpression regularExpressionWithPattern:@"KIF TESTING FINISHED: (\\d+) failure" options:0 error:NULL];
+        self.simulatorController = [ZappSimulatorController new];
+        self.simulatorController.sdk = [self.platform objectForKey:@"version"];
+        self.simulatorController.platform = [[self.platform objectForKey:@"device"] isEqualToString:@"ipad"] ? ZappSimulatorControllerPlatformiPad : ZappSimulatorControllerPlatformiPhone;
+        self.simulatorController.appURL = [self.repository.localURL URLByAppendingPathComponent:appPath];
+        self.simulatorController.environment = [NSDictionary dictionaryWithObjectsAndKeys:@"1", @"KIF_AUTORUN", nil];
+        self.simulatorController.simulatorOutputPath = self.buildLogURL.path;
+        [self.simulatorController launchSessionWithOutputBlock:^(NSString *output) {
+            [self appendLogLines:output];
+            [failureRegex enumerateMatchesInString:output options:0 range:NSMakeRange(0, output.length) usingBlock:^(NSTextCheckingResult *result, NSMatchingFlags flags, BOOL *stop) {
+                failureCount = [output substringWithRange:[result rangeAtIndex:1]];
+                *stop = YES;
+            }];
+        } completionBlock:^(int exitCode) {
+            self.simulatorController = nil;
+            // exitCode is probably always going to be 0 (success) coming from the simulator. Use the failure count as our status instead.
+            callCompletionBlock([failureCount intValue]);
+        }];
     }];
 }
 

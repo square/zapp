@@ -18,6 +18,7 @@
 		A8B31D4813E4D611001D593D /* ZappAppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = A8B31D4713E4D611001D593D /* ZappAppDelegate.m */; };
 		A8B31D4B13E4D611001D593D /* MainMenu.xib in Resources */ = {isa = PBXBuildFile; fileRef = A8B31D4913E4D611001D593D /* MainMenu.xib */; };
 		A8DA279113ECA4ED001305B4 /* ZappBuild.m in Sources */ = {isa = PBXBuildFile; fileRef = A8DA279013ECA4ED001305B4 /* ZappBuild.m */; };
+		A8DD434E13FB92C000AE6C3D /* iPhoneSimulatorRemoteClient.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A8DD434D13FB92C000AE6C3D /* iPhoneSimulatorRemoteClient.framework */; };
 		A8E7858513EBB0B000811365 /* status-available-flat-etched.tif in Resources */ = {isa = PBXBuildFile; fileRef = A8E7858313EBB0B000811365 /* status-available-flat-etched.tif */; };
 		A8E7858613EBB0B000811365 /* status-away-flat-etched.tif in Resources */ = {isa = PBXBuildFile; fileRef = A8E7858413EBB0B000811365 /* status-away-flat-etched.tif */; };
 		A8E7858A13EBB20E00811365 /* ZappBackgroundView.m in Sources */ = {isa = PBXBuildFile; fileRef = A8E7858913EBB20E00811365 /* ZappBackgroundView.m */; };
@@ -48,9 +49,10 @@
 		A8B31D4613E4D611001D593D /* ZappAppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ZappAppDelegate.h; sourceTree = "<group>"; };
 		A8B31D4713E4D611001D593D /* ZappAppDelegate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ZappAppDelegate.m; sourceTree = "<group>"; };
 		A8B31D4A13E4D611001D593D /* en */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = en; path = en.lproj/MainMenu.xib; sourceTree = "<group>"; };
-		A8B31D5413E4DC0F001D593D /* ZappGlobals.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ZappGlobals.h; path = Zapp/ZappGlobals.h; sourceTree = "<group>"; };
+		A8B31D5413E4DC0F001D593D /* ZappGlobals.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ZappGlobals.h; sourceTree = "<group>"; };
 		A8DA278F13ECA4ED001305B4 /* ZappBuild.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ZappBuild.h; sourceTree = "<group>"; };
 		A8DA279013ECA4ED001305B4 /* ZappBuild.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ZappBuild.m; sourceTree = "<group>"; };
+		A8DD434D13FB92C000AE6C3D /* iPhoneSimulatorRemoteClient.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = iPhoneSimulatorRemoteClient.framework; path = Platforms/iPhoneSimulator.platform/Developer/Library/PrivateFrameworks/iPhoneSimulatorRemoteClient.framework; sourceTree = DEVELOPER_DIR; };
 		A8E7858313EBB0B000811365 /* status-available-flat-etched.tif */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = "status-available-flat-etched.tif"; sourceTree = "<group>"; };
 		A8E7858413EBB0B000811365 /* status-away-flat-etched.tif */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = "status-away-flat-etched.tif"; sourceTree = "<group>"; };
 		A8E7858813EBB20E00811365 /* ZappBackgroundView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ZappBackgroundView.h; sourceTree = "<group>"; };
@@ -68,6 +70,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				A8B31D3513E4D610001D593D /* Cocoa.framework in Frameworks */,
+				A8DD434E13FB92C000AE6C3D /* iPhoneSimulatorRemoteClient.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -78,7 +81,6 @@
 			isa = PBXGroup;
 			children = (
 				A8783CE313F114130001493A /* Zapp.icns */,
-				A8B31D5413E4DC0F001D593D /* ZappGlobals.h */,
 				A8B31D3A13E4D610001D593D /* Zapp */,
 				A8B31D3313E4D610001D593D /* Frameworks */,
 				A8B31D3113E4D610001D593D /* Products */,
@@ -96,6 +98,7 @@
 		A8B31D3313E4D610001D593D /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				A8DD434D13FB92C000AE6C3D /* iPhoneSimulatorRemoteClient.framework */,
 				A8B31D3413E4D610001D593D /* Cocoa.framework */,
 				A8B31D3613E4D610001D593D /* Other Frameworks */,
 			);
@@ -115,6 +118,7 @@
 		A8B31D3A13E4D610001D593D /* Zapp */ = {
 			isa = PBXGroup;
 			children = (
+				A8B31D5413E4DC0F001D593D /* ZappGlobals.h */,
 				A8DA278E13ECA422001305B4 /* View */,
 				A8DA278D13ECA417001305B4 /* Model */,
 				A8E785D013ECA3A100811365 /* Controller */,
@@ -311,9 +315,11 @@
 				GCC_WARN_ABOUT_MISSING_PROTOTYPES = YES;
 				GCC_WARN_ABOUT_RETURN_TYPE = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
+				LD_RUNPATH_SEARCH_PATHS = /Developer/Platforms/iPhoneSimulator.platform/Developer/Library/PrivateFrameworks;
 				MACOSX_DEPLOYMENT_TARGET = 10.7;
 				ONLY_ACTIVE_ARCH = YES;
 				SDKROOT = macosx;
+				VALID_ARCHS = x86_64;
 			};
 			name = Debug;
 		};
@@ -335,8 +341,10 @@
 				GCC_WARN_ABOUT_MISSING_PROTOTYPES = YES;
 				GCC_WARN_ABOUT_RETURN_TYPE = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
+				LD_RUNPATH_SEARCH_PATHS = /Developer/Platforms/iPhoneSimulator.platform/Developer/Library/PrivateFrameworks;
 				MACOSX_DEPLOYMENT_TARGET = 10.7;
 				SDKROOT = macosx;
+				VALID_ARCHS = x86_64;
 			};
 			name = Release;
 		};
@@ -344,6 +352,10 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				CLANG_ENABLE_OBJC_ARC = YES;
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					/Developer/Platforms/iPhoneSimulator.platform/Developer/Library/PrivateFrameworks,
+				);
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "Zapp/Zapp-Prefix.pch";
 				INFOPLIST_FILE = "Zapp/Zapp-Info.plist";
@@ -356,6 +368,10 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				CLANG_ENABLE_OBJC_ARC = YES;
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					/Developer/Platforms/iPhoneSimulator.platform/Developer/Library/PrivateFrameworks,
+				);
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "Zapp/Zapp-Prefix.pch";
 				INFOPLIST_FILE = "Zapp/Zapp-Info.plist";

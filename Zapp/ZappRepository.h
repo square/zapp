@@ -35,7 +35,7 @@ extern NSString *const XcodebuildCommand;
 @property (nonatomic, readonly) NSImage *statusImage;
 
 - (ZappBuild *)createNewBuild;
-- (void)runCommand:(NSString *)command withArguments:(NSArray *)arguments completionBlock:(void (^)(NSString *))block;
+- (void)runCommand:(NSString *)command withArguments:(NSArray *)arguments completionBlock:(ZappOutputBlock)block;
 - (int)runCommandAndWait:(NSString *)command withArguments:(NSArray *)arguments errorOutput:(NSString **)errorString outputBlock:(void (^)(NSString *))block;
 
 @end
