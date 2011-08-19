@@ -26,6 +26,7 @@
 @property (nonatomic, strong) IBOutlet ZappBackgroundView *sourceListBackgroundView;
 @property (nonatomic, strong) IBOutlet NSTableView *sourceListView;
 @property (nonatomic, strong) IBOutlet NSWindow *window;
+@property (nonatomic, getter = isBuilding) BOOL building;
 
 - (IBAction)build:(id)sender;
 - (IBAction)chooseLocalPath:(id)sender;

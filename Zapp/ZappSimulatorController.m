@@ -15,6 +15,7 @@
 @property (strong) NSFileHandle *fileHandle;
 @property (strong) DTiPhoneSimulatorSession *session;
 @property (copy) ZappOutputBlock outputBlock;
+@property NSInteger consecutiveBlankReads;
 
 - (void)readNewOutput;
 
@@ -25,6 +26,7 @@
 @synthesize appURL;
 @synthesize arguments;
 @synthesize completionBlock;
+@synthesize consecutiveBlankReads;
 @synthesize environment;
 @synthesize fileHandle;
 @synthesize platform;
@@ -62,9 +64,20 @@
 
     self.fileHandle = [NSFileHandle fileHandleForReadingAtPath:self.simulatorOutputPath];
     [fileHandle seekToEndOfFile];
+    
+    NSTask *killTask = [NSTask new];
+    killTask.launchPath = @"/usr/bin/killall";
+    killTask.arguments = [NSArray arrayWithObject:@"iPhone Simulator"];
+    [killTask launch];
+    [killTask waitUntilExit];
 
+    NSURL *simulatorURL = [NSURL fileURLWithPath:simulator.sdkRootPath];
+    simulatorURL = [[simulatorURL URLByDeletingLastPathComponent] URLByDeletingLastPathComponent];
+    simulatorURL = [[simulatorURL URLByAppendingPathComponent:@"Applications"] URLByAppendingPathComponent:@"iPhone Simulator.app"];
+    
     [[NSOperationQueue mainQueue] addOperationWithBlock:^() {
         NSError *error = nil;
+        [[NSWorkspace sharedWorkspace] launchApplicationAtURL:simulatorURL options:NSWorkspaceLaunchDefault configuration:nil error:&error];
         [session requestStartWithConfig:config timeout:30.0 error:&error];
         [self readNewOutput];
     }];
@@ -80,6 +93,7 @@
 
 - (void)session:(DTiPhoneSimulatorSession *)session didEndWithError:(NSError *)error {
     NSLog(@"ended: %@", error);
+    self.session.delegate = nil;
     self.session = nil;
     self.completionBlock(error != nil);
 }
@@ -89,7 +103,15 @@
 - (void)readNewOutput;
 {
     NSData *outputData = [self.fileHandle readDataToEndOfFile];
-    self.outputBlock([[NSString alloc] initWithData:outputData encoding:NSUTF8StringEncoding]);
+    if (outputData.length) {
+        self.outputBlock([[NSString alloc] initWithData:outputData encoding:NSUTF8StringEncoding]);
+        self.consecutiveBlankReads = 0;
+    } else {
+        self.consecutiveBlankReads++;
+        if (self.consecutiveBlankReads > 30) {
+            [self session:self.session didEndWithError:[NSError errorWithDomain:NSStringFromClass([self class]) code:1 userInfo:nil]];
+        }
+    }
     if (self.session) {
         [self performSelector:@selector(readNewOutput) withObject:nil afterDelay:1.0];
     } else {

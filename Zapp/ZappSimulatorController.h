@@ -23,6 +23,6 @@ typedef enum {
 @property (strong) NSString *sdk;
 @property (strong) NSString *simulatorOutputPath;
 
-- (BOOL)launchSessionWithOutputBlock:(ZappOutputBlock)outputBlock completionBlock:(ZappResultBlock)completionBlock;
+- (BOOL)launchSessionWithOutputBlock:(ZappOutputBlock)theOutputBlock completionBlock:(ZappResultBlock)theCompletionBlock;
 
 @end

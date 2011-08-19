@@ -19,6 +19,8 @@
 @property (nonatomic, readonly) ZappRepository *selectedRepository;
 
 - (void)hideProgressPanel;
+- (void)pollRepositoriesForUpdates;
+- (void)pumpBuildQueue;
 - (ZappBuild *)scheduleBuildForRepository:(ZappRepository *)repository;
 - (void)showProgressPanelWithMessage:(NSString *)message;
 - (void)updateSourceListBackground:(NSNotification *)notification;
@@ -28,6 +30,7 @@
 
 @implementation ZappAppDelegate
 
+@synthesize building;
 @synthesize buildQueue;
 @synthesize buildsController;
 @synthesize logController;
@@ -104,6 +107,8 @@
     [self.searchBackgroundView setNeedsDisplay:YES];
     
     [self.logController addObserver:self forKeyPath:@"content" options:0 context:NULL];
+    
+    [NSTimer scheduledTimerWithTimeInterval:90.0 target:self selector:@selector(pollRepositoriesForUpdates) userInfo:nil repeats:YES];
 }
 
 #pragma mark NSKeyValueObserving
@@ -149,17 +154,45 @@
     [[NSApplication sharedApplication] endSheet:self.progressPanel];
 }
 
+- (void)pollRepositoriesForUpdates;
+{
+    if (self.building) {
+        NSLog(@"not polling");
+        return;
+    }
+    NSLog(@"polling");
+    for (ZappRepository *repository in [self.repositoriesController arrangedObjects]) {
+        [repository runCommand:GitCommand withArguments:[NSArray arrayWithObject:@"fetch"] completionBlock:^(NSString *output) {
+            if (output.length) {
+                [self scheduleBuildForRepository:repository];
+            }
+        }];
+    }
+}
+
+- (void)pumpBuildQueue;
+{
+    if (!self.buildQueue.count || self.building) {
+        return;
+    }
+    ZappBuild *build = [self.buildQueue objectAtIndex:0];
+    self.building = YES;
+    [build startWithCompletionBlock:^{
+        self.building = NO;
+        [self pumpBuildQueue];
+    }];
+    [self.buildQueue removeObject:build];
+}
+
 - (ZappBuild *)scheduleBuildForRepository:(ZappRepository *)repository;
 {
     ZappBuild *build = [repository createNewBuild];
-    [self.buildQueue addObject:build];
     build.startDate = [NSDate date];
     [repository runCommand:GitCommand withArguments:[NSArray arrayWithObjects:@"rev-parse", @"origin/master", nil] completionBlock:^(NSString *revision) {
         build.latestRevision = revision;
         // At some point, serialize this queue-style
-        [build startWithCompletionBlock:^{
-            [self.buildQueue removeObject:build];
-        }];
+        [self.buildQueue addObject:build];
+        [self pumpBuildQueue];
     }];
     return build;
 }

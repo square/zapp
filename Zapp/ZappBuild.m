@@ -153,27 +153,57 @@
     self.scheme = self.repository.lastScheme;
     self.platform = self.repository.lastPlatform;
     
-    NSArray *arguments = [NSArray arrayWithObjects:@"-workspace", self.repository.workspacePath, @"-sdk", [NSString stringWithFormat:@"iphonesimulator%@", [self.platform objectForKey:@"version"]], @"-scheme", self.scheme, @"ARCHS=i386", @"ONLY_ACTIVE_ARCH=NO", @"DSTROOT=build", @"install", nil];
+    NSArray *buildArguments = [NSArray arrayWithObjects:@"-workspace", self.repository.workspacePath, @"-sdk", [NSString stringWithFormat:@"iphonesimulator%@", [self.platform objectForKey:@"version"]], @"-scheme", self.scheme, @"ARCHS=i386", @"ONLY_ACTIVE_ARCH=NO", @"DSTROOT=build", @"install", nil];
     
     self.logLines = nil;
     ZappRepository *repository = self.repository;
     void (^callCompletionBlock)(int) = ^(int exitStatus) {
         [[NSOperationQueue mainQueue] addOperationWithBlock:^() {
-            self.status = exitStatus > 0 ? ZappBuildStatusFailed : ZappBuildStatusSucceeded;
+            self.status = exitStatus != 0 ? ZappBuildStatusFailed : ZappBuildStatusSucceeded;
+            NSLog(@"build complete, exit status %d", exitStatus);
             self.endDate = [NSDate date];
             self.repository.latestBuildStatus = self.status;
             completionBlock();
         }];
     };
+
     [[ZappRepository sharedBackgroundQueue] addOperationWithBlock:^() {
         NSString *errorOutput = nil;
         NSError *error = nil;
         [[NSFileManager defaultManager] createFileAtPath:self.buildLogURL.path contents:[NSData data] attributes:nil];
         NSFileHandle *fileHandle = [NSFileHandle fileHandleForWritingToURL:self.buildLogURL error:&error];
         NSString __block *appPath = nil;
-
+        int exitStatus = 0;
+        
         // Step 1: Build
-        int exitStatus = [repository runCommandAndWait:XcodebuildCommand withArguments:arguments errorOutput:&errorOutput outputBlock:^(NSString *output) {
+        exitStatus = [repository runCommandAndWait:GitCommand withArguments:[NSArray arrayWithObject:@"pull"] errorOutput:&errorOutput outputBlock:^(NSString *output) {
+            [fileHandle writeData:[output dataUsingEncoding:NSUTF8StringEncoding]];
+            [self appendLogLines:output];
+        }];
+        [fileHandle writeData:[errorOutput dataUsingEncoding:NSUTF8StringEncoding]];
+        [self appendLogLines:errorOutput];
+        if (exitStatus > 0) {
+            callCompletionBlock(exitStatus);
+            return;
+        }
+        exitStatus = [repository runCommandAndWait:GitCommand withArguments:[NSArray arrayWithObjects:@"submodule", @"update", @"--init", nil] errorOutput:&errorOutput outputBlock:^(NSString *output) {
+            [fileHandle writeData:[output dataUsingEncoding:NSUTF8StringEncoding]];
+            [self appendLogLines:output];
+        }];
+        [fileHandle writeData:[errorOutput dataUsingEncoding:NSUTF8StringEncoding]];
+        [self appendLogLines:errorOutput];
+        if (exitStatus > 0) {
+            callCompletionBlock(exitStatus);
+            return;
+        }
+        exitStatus = [repository runCommandAndWait:GitCommand withArguments:[NSArray arrayWithObjects:@"rev-parse", @"HEAD", nil] errorOutput:&errorOutput outputBlock:^(NSString *output) {
+            [[NSOperationQueue mainQueue] addOperationWithBlock:^() {
+                self.latestRevision = [output stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
+            }];
+        }];
+
+        // Step 2: Build
+        exitStatus = [repository runCommandAndWait:XcodebuildCommand withArguments:buildArguments errorOutput:&errorOutput outputBlock:^(NSString *output) {
             [fileHandle writeData:[output dataUsingEncoding:NSUTF8StringEncoding]];
             [self appendLogLines:output];
             if (!appPath) {
@@ -193,14 +223,14 @@
             return;
         }
         
-        // Step 2: Run
+        // Step 3: Run
         NSString __block *failureCount = nil;
         NSRegularExpression *failureRegex = [NSRegularExpression regularExpressionWithPattern:@"KIF TESTING FINISHED: (\\d+) failure" options:0 error:NULL];
         self.simulatorController = [ZappSimulatorController new];
         self.simulatorController.sdk = [self.platform objectForKey:@"version"];
         self.simulatorController.platform = [[self.platform objectForKey:@"device"] isEqualToString:@"ipad"] ? ZappSimulatorControllerPlatformiPad : ZappSimulatorControllerPlatformiPhone;
         self.simulatorController.appURL = [self.repository.localURL URLByAppendingPathComponent:appPath];
-        self.simulatorController.environment = [NSDictionary dictionaryWithObjectsAndKeys:@"1", @"KIF_AUTORUN", nil];
+        self.simulatorController.environment = [NSDictionary dictionaryWithObjectsAndKeys:@"1", @"KIF_AUTORUN", @"item", @"KIF_SCENARIO_FILTER", nil];
         self.simulatorController.simulatorOutputPath = self.buildLogURL.path;
         [self.simulatorController launchSessionWithOutputBlock:^(NSString *output) {
             [self appendLogLines:output];
@@ -209,9 +239,10 @@
                 *stop = YES;
             }];
         } completionBlock:^(int exitCode) {
-            self.simulatorController = nil;
             // exitCode is probably always going to be 0 (success) coming from the simulator. Use the failure count as our status instead.
-            callCompletionBlock([failureCount intValue]);
+            exitCode = failureCount ? [failureCount intValue] : -1;
+            self.simulatorController = nil;
+            callCompletionBlock(exitCode);
         }];
     }];
 }
