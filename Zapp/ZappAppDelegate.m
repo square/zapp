@@ -157,16 +157,20 @@
 - (void)pollRepositoriesForUpdates;
 {
     if (self.building) {
-        NSLog(@"not polling");
         return;
     }
-    NSLog(@"polling");
+    NSMutableSet *updatedLocalURLs = [NSMutableSet set];
     for (ZappRepository *repository in [self.repositoriesController arrangedObjects]) {
-        [repository runCommand:GitCommand withArguments:[NSArray arrayWithObject:@"fetch"] completionBlock:^(NSString *output) {
-            if (output.length) {
-                [self scheduleBuildForRepository:repository];
-            }
-        }];
+        if ([updatedLocalURLs containsObject:repository.localURL]) {
+            [self scheduleBuildForRepository:repository];
+        } else {
+            [repository runCommand:GitCommand withArguments:[NSArray arrayWithObject:@"fetch"] completionBlock:^(NSString *output) {
+                if (output.length) {
+                    [self scheduleBuildForRepository:repository];
+                    [updatedLocalURLs addObject:repository.localURL];
+                }
+            }];
+        }
     }
 }
 
