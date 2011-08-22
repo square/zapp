@@ -12,7 +12,7 @@
 
 static NSOperationQueue *ZappRepositoryBackgroundQueue = nil;
 NSString *const GitCommand = @"/usr/bin/git";
-NSString *const XcodebuildCommand = @"/usr/bin/xcodebuild";
+NSString *const XcodebuildCommand = @"/Developer/usr/bin/xcodebuild";
 
 
 @interface ZappRepository ()
@@ -21,6 +21,7 @@ NSString *const XcodebuildCommand = @"/usr/bin/xcodebuild";
 @property (nonatomic, strong, readwrite) NSArray *platforms;
 @property (nonatomic, strong, readwrite) NSArray *schemes;
 @property (nonatomic, strong, readwrite) NSString *workspacePath;
+@property (nonatomic, strong, readwrite) NSFetchRequest *latestBuildsFetchRequest;
 
 - (void)registerObservers;
 - (void)unregisterObservers;
@@ -29,6 +30,7 @@ NSString *const XcodebuildCommand = @"/usr/bin/xcodebuild";
 
 @implementation ZappRepository
 
+@dynamic abbreviation;
 @dynamic builds;
 @dynamic clonedAlready;
 @dynamic lastPlatform;
@@ -42,6 +44,7 @@ NSString *const XcodebuildCommand = @"/usr/bin/xcodebuild";
 @synthesize platforms;
 @synthesize schemes;
 @synthesize workspacePath;
+@synthesize latestBuildsFetchRequest;
 
 #pragma mark Class methods
 
@@ -153,6 +156,18 @@ NSString *const XcodebuildCommand = @"/usr/bin/xcodebuild";
 + (NSSet *)keyPathsForValuesAffectingStatusImage;
 {
     return [NSSet setWithObject:@"latestBuildStatus"];
+}
+
+- (NSFetchRequest *)latestBuildsFetchRequest;
+{
+    if (!latestBuildsFetchRequest) {
+        self.latestBuildsFetchRequest = [NSFetchRequest new];
+        latestBuildsFetchRequest.entity = [NSEntityDescription entityForName:@"Build" inManagedObjectContext:self.managedObjectContext];
+        latestBuildsFetchRequest.predicate = [NSPredicate predicateWithFormat:@"repository = %@ AND status != %d", self, ZappBuildStatusPending];
+        latestBuildsFetchRequest.sortDescriptors = [NSArray arrayWithObject:[[NSSortDescriptor alloc] initWithKey:@"startTimestamp" ascending:NO]];
+        latestBuildsFetchRequest.fetchLimit = 10;
+    }
+    return latestBuildsFetchRequest;
 }
 
 #pragma mark ZappRepository
@@ -279,6 +294,8 @@ NSString *const XcodebuildCommand = @"/usr/bin/xcodebuild";
                 }
             }];
         }];
+    } else if ([keyPath isEqualToString:@"name"]) {
+        self.abbreviation = [[self.name lowercaseString] stringByReplacingOccurrencesOfString:@" " withString:@"-"];
     } else {
         [super observeValueForKeyPath:keyPath ofObject:object change:change context:context];
     }
@@ -289,11 +306,13 @@ NSString *const XcodebuildCommand = @"/usr/bin/xcodebuild";
 - (void)registerObservers;
 {
     [self addObserver:self forKeyPath:@"localURL" options:NSKeyValueObservingOptionNew context:NULL];
+    [self addObserver:self forKeyPath:@"name" options:NSKeyValueObservingOptionNew context:NULL];
 }
 
 - (void)unregisterObservers;
 {
     [self removeObserver:self forKeyPath:@"localURL"];
+    [self removeObserver:self forKeyPath:@"name"];
 }
 
 @end

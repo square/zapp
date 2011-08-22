@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<model name="" userDefinedModelVersionIdentifier="" type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="858" systemVersion="11C37" minimumToolsVersion="Automatic" macOSVersion="Automatic" iOSVersion="Automatic">
+<model name="" userDefinedModelVersionIdentifier="" type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="864" systemVersion="11C37" minimumToolsVersion="Automatic" macOSVersion="Automatic" iOSVersion="Automatic">
     <entity name="Build" representedClassName="ZappBuild">
         <attribute name="endTimestamp" optional="YES" attributeType="Date"/>
         <attribute name="latestRevision" optional="YES" attributeType="String"/>
@@ -10,6 +10,7 @@
         <relationship name="repository" minCount="1" maxCount="1" deletionRule="Nullify" destinationEntity="Repository" inverseName="builds" inverseEntity="Repository"/>
     </entity>
     <entity name="Repository" representedClassName="ZappRepository">
+        <attribute name="abbreviation" optional="YES" attributeType="String"/>
         <attribute name="clonedAlready" optional="YES" attributeType="Boolean"/>
         <attribute name="lastPlatform" optional="YES" attributeType="Transformable" valueTransformerName=""/>
         <attribute name="lastScheme" optional="YES" attributeType="String"/>
@@ -21,6 +22,6 @@
     </entity>
     <elements>
         <element name="Build" positionX="412" positionY="189" width="128" height="150"/>
-        <element name="Repository" positionX="160" positionY="192" width="128" height="165"/>
+        <element name="Repository" positionX="160" positionY="192" width="128" height="180"/>
     </elements>
 </model>

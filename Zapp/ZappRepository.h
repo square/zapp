@@ -21,6 +21,7 @@ extern NSString *const XcodebuildCommand;
 
 + (NSOperationQueue *)sharedBackgroundQueue;
 
+@property (nonatomic, strong) NSString *abbreviation;
 @property (nonatomic, strong) NSSet *builds;
 @property (nonatomic) BOOL clonedAlready;
 @property (nonatomic, strong) NSDictionary *lastPlatform;
@@ -33,6 +34,7 @@ extern NSString *const XcodebuildCommand;
 @property (nonatomic, strong, readonly) NSArray *schemes;
 @property (nonatomic, strong, readonly) NSString *workspacePath;
 @property (nonatomic, readonly) NSImage *statusImage;
+@property (nonatomic, strong, readonly) NSFetchRequest *latestBuildsFetchRequest;
 
 - (ZappBuild *)createNewBuild;
 - (void)runCommand:(NSString *)command withArguments:(NSArray *)arguments completionBlock:(ZappOutputBlock)block;

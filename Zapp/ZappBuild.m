@@ -196,7 +196,7 @@
             callCompletionBlock(exitStatus);
             return;
         }
-        exitStatus = [repository runCommandAndWait:GitCommand withArguments:[NSArray arrayWithObjects:@"rev-parse", @"HEAD", nil] errorOutput:&errorOutput outputBlock:^(NSString *output) {
+        [repository runCommandAndWait:GitCommand withArguments:[NSArray arrayWithObjects:@"rev-parse", @"HEAD", nil] errorOutput:&errorOutput outputBlock:^(NSString *output) {
             [[NSOperationQueue mainQueue] addOperationWithBlock:^() {
                 self.latestRevision = [output stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
             }];
@@ -230,7 +230,7 @@
         self.simulatorController.sdk = [self.platform objectForKey:@"version"];
         self.simulatorController.platform = [[self.platform objectForKey:@"device"] isEqualToString:@"ipad"] ? ZappSimulatorControllerPlatformiPad : ZappSimulatorControllerPlatformiPhone;
         self.simulatorController.appURL = [self.repository.localURL URLByAppendingPathComponent:appPath];
-        self.simulatorController.environment = [NSDictionary dictionaryWithObjectsAndKeys:@"1", @"KIF_AUTORUN", @"item", @"KIF_SCENARIO_FILTER", nil];
+        self.simulatorController.environment = [NSDictionary dictionaryWithObjectsAndKeys:@"1", @"KIF_AUTORUN", nil];
         self.simulatorController.simulatorOutputPath = self.buildLogURL.path;
         [self.simulatorController launchSessionWithOutputBlock:^(NSString *output) {
             [self appendLogLines:output];

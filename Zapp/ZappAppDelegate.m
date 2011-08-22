@@ -9,6 +9,7 @@
 #import "ZappAppDelegate.h"
 #import "ZappBackgroundView.h"
 #import "ZappRepositoriesController.h"
+#import "ZappRSSServer.h"
 #import "ZappSSHURLFormatter.h"
 #import "iPhoneSimulatorRemoteClient.h"
 
@@ -109,6 +110,11 @@
     [self.logController addObserver:self forKeyPath:@"content" options:0 context:NULL];
     
     [NSTimer scheduledTimerWithTimeInterval:90.0 target:self selector:@selector(pollRepositoriesForUpdates) userInfo:nil repeats:YES];
+    
+    NSManagedObjectContext *newContext = [[NSManagedObjectContext alloc] initWithConcurrencyType:NSConfinementConcurrencyType];
+    newContext.persistentStoreCoordinator = self.repositoriesController.managedObjectContext.persistentStoreCoordinator;
+    ZappRSSServer *server = [ZappRSSServer start];
+    server.managedObjectContext = newContext;
 }
 
 #pragma mark NSKeyValueObserving
