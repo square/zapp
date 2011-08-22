@@ -56,6 +56,32 @@
     return [storageURL URLByAppendingPathComponent:[NSString stringWithFormat:@"%@.log", uuid]];
 }
 
+- (NSString *)feedDescription;
+{
+    NSDateFormatter *dateFormatter = [[NSDateFormatter alloc] init];
+    [dateFormatter setTimeStyle:NSDateFormatterMediumStyle];
+    [dateFormatter setDateStyle:NSDateFormatterMediumStyle];
+    
+    NSString *revision = [self.latestRevision substringToIndex:MIN(6, self.latestRevision.length)];
+    
+    NSString *statusDescription = nil;
+    switch (self.status) {
+        case ZappBuildStatusPending: statusDescription = ZappLocalizedString(@"pending"); break;
+        case ZappBuildStatusRunning: statusDescription = ZappLocalizedString(@"running"); break;
+        case ZappBuildStatusFailed: statusDescription = ZappLocalizedString(@"failure"); break;
+        case ZappBuildStatusSucceeded: statusDescription = ZappLocalizedString(@"success"); break;
+        default: break;
+    }
+
+    
+    return [NSString stringWithFormat:@"Built %@ on %@: %@", revision, [dateFormatter stringFromDate:self.startDate], statusDescription];
+}
+
++ (NSSet *)keyPathsForValuesAffectingFeedDescription;
+{
+    return [NSSet setWithObjects:@"startTimestamp", @"status", @"latestRevision", nil];
+}
+
 - (NSString *)description;
 {
     NSDateFormatter *dateFormatter = [[NSDateFormatter alloc] init];

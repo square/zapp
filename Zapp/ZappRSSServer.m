@@ -129,7 +129,10 @@
                 }
                 NSXMLElement *entry = [NSXMLElement elementWithName:@"entry"];
                 [root addChild:entry];
-                [entry addChild:[NSXMLElement elementWithName:@"title" stringValue:build.description]];
+                [entry addChild:[NSXMLElement elementWithName:@"title" stringValue:build.feedDescription]];
+                NSXMLElement *link = [NSXMLElement elementWithName:@"link"];
+                [link setAttributesWithDictionary:[NSDictionary dictionaryWithObject:@"" forKey:@"href"]];
+                [entry addChild:link];
                 [entry addChild:[NSXMLElement elementWithName:@"published" stringValue:[dateFormatter stringFromDate:build.startDate]]];
                 [entry addChild:[NSXMLElement elementWithName:@"updated" stringValue:[dateFormatter stringFromDate:build.endDate]]];
             }];

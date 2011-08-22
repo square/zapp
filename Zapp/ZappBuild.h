@@ -27,6 +27,7 @@
 @property (nonatomic) NSTimeInterval startTimestamp;
 @property (nonatomic) ZappBuildStatus status;
 @property (nonatomic, readonly) NSString *statusDescription;
+@property (nonatomic, readonly) NSString *feedDescription;
 
 - (void)startWithCompletionBlock:(void (^)(void))completionBlock;
 
