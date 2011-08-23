@@ -59,7 +59,6 @@
 - (IBAction)build:(id)sender;
 {
     [self scheduleBuildForRepository:self.selectedRepository];
-    [self.buildsController rearrangeObjects];
     [self.buildsController setSelectionIndex:0];
 }
 
@@ -165,18 +164,15 @@
     if (self.building) {
         return;
     }
-    NSMutableSet *updatedLocalURLs = [NSMutableSet set];
     for (ZappRepository *repository in [self.repositoriesController arrangedObjects]) {
-        if ([updatedLocalURLs containsObject:repository.localURL]) {
-            [self scheduleBuildForRepository:repository];
-        } else {
-            [repository runCommand:GitCommand withArguments:[NSArray arrayWithObject:@"fetch"] completionBlock:^(NSString *output) {
-                if (output.length) {
+        [repository runCommand:GitCommand withArguments:[NSArray arrayWithObject:@"fetch"] completionBlock:^(NSString *output) {
+            [repository runCommand:GitCommand withArguments:[NSArray arrayWithObjects:@"rev-parse", @"origin/master", nil] completionBlock:^(NSString *output) {
+                NSArray *builds = [self.repositoriesController.managedObjectContext executeFetchRequest:repository.latestBuildsFetchRequest error:nil];
+                if (!builds.count || ![[[builds objectAtIndex:0] latestRevision] isEqualToString:output]) {
                     [self scheduleBuildForRepository:repository];
-                    [updatedLocalURLs addObject:repository.localURL];
                 }
             }];
-        }
+        }];
     }
 }
 
@@ -204,6 +200,7 @@
         [self.buildQueue addObject:build];
         [self pumpBuildQueue];
     }];
+    [self.buildsController rearrangeObjects];
     return build;
 }
 
