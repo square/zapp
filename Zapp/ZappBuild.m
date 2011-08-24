@@ -12,11 +12,11 @@
 
 @interface ZappBuild ()
 
-@property (nonatomic, readonly) NSURL *buildLogURL;
 @property (nonatomic, strong, readwrite) NSArray logLines;
 @property (nonatomic, strong) ZappSimulatorController *simulatorController;
 
 - (void)appendLogLines:(NSString *)newLogLinesString;
+- (NSURL *)appSupportURLWithExtension:(NSString *)extension;
 
 @end
 
@@ -47,13 +47,23 @@
 
 #pragma mark Derived properties
 
-- (NSURL *)buildLogURL;
+- (NSURL *)appSupportURLWithExtension:(NSString *)extension;
 {
     NSFileManager *fileManager = [[NSFileManager alloc] init];
     NSArray *supportURLs = [fileManager URLsForDirectory:NSApplicationSupportDirectory inDomains:NSUserDomainMask];
     NSURL *storageURL = [[supportURLs objectAtIndex:0] URLByAppendingPathComponent:[[NSRunningApplication currentApplication] localizedName]];
-    NSString *uuid = [[[[self objectID] URIRepresentation] path] stringByReplacingOccurrencesOfString:@"/" withString:@"-"];
-    return [storageURL URLByAppendingPathComponent:[NSString stringWithFormat:@"%@.log", uuid]];
+    NSString *uniqueID = [[[[self objectID] URIRepresentation] path] stringByReplacingOccurrencesOfString:@"/" withString:@"-"];
+    return [storageURL URLByAppendingPathComponent:[NSString stringWithFormat:@"%@.%@", uniqueID, extension]];
+}
+
+- (NSURL *)buildLogURL;
+{
+    return [self appSupportURLWithExtension:@"log"];
+}
+
+- (NSURL *)buildVideoURL;
+{
+    return [self appSupportURLWithExtension:@"mov"];
 }
 
 - (NSString *)feedDescription;

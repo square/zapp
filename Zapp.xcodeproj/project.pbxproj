@@ -8,7 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		A83BBA8413FB8ABF002D6310 /* ZappSimulatorController.m in Sources */ = {isa = PBXBuildFile; fileRef = A83BBA8313FB8ABF002D6310 /* ZappSimulatorController.m */; };
-		A846C17014021BD400E5B1B2 /* ZappRSSServer.m in Sources */ = {isa = PBXBuildFile; fileRef = A846C16F14021BD400E5B1B2 /* ZappRSSServer.m */; };
+		A846C17014021BD400E5B1B2 /* ZappWebServer.m in Sources */ = {isa = PBXBuildFile; fileRef = A846C16F14021BD400E5B1B2 /* ZappWebServer.m */; };
 		A848E80613ECA621004A55DA /* ZappRepository.m in Sources */ = {isa = PBXBuildFile; fileRef = A848E80513ECA621004A55DA /* ZappRepository.m */; };
 		A8783CE413F114130001493A /* Zapp.icns in Resources */ = {isa = PBXBuildFile; fileRef = A8783CE313F114130001493A /* Zapp.icns */; };
 		A8A49ED313EB99FB00A0338E /* ZappRepositoriesController.m in Sources */ = {isa = PBXBuildFile; fileRef = A8A49ED213EB99FB00A0338E /* ZappRepositoriesController.m */; };
@@ -32,8 +32,8 @@
 		A82B17CD13EB2583009F0B40 /* iPhoneSimulatorRemoteClient.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = iPhoneSimulatorRemoteClient.h; sourceTree = "<group>"; };
 		A83BBA8213FB8ABF002D6310 /* ZappSimulatorController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ZappSimulatorController.h; sourceTree = "<group>"; };
 		A83BBA8313FB8ABF002D6310 /* ZappSimulatorController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ZappSimulatorController.m; sourceTree = "<group>"; };
-		A846C16E14021BD400E5B1B2 /* ZappRSSServer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ZappRSSServer.h; sourceTree = "<group>"; };
-		A846C16F14021BD400E5B1B2 /* ZappRSSServer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ZappRSSServer.m; sourceTree = "<group>"; };
+		A846C16E14021BD400E5B1B2 /* ZappWebServer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ZappWebServer.h; sourceTree = "<group>"; };
+		A846C16F14021BD400E5B1B2 /* ZappWebServer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ZappWebServer.m; sourceTree = "<group>"; };
 		A848E80413ECA621004A55DA /* ZappRepository.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ZappRepository.h; sourceTree = "<group>"; };
 		A848E80513ECA621004A55DA /* ZappRepository.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ZappRepository.m; sourceTree = "<group>"; };
 		A8783CE313F114130001493A /* Zapp.icns */ = {isa = PBXFileReference; lastKnownFileType = image.icns; path = Zapp.icns; sourceTree = "<group>"; };
@@ -178,8 +178,8 @@
 				A8B31D4713E4D611001D593D /* ZappAppDelegate.m */,
 				A8A49ED113EB99FB00A0338E /* ZappRepositoriesController.h */,
 				A8A49ED213EB99FB00A0338E /* ZappRepositoriesController.m */,
-				A846C16E14021BD400E5B1B2 /* ZappRSSServer.h */,
-				A846C16F14021BD400E5B1B2 /* ZappRSSServer.m */,
+				A846C16E14021BD400E5B1B2 /* ZappWebServer.h */,
+				A846C16F14021BD400E5B1B2 /* ZappWebServer.m */,
 				A83BBA8213FB8ABF002D6310 /* ZappSimulatorController.h */,
 				A83BBA8313FB8ABF002D6310 /* ZappSimulatorController.m */,
 			);
@@ -263,7 +263,7 @@
 				A8DA279113ECA4ED001305B4 /* ZappBuild.m in Sources */,
 				A848E80613ECA621004A55DA /* ZappRepository.m in Sources */,
 				A83BBA8413FB8ABF002D6310 /* ZappSimulatorController.m in Sources */,
-				A846C17014021BD400E5B1B2 /* ZappRSSServer.m in Sources */,
+				A846C17014021BD400E5B1B2 /* ZappWebServer.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

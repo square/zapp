@@ -28,6 +28,8 @@
 @property (nonatomic) ZappBuildStatus status;
 @property (nonatomic, readonly) NSString *statusDescription;
 @property (nonatomic, readonly) NSString *feedDescription;
+@property (nonatomic, readonly) NSURL *buildLogURL;
+@property (nonatomic, readonly) NSURL *buildVideoURL;
 
 - (void)startWithCompletionBlock:(void (^)(void))completionBlock;
 

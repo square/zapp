@@ -9,7 +9,7 @@
 #import "ZappAppDelegate.h"
 #import "ZappBackgroundView.h"
 #import "ZappRepositoriesController.h"
-#import "ZappRSSServer.h"
+#import "ZappWebServer.h"
 #import "ZappSSHURLFormatter.h"
 #import "iPhoneSimulatorRemoteClient.h"
 
@@ -112,7 +112,7 @@
     
     NSManagedObjectContext *newContext = [[NSManagedObjectContext alloc] initWithConcurrencyType:NSConfinementConcurrencyType];
     newContext.persistentStoreCoordinator = self.repositoriesController.managedObjectContext.persistentStoreCoordinator;
-    ZappRSSServer *server = [ZappRSSServer start];
+    ZappWebServer *server = [ZappWebServer start];
     server.managedObjectContext = newContext;
 }
 

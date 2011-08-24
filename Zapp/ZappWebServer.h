@@ -1,5 +1,5 @@
 //
-//  ZappRSSServer.h
+//  ZappWebServer.h
 //  Zapp
 //
 //  Created by Jim Puls on 8/21/11.
@@ -8,7 +8,7 @@
 
 #import <Foundation/Foundation.h>
 
-@interface ZappRSSServer : NSObject
+@interface ZappWebServer : NSObject
 
 + (id)start;
 
