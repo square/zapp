@@ -10,8 +10,6 @@
 
 @interface ZappWebServer : NSObject
 
-+ (id)start;
-
-@property (strong) NSManagedObjectContext *managedObjectContext;
++ (id)startWithManagedObjectContext:(NSManagedObjectContext *)context;
 
 @end

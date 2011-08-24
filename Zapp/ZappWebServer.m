@@ -14,8 +14,9 @@
 @property (strong) NSFileHandle *listenHandle;
 @property (strong) NSSocketPort *socketPort;
 @property (readonly) NSDateFormatter *dateFormatter;
+@property (strong) NSManagedObjectContext *managedObjectContext;
 
-- (void)listenOnPort:(unsigned short)port;
+- (void)listenOnPort:(NSNumber *)portNumber;
 - (void)respondToRequest:(CFHTTPMessageRef)request onHandle:(NSFileHandle *)handle;
 - (NSData *)cruiseControlXML;
 - (NSData *)rssForRepositoryWithURL:(NSURL *)url;
@@ -30,18 +31,20 @@
 @synthesize listenHandle;
 @synthesize socketPort;
 
-+ (id)start;
++ (id)startWithManagedObjectContext:(NSManagedObjectContext *)context;
 {
     static ZappWebServer *server = nil;
     NSAssert([NSThread isMainThread], @"ZappRSSServer can only start on the main thread.");
     NSAssert(!server, @"ZappRSSServer can only start once.");
     server = [self new];
-    [server listenOnPort:1729];
+    [server setManagedObjectContext:context];
+    [NSThread detachNewThreadSelector:@selector(listenOnPort:) toTarget:server withObject:[NSNumber numberWithUnsignedShort:1729]];
     return server;
 }
 
-- (void)listenOnPort:(unsigned short)port;
+- (void)listenOnPort:(NSNumber *)portNumber;
 {
+    unsigned short port = [portNumber unsignedShortValue];
     self.socketPort = [[NSSocketPort alloc] initWithTCPPort:port];
     if (!socketPort) {
         NSLog(@"Zapp failed to listen on port %d", port);
@@ -72,6 +75,7 @@
     }];
 
     [self.listenHandle acceptConnectionInBackgroundAndNotify];
+    [[NSRunLoop currentRunLoop] run];
 }
 
 - (NSFetchRequest *)repositoriesFetchRequestForAbbreviation:(NSString *)abbreviation;
