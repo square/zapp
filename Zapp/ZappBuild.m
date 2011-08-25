@@ -268,6 +268,7 @@
         self.simulatorController.appURL = [self.repository.localURL URLByAppendingPathComponent:appPath];
         self.simulatorController.environment = [NSDictionary dictionaryWithObjectsAndKeys:@"1", @"KIF_AUTORUN", nil];
         self.simulatorController.simulatorOutputPath = self.buildLogURL.path;
+        self.simulatorController.videoOutputURL = self.buildVideoURL;
         [self.simulatorController launchSessionWithOutputBlock:^(NSString *output) {
             [self appendLogLines:output];
             [failureRegex enumerateMatchesInString:output options:0 range:NSMakeRange(0, output.length) usingBlock:^(NSTextCheckingResult *result, NSMatchingFlags flags, BOOL *stop) {

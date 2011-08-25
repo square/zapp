@@ -22,6 +22,7 @@ typedef enum {
 @property ZappSimulatorControllerPlatform platform;
 @property (strong) NSString *sdk;
 @property (strong) NSString *simulatorOutputPath;
+@property (strong) NSURL *videoOutputURL;
 
 - (BOOL)launchSessionWithOutputBlock:(ZappOutputBlock)theOutputBlock completionBlock:(ZappResultBlock)theCompletionBlock;
 

@@ -7,6 +7,7 @@
 //
 
 #import "ZappSimulatorController.h"
+#import "ZappVideoController.h"
 #include <sys/stat.h>
 
 @interface ZappSimulatorController ()
@@ -16,6 +17,7 @@
 @property (strong) DTiPhoneSimulatorSession *session;
 @property (copy) ZappOutputBlock outputBlock;
 @property NSInteger consecutiveBlankReads;
+@property (strong) ZappVideoController *videoController;
 
 - (void)readNewOutput;
 
@@ -34,6 +36,8 @@
 @synthesize session;
 @synthesize simulatorOutputPath;
 @synthesize outputBlock;
+@synthesize videoController;
+@synthesize videoOutputURL;
 
 - (BOOL)launchSessionWithOutputBlock:(ZappOutputBlock)theOutputBlock completionBlock:(ZappResultBlock)theCompletionBlock;
 {
@@ -89,12 +93,19 @@
 
 - (void)session:(DTiPhoneSimulatorSession *)session didStart:(BOOL)started withError:(NSError *)error {
     NSLog(@"started: %@", error);
+    if (self.videoOutputURL) {
+        self.videoController = [ZappVideoController new];
+        self.videoController.outputURL = self.videoOutputURL;
+        [self.videoController start];
+    }
 }
 
 - (void)session:(DTiPhoneSimulatorSession *)session didEndWithError:(NSError *)error {
     NSLog(@"ended: %@", error);
     self.session.delegate = nil;
     self.session = nil;
+    [self.videoController stop];
+    self.videoController = nil;
     self.completionBlock(error != nil);
 }
 
