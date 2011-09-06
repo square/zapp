@@ -89,7 +89,7 @@
 
 - (void)respondToRequest:(CFHTTPMessageRef)request onHandle:(NSFileHandle *)handle;
 {
-    NSData *bodyData = [NSData data];
+    NSData *bodyData = nil;
     NSInteger status = 200;
     CFStringRef type = CFSTR("application/atom+xml;charset=UTF-8");
 

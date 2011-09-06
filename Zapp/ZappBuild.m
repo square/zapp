@@ -222,6 +222,16 @@
             callCompletionBlock(exitStatus);
             return;
         }
+        exitStatus = [repository runCommandAndWait:GitCommand withArguments:[NSArray arrayWithObjects:@"submodule", @"sync", nil] errorOutput:&errorOutput outputBlock:^(NSString *output) {
+            [fileHandle writeData:[output dataUsingEncoding:NSUTF8StringEncoding]];
+            [self appendLogLines:output];
+        }];
+        [fileHandle writeData:[errorOutput dataUsingEncoding:NSUTF8StringEncoding]];
+        [self appendLogLines:errorOutput];
+        if (exitStatus > 0) {
+            callCompletionBlock(exitStatus);
+            return;
+        }
         exitStatus = [repository runCommandAndWait:GitCommand withArguments:[NSArray arrayWithObjects:@"submodule", @"update", @"--init", nil] errorOutput:&errorOutput outputBlock:^(NSString *output) {
             [fileHandle writeData:[output dataUsingEncoding:NSUTF8StringEncoding]];
             [self appendLogLines:output];

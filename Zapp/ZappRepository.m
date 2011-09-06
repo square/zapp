@@ -178,6 +178,9 @@ NSString *const XcodebuildCommand = @"/Developer/usr/bin/xcodebuild";
     [self willChangeValueForKey:@"latestBuild"];
     [self addBuildsObject:build];
     [self didChangeValueForKey:@"latestBuild"];
+    NSError *error = nil;
+    [self.managedObjectContext save:&error];
+    NSAssert(!error, @"Failed to save managed object context");
     return build;
 }
 
