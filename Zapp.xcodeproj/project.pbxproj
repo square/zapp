@@ -376,6 +376,7 @@
 				GCC_PREFIX_HEADER = "Zapp/Zapp-Prefix.pch";
 				INFOPLIST_FILE = "Zapp/Zapp-Info.plist";
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				RUN_CLANG_STATIC_ANALYZER = YES;
 				WRAPPER_EXTENSION = app;
 			};
 			name = Debug;
@@ -392,6 +393,7 @@
 				GCC_PREFIX_HEADER = "Zapp/Zapp-Prefix.pch";
 				INFOPLIST_FILE = "Zapp/Zapp-Info.plist";
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				RUN_CLANG_STATIC_ANALYZER = YES;
 				WRAPPER_EXTENSION = app;
 			};
 			name = Release;
