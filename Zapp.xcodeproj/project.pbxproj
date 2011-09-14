@@ -89,7 +89,6 @@
 		A8B31D2513E4D610001D593D = {
 			isa = PBXGroup;
 			children = (
-				A855039314061F29004CA7AA /* AVFoundation.framework */,
 				A8783CE313F114130001493A /* Zapp.icns */,
 				A8B31D3A13E4D610001D593D /* Zapp */,
 				A8B31D3313E4D610001D593D /* Frameworks */,
@@ -108,6 +107,7 @@
 		A8B31D3313E4D610001D593D /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				A855039314061F29004CA7AA /* AVFoundation.framework */,
 				A8DD434D13FB92C000AE6C3D /* iPhoneSimulatorRemoteClient.framework */,
 				A8B31D3413E4D610001D593D /* Cocoa.framework */,
 				A8B31D3613E4D610001D593D /* Other Frameworks */,
