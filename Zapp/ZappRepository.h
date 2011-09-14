@@ -23,7 +23,9 @@ extern NSString *const XcodebuildCommand;
 
 @property (nonatomic, strong) NSString *abbreviation;
 @property (nonatomic, strong) NSSet *builds;
+@property (nonatomic, strong, readonly) NSArray *branches;
 @property (nonatomic) BOOL clonedAlready;
+@property (nonatomic, strong) NSString *lastBranch;
 @property (nonatomic, strong) NSDictionary *lastPlatform;
 @property (nonatomic, strong) NSString *lastScheme;
 @property (nonatomic) ZappBuildStatus latestBuildStatus;

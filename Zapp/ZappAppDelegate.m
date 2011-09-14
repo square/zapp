@@ -165,7 +165,7 @@
     }
     for (ZappRepository *repository in [self.repositoriesController arrangedObjects]) {
         [repository runCommand:GitCommand withArguments:[NSArray arrayWithObject:@"fetch"] completionBlock:^(NSString *output) {
-            [repository runCommand:GitCommand withArguments:[NSArray arrayWithObjects:@"rev-parse", @"origin/master", nil] completionBlock:^(NSString *output) {
+            [repository runCommand:GitCommand withArguments:[NSArray arrayWithObjects:@"rev-parse", repository.lastBranch, nil] completionBlock:^(NSString *output) {
                 NSArray *builds = [self.repositoriesController.managedObjectContext executeFetchRequest:repository.latestBuildsFetchRequest error:nil];
                 if (!builds.count || ![[[builds objectAtIndex:0] latestRevision] isEqualToString:output]) {
                     [self scheduleBuildForRepository:repository];
@@ -193,9 +193,8 @@
 {
     ZappBuild *build = [repository createNewBuild];
     build.startDate = [NSDate date];
-    [repository runCommand:GitCommand withArguments:[NSArray arrayWithObjects:@"rev-parse", @"origin/master", nil] completionBlock:^(NSString *revision) {
+    [repository runCommand:GitCommand withArguments:[NSArray arrayWithObjects:@"rev-parse", repository.lastBranch, nil] completionBlock:^(NSString *revision) {
         build.latestRevision = revision;
-        // At some point, serialize this queue-style
         [self.buildQueue addObject:build];
         [self pumpBuildQueue];
     }];

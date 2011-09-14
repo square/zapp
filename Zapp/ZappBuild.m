@@ -22,6 +22,7 @@
 
 @implementation ZappBuild
 
+@dynamic branch;
 @dynamic endTimestamp;
 @dynamic latestRevision;
 @dynamic platform;
@@ -38,7 +39,7 @@
 - (NSString *)commitLog;
 {
     if (!commitLog) {
-        [self.repository runCommand:GitCommand withArguments:[NSArray arrayWithObjects:@"log", @"--pretty=oneline", @"-1", nil] completionBlock:^(NSString *newLog) {
+        [self.repository runCommand:GitCommand withArguments:[NSArray arrayWithObjects:@"log", @"--pretty=oneline", @"-1", self.latestRevision, nil] completionBlock:^(NSString *newLog) {
             self.commitLog = newLog;
         }];
     }
@@ -188,6 +189,7 @@
     self.startDate = [NSDate date];
     self.scheme = self.repository.lastScheme;
     self.platform = self.repository.lastPlatform;
+    self.branch = self.repository.lastBranch;
     
     NSArray *buildArguments = [NSArray arrayWithObjects:@"-workspace", self.repository.workspacePath, @"-sdk", [NSString stringWithFormat:@"iphonesimulator%@", [self.platform objectForKey:@"version"]], @"-scheme", self.scheme, @"ARCHS=i386", @"ONLY_ACTIVE_ARCH=NO", @"DSTROOT=build", @"install", nil];
     
@@ -211,37 +213,27 @@
         NSString __block *appPath = nil;
         int exitStatus = 0;
         
-        // Step 1: Build
-        exitStatus = [repository runCommandAndWait:GitCommand withArguments:[NSArray arrayWithObject:@"pull"] errorOutput:&errorOutput outputBlock:^(NSString *output) {
-            [fileHandle writeData:[output dataUsingEncoding:NSUTF8StringEncoding]];
-            [self appendLogLines:output];
-        }];
-        [fileHandle writeData:[errorOutput dataUsingEncoding:NSUTF8StringEncoding]];
-        [self appendLogLines:errorOutput];
-        if (exitStatus > 0) {
-            callCompletionBlock(exitStatus);
-            return;
-        }
-        exitStatus = [repository runCommandAndWait:GitCommand withArguments:[NSArray arrayWithObjects:@"submodule", @"sync", nil] errorOutput:&errorOutput outputBlock:^(NSString *output) {
-            [fileHandle writeData:[output dataUsingEncoding:NSUTF8StringEncoding]];
-            [self appendLogLines:output];
-        }];
-        [fileHandle writeData:[errorOutput dataUsingEncoding:NSUTF8StringEncoding]];
-        [self appendLogLines:errorOutput];
-        if (exitStatus > 0) {
-            callCompletionBlock(exitStatus);
-            return;
-        }
-        exitStatus = [repository runCommandAndWait:GitCommand withArguments:[NSArray arrayWithObjects:@"submodule", @"update", @"--init", nil] errorOutput:&errorOutput outputBlock:^(NSString *output) {
-            [fileHandle writeData:[output dataUsingEncoding:NSUTF8StringEncoding]];
-            [self appendLogLines:output];
-        }];
-        [fileHandle writeData:[errorOutput dataUsingEncoding:NSUTF8StringEncoding]];
-        [self appendLogLines:errorOutput];
-        if (exitStatus > 0) {
-            callCompletionBlock(exitStatus);
-            return;
-        }
+        BOOL (^runGitCommandWithArguments)(NSArray *) = ^(NSArray *arguments) {
+            NSString *errorOutput = nil;
+            NSLog(@"running %@ %@", GitCommand, [arguments componentsJoinedByString:@" "]);
+            int exitStatus = [repository runCommandAndWait:GitCommand withArguments:arguments errorOutput:&errorOutput outputBlock:^(NSString *output) {
+                [fileHandle writeData:[output dataUsingEncoding:NSUTF8StringEncoding]];
+                [self appendLogLines:output];
+            }];
+            [fileHandle writeData:[errorOutput dataUsingEncoding:NSUTF8StringEncoding]];
+            [self appendLogLines:errorOutput];
+            if (exitStatus > 0) {
+                callCompletionBlock(exitStatus);
+                return NO;
+            }
+            return YES;
+        };
+        
+        // Step 1: Update
+        if (!runGitCommandWithArguments([NSArray arrayWithObject:@"fetch"])) { return; }
+        if (!runGitCommandWithArguments([NSArray arrayWithObjects:@"checkout", self.branch, nil])) { return; }
+        if (!runGitCommandWithArguments([NSArray arrayWithObjects:@"submodule", @"sync", nil])) { return; }
+        if (!runGitCommandWithArguments([NSArray arrayWithObjects:@"submodule", @"update", @"--init", nil])) { return; }
         [repository runCommandAndWait:GitCommand withArguments:[NSArray arrayWithObjects:@"rev-parse", @"HEAD", nil] errorOutput:&errorOutput outputBlock:^(NSString *output) {
             [[NSOperationQueue mainQueue] addOperationWithBlock:^() {
                 self.latestRevision = [output stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
@@ -271,6 +263,7 @@
         
         // Step 3: Run
         NSString __block *failureCount = nil;
+        NSString __block *lastOutput = nil;
         NSRegularExpression *failureRegex = [NSRegularExpression regularExpressionWithPattern:@"KIF TESTING FINISHED: (\\d+) failure" options:0 error:NULL];
         self.simulatorController = [ZappSimulatorController new];
         self.simulatorController.sdk = [self.platform objectForKey:@"version"];
@@ -281,12 +274,14 @@
         self.simulatorController.videoOutputURL = self.buildVideoURL;
         [self.simulatorController launchSessionWithOutputBlock:^(NSString *output) {
             [self appendLogLines:output];
+            lastOutput = output;
             [failureRegex enumerateMatchesInString:output options:0 range:NSMakeRange(0, output.length) usingBlock:^(NSTextCheckingResult *result, NSMatchingFlags flags, BOOL *stop) {
                 failureCount = [output substringWithRange:[result rangeAtIndex:1]];
                 *stop = YES;
             }];
         } completionBlock:^(int exitCode) {
             // exitCode is probably always going to be 0 (success) coming from the simulator. Use the failure count as our status instead.
+            NSLog(@"Simulator exited with code %d, failure count is %@. Last output is %@", exitCode, failureCount, lastOutput);
             exitCode = failureCount ? [failureCount intValue] : -1;
             self.simulatorController = nil;
             callCompletionBlock(exitCode);

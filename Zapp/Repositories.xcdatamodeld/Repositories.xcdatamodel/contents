@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<model name="" userDefinedModelVersionIdentifier="" type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="864" systemVersion="11C37" minimumToolsVersion="Automatic" macOSVersion="Automatic" iOSVersion="Automatic">
+<model name="" userDefinedModelVersionIdentifier="" type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="870" systemVersion="11B2118" minimumToolsVersion="Automatic" macOSVersion="Automatic" iOSVersion="Automatic">
     <entity name="Build" representedClassName="ZappBuild">
+        <attribute name="branch" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="endTimestamp" optional="YES" attributeType="Date"/>
         <attribute name="latestRevision" optional="YES" attributeType="String"/>
         <attribute name="platform" optional="YES" attributeType="Transformable" valueTransformerName=""/>
@@ -12,6 +13,7 @@
     <entity name="Repository" representedClassName="ZappRepository">
         <attribute name="abbreviation" optional="YES" attributeType="String"/>
         <attribute name="clonedAlready" optional="YES" attributeType="Boolean"/>
+        <attribute name="lastBranch" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="lastPlatform" optional="YES" attributeType="Transformable" valueTransformerName=""/>
         <attribute name="lastScheme" optional="YES" attributeType="String"/>
         <attribute name="latestBuildStatus" optional="YES" attributeType="Integer 32" defaultValueString="0"/>
@@ -21,7 +23,7 @@
         <relationship name="builds" optional="YES" toMany="YES" deletionRule="Cascade" destinationEntity="Build" inverseName="repository" inverseEntity="Build"/>
     </entity>
     <elements>
-        <element name="Build" positionX="412" positionY="189" width="128" height="150"/>
-        <element name="Repository" positionX="160" positionY="192" width="128" height="180"/>
+        <element name="Build" positionX="412" positionY="189" width="128" height="165"/>
+        <element name="Repository" positionX="160" positionY="192" width="128" height="195"/>
     </elements>
 </model>

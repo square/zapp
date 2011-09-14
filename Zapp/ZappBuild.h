@@ -14,6 +14,7 @@
 
 @interface ZappBuild : NSManagedObject
 
+@property (nonatomic, strong) NSString *branch;
 @property (nonatomic, strong) NSString *commitLog;
 @property (nonatomic, readonly) NSString *description;
 @property (nonatomic, copy) NSDate *endDate;

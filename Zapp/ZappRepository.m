@@ -17,6 +17,7 @@ NSString *const XcodebuildCommand = @"/Developer/usr/bin/xcodebuild";
 
 @interface ZappRepository ()
 
+@property (nonatomic, strong, readwrite) NSArray *branches;
 @property (nonatomic, strong) NSMutableSet *enqueuedCommands;
 @property (nonatomic, strong, readwrite) NSArray *platforms;
 @property (nonatomic, strong, readwrite) NSArray *schemes;
@@ -33,6 +34,7 @@ NSString *const XcodebuildCommand = @"/Developer/usr/bin/xcodebuild";
 @dynamic abbreviation;
 @dynamic builds;
 @dynamic clonedAlready;
+@dynamic lastBranch;
 @dynamic lastPlatform;
 @dynamic lastScheme;
 @dynamic latestBuildStatus;
@@ -40,6 +42,7 @@ NSString *const XcodebuildCommand = @"/Developer/usr/bin/xcodebuild";
 @dynamic name;
 @dynamic remoteURL;
 
+@synthesize branches;
 @synthesize enqueuedCommands;
 @synthesize platforms;
 @synthesize schemes;
@@ -62,6 +65,35 @@ NSString *const XcodebuildCommand = @"/Developer/usr/bin/xcodebuild";
 }
 
 #pragma mark Derived properties
+
+- (NSArray *)branches;
+{
+    if (!branches && ![self.enqueuedCommands containsObject:@"branches"] && self.clonedAlready) {
+        [self.enqueuedCommands addObject:@"branches"];
+        [self runCommand:GitCommand withArguments:[NSArray arrayWithObjects:@"branch", @"-a", nil] completionBlock:^(NSString *output) {
+            NSMutableArray *newBranches = [NSMutableArray array];
+            NSRegularExpression *branchRegex = [NSRegularExpression regularExpressionWithPattern:@"^\\s+remotes/(.+)$" options:NSRegularExpressionAnchorsMatchLines error:NULL];
+            [branchRegex enumerateMatchesInString:output options:0 range:NSMakeRange(0, output.length) usingBlock:^(NSTextCheckingResult *result, NSMatchingFlags flags, BOOL *stop) {
+                [newBranches addObject:[output substringWithRange:[result rangeAtIndex:1]]];
+            }];
+            self.branches = newBranches;
+            if (!self.lastBranch) {
+                if ([branches containsObject:@"origin/master"]) {
+                    self.lastBranch = @"origin/master";
+                } else {
+                    self.lastBranch = [branches objectAtIndex:0];
+                }
+            }
+            [self.enqueuedCommands removeObject:@"branches"];
+        }];
+    }
+    return branches;
+}
+
++ (NSSet *)keyPathsForValuesAffectingBranches;
+{
+    return [NSSet setWithObjects:@"localURL", @"clonedAlready", nil];
+}
 
 - (NSArray *)platforms;
 {
