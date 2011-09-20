@@ -18,6 +18,7 @@
 {
     ZappRepository *newObject = [super newObject];
     newObject.name = ZappLocalizedString(@"New Repository");
+    newObject.latestBuildStatus = ZappBuildStatusSucceeded;
     return newObject;
 }
 

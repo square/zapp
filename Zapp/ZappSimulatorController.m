@@ -107,11 +107,7 @@
 #pragma mark DTiPhoneSimulatorSessionDelegate
 
 - (void)session:(DTiPhoneSimulatorSession *)session didStart:(BOOL)started withError:(NSError *)error {
-    if (!started && error.code == 2) {
-        NSLog(@"failed to start: %@", error);
-        [self clearSession];
-        self.completionBlock((int)error.code);
-    } else if (self.videoOutputURL) {
+    if (self.videoOutputURL) {
         NSLog(@"started: %@", error);
         self.videoController = [ZappVideoController new];
         self.videoController.outputURL = self.videoOutputURL;

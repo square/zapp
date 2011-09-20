@@ -53,7 +53,6 @@
     }
     self.listenHandle = [[NSFileHandle alloc] initWithFileDescriptor:[socketPort socket] closeOnDealloc:YES];
     [[NSNotificationCenter defaultCenter] addObserverForName:NSFileHandleConnectionAcceptedNotification object:self.listenHandle queue:[NSOperationQueue currentQueue] usingBlock:^(NSNotification *note) {
-        NSLog(@"new connection");
         NSFileHandle *readHandle = [[note userInfo] objectForKey:NSFileHandleNotificationFileHandleItem];
         CFHTTPMessageRef __block request = CFHTTPMessageCreateEmpty(kCFAllocatorDefault, YES);
 
@@ -104,7 +103,7 @@
         bodyData = [self rssForRepositoryWithURL:requestURL];
     }
     if (!bodyData) {
-        status = 500;
+        status = 404;
     }
 
     CFHTTPMessageRef response = CFHTTPMessageCreateResponse(kCFAllocatorDefault, status, NULL, kCFHTTPVersion1_1);
@@ -163,29 +162,31 @@
     NSString *abbreviation = [components objectAtIndex:components.count - 2];
     NSDateFormatter *dateFormatter = self.dateFormatter;
     ZappRepository *repository = [[self.managedObjectContext executeFetchRequest:[self repositoriesFetchRequestForAbbreviation:abbreviation] error:&error] lastObject];
+    if (error || !repository) {
+        return nil;
+    }
     NSArray *builds = [self.managedObjectContext executeFetchRequest:repository.latestBuildsFetchRequest error:&error];
     if (error) {
         return nil;
-    } else {
-        NSXMLElement *root = [NSXMLElement elementWithName:@"feed" URI:@"http://www.w3.org/2005/Atom"];
-        [root addChild:[NSXMLElement elementWithName:@"title" stringValue:[NSString stringWithFormat:@"%@ builds", repository.name]]];
-        [builds enumerateObjectsUsingBlock:^(ZappBuild *build, NSUInteger idx, BOOL *stop) {
-            if (idx == 0) {
-                [root addChild:[NSXMLNode elementWithName:@"updated" stringValue:[dateFormatter stringFromDate:build.endDate]]];
-            }
-            NSXMLElement *entry = [NSXMLElement elementWithName:@"entry"];
-            [root addChild:entry];
-            [entry addChild:[NSXMLElement elementWithName:@"title" stringValue:build.feedDescription]];
-            NSXMLElement *link = [NSXMLElement elementWithName:@"link"];
-            NSString *urlString = [NSString stringWithFormat:@"http://%@:%@/file/%@", [url host], [url port], [build.buildLogURL lastPathComponent]];
-            [link setAttributesWithDictionary:[NSDictionary dictionaryWithObject:urlString forKey:@"href"]];
-            [entry addChild:link];
-            [entry addChild:[NSXMLElement elementWithName:@"published" stringValue:[dateFormatter stringFromDate:build.startDate]]];
-            [entry addChild:[NSXMLElement elementWithName:@"updated" stringValue:[dateFormatter stringFromDate:build.endDate]]];
-        }];
-        NSXMLDocument *document = [[NSXMLDocument alloc] initWithRootElement:root];
-        bodyData = [document XMLDataWithOptions:NSXMLNodePrettyPrint];
     }
+    NSXMLElement *root = [NSXMLElement elementWithName:@"feed" URI:@"http://www.w3.org/2005/Atom"];
+    [root addChild:[NSXMLElement elementWithName:@"title" stringValue:[NSString stringWithFormat:@"%@ builds", repository.name]]];
+    [builds enumerateObjectsUsingBlock:^(ZappBuild *build, NSUInteger idx, BOOL *stop) {
+        if (idx == 0) {
+            [root addChild:[NSXMLNode elementWithName:@"updated" stringValue:[dateFormatter stringFromDate:build.endDate]]];
+        }
+        NSXMLElement *entry = [NSXMLElement elementWithName:@"entry"];
+        [root addChild:entry];
+        [entry addChild:[NSXMLElement elementWithName:@"title" stringValue:build.feedDescription]];
+        NSXMLElement *link = [NSXMLElement elementWithName:@"link"];
+        NSString *urlString = [NSString stringWithFormat:@"http://%@:%@/file/%@", [url host], [url port], [build.buildLogURL lastPathComponent]];
+        [link setAttributesWithDictionary:[NSDictionary dictionaryWithObject:urlString forKey:@"href"]];
+        [entry addChild:link];
+        [entry addChild:[NSXMLElement elementWithName:@"published" stringValue:[dateFormatter stringFromDate:build.startDate]]];
+        [entry addChild:[NSXMLElement elementWithName:@"updated" stringValue:[dateFormatter stringFromDate:build.endDate]]];
+    }];
+    NSXMLDocument *document = [[NSXMLDocument alloc] initWithRootElement:root];
+    bodyData = [document XMLDataWithOptions:NSXMLNodePrettyPrint];
     return bodyData;
 }
 

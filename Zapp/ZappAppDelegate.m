@@ -114,6 +114,10 @@
     NSManagedObjectContext *newContext = [[NSManagedObjectContext alloc] initWithConcurrencyType:NSConfinementConcurrencyType];
     newContext.persistentStoreCoordinator = self.repositoriesController.managedObjectContext.persistentStoreCoordinator;
     [ZappWebServer startWithManagedObjectContext:newContext];
+    
+    if ([[repositoriesController arrangedObjects] count] == 0) {
+        [repositoriesController add:self];
+    }
 }
 
 #pragma mark NSKeyValueObserving
