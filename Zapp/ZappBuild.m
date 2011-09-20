@@ -242,17 +242,14 @@
         }];
 
         // Step 2: Build
+        NSRegularExpression *appPathRegex = [NSRegularExpression regularExpressionWithPattern:@"^SetMode .+? \"([^\"]+\\.app)\"" options:NSRegularExpressionAnchorsMatchLines error:nil];
         exitStatus = [repository runCommandAndWait:XcodebuildCommand withArguments:buildArguments errorOutput:&errorOutput outputBlock:^(NSString *output) {
             [fileHandle writeData:[output dataUsingEncoding:NSUTF8StringEncoding]];
             [self appendLogLines:output];
-            if (!appPath) {
-                NSRange appPathRange = [output rangeOfString:@"\"([^\"]+)\\.app\"" options:NSRegularExpressionSearch];
-                if (appPathRange.location != NSNotFound) {
-                    appPathRange.location++;
-                    appPathRange.length -= 2;
-                    appPath = [output substringWithRange:appPathRange];
-                }
-            }
+            [appPathRegex enumerateMatchesInString:output options:0 range:NSMakeRange(0, output.length) usingBlock:^(NSTextCheckingResult *result, NSMatchingFlags flags, BOOL *stop) {
+                appPath = [output substringWithRange:[result rangeAtIndex:1]];
+                *stop = YES;
+            }];
         }];
         [fileHandle writeData:[errorOutput dataUsingEncoding:NSUTF8StringEncoding]];
         [fileHandle closeFile];

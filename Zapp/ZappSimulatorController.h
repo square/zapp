@@ -26,5 +26,6 @@ typedef enum {
 @property (strong) NSURL *videoOutputURL;
 
 - (BOOL)launchSessionWithOutputBlock:(ZappOutputBlock)theOutputBlock completionBlock:(ZappResultBlock)theCompletionBlock;
++ (void)killSimulator;
 
 @end

@@ -23,7 +23,6 @@
 
 - (void)readNewOutput;
 - (void)clearSession;
-- (void)killSimulator;
 
 @end
 
@@ -77,8 +76,6 @@
     self.fileHandle = [NSFileHandle fileHandleForReadingAtPath:self.simulatorOutputPath];
     [fileHandle seekToEndOfFile];
     
-    [self killSimulator];
-    
     NSFileManager *fileManager = [NSFileManager defaultManager];
     NSError *error = nil;
     NSURL *simulatorAppsURL = [[fileManager URLForDirectory:NSApplicationSupportDirectory inDomain:NSUserDomainMask appropriateForURL:nil create:NO error:&error] URLByAppendingPathComponent:@"iPhone Simulator/4.3.2/Applications"];
@@ -93,10 +90,9 @@
     simulatorURL = [[simulatorURL URLByDeletingLastPathComponent] URLByDeletingLastPathComponent];
     simulatorURL = [[simulatorURL URLByAppendingPathComponent:@"Applications"] URLByAppendingPathComponent:@"iPhone Simulator.app"];
     
-    sleep(5);
     [[NSOperationQueue mainQueue] addOperationWithBlock:^() {
         NSError *error = nil;
-//        [[NSWorkspace sharedWorkspace] launchApplicationAtURL:simulatorURL options:NSWorkspaceLaunchDefault configuration:nil error:&error];
+        [[NSWorkspace sharedWorkspace] launchApplicationAtURL:simulatorURL options:NSWorkspaceLaunchDefault configuration:nil error:&error];
         [session requestStartWithConfig:config timeout:30.0 error:&error];
         [self readNewOutput];
     }];
@@ -123,7 +119,7 @@
 
 #pragma mark Private methods
 
-- (void)killSimulator;
++ (void)killSimulator;
 {
     NSTask *killTask = [NSTask new];
     killTask.launchPath = @"/usr/bin/killall";
