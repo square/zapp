@@ -183,7 +183,7 @@ NSString *const XcodebuildCommand = @"/Developer/usr/bin/xcodebuild";
 
 - (NSImage *)statusImage;
 {
-    return [NSImage imageNamed:self.latestBuildStatus == ZappBuildStatusSucceeded ? @"status-available-flat-etched" : @"status-away-flat-etched"];
+    return [NSImage imageNamed:self.latestBuildStatus == ZappBuildStatusSucceeded ? @"greencircle" : @"redtriangle"];
 }
 
 + (NSSet *)keyPathsForValuesAffectingStatusImage;

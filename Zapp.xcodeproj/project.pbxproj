@@ -22,12 +22,12 @@
 		A8DA279113ECA4ED001305B4 /* ZappBuild.m in Sources */ = {isa = PBXBuildFile; fileRef = A8DA279013ECA4ED001305B4 /* ZappBuild.m */; };
 		A8DB670814061E3400149EB8 /* ZappVideoController.m in Sources */ = {isa = PBXBuildFile; fileRef = A8DB670714061E3400149EB8 /* ZappVideoController.m */; };
 		A8DD434E13FB92C000AE6C3D /* iPhoneSimulatorRemoteClient.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A8DD434D13FB92C000AE6C3D /* iPhoneSimulatorRemoteClient.framework */; };
-		A8E7858513EBB0B000811365 /* status-available-flat-etched.tif in Resources */ = {isa = PBXBuildFile; fileRef = A8E7858313EBB0B000811365 /* status-available-flat-etched.tif */; };
-		A8E7858613EBB0B000811365 /* status-away-flat-etched.tif in Resources */ = {isa = PBXBuildFile; fileRef = A8E7858413EBB0B000811365 /* status-away-flat-etched.tif */; };
 		A8E7858A13EBB20E00811365 /* ZappBackgroundView.m in Sources */ = {isa = PBXBuildFile; fileRef = A8E7858913EBB20E00811365 /* ZappBackgroundView.m */; };
 		A8E785AB13EC614B00811365 /* ZappLocalURLFormatter.m in Sources */ = {isa = PBXBuildFile; fileRef = A8E785AA13EC614B00811365 /* ZappLocalURLFormatter.m */; };
 		A8E785AE13EC620C00811365 /* ZappSSHURLFormatter.m in Sources */ = {isa = PBXBuildFile; fileRef = A8E785AD13EC620C00811365 /* ZappSSHURLFormatter.m */; };
 		A8E785B113EC6C4E00811365 /* Repositories.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = A8E785AF13EC6C4E00811365 /* Repositories.xcdatamodeld */; };
+		A8F5E5E4142EAB3100CC4726 /* greencircle.png in Resources */ = {isa = PBXBuildFile; fileRef = A8F5E5E2142EAB3100CC4726 /* greencircle.png */; };
+		A8F5E5E5142EAB3100CC4726 /* redtriangle.png in Resources */ = {isa = PBXBuildFile; fileRef = A8F5E5E3142EAB3100CC4726 /* redtriangle.png */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -61,8 +61,6 @@
 		A8DB670614061E3400149EB8 /* ZappVideoController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ZappVideoController.h; sourceTree = "<group>"; };
 		A8DB670714061E3400149EB8 /* ZappVideoController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ZappVideoController.m; sourceTree = "<group>"; };
 		A8DD434D13FB92C000AE6C3D /* iPhoneSimulatorRemoteClient.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = iPhoneSimulatorRemoteClient.framework; path = Platforms/iPhoneSimulator.platform/Developer/Library/PrivateFrameworks/iPhoneSimulatorRemoteClient.framework; sourceTree = DEVELOPER_DIR; };
-		A8E7858313EBB0B000811365 /* status-available-flat-etched.tif */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = "status-available-flat-etched.tif"; sourceTree = "<group>"; };
-		A8E7858413EBB0B000811365 /* status-away-flat-etched.tif */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = "status-away-flat-etched.tif"; sourceTree = "<group>"; };
 		A8E7858813EBB20E00811365 /* ZappBackgroundView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ZappBackgroundView.h; sourceTree = "<group>"; };
 		A8E7858913EBB20E00811365 /* ZappBackgroundView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ZappBackgroundView.m; sourceTree = "<group>"; };
 		A8E785A913EC614B00811365 /* ZappLocalURLFormatter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ZappLocalURLFormatter.h; sourceTree = "<group>"; };
@@ -70,6 +68,8 @@
 		A8E785AC13EC620C00811365 /* ZappSSHURLFormatter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ZappSSHURLFormatter.h; sourceTree = "<group>"; };
 		A8E785AD13EC620C00811365 /* ZappSSHURLFormatter.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ZappSSHURLFormatter.m; sourceTree = "<group>"; };
 		A8E785B013EC6C4E00811365 /* Repositories.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = Repositories.xcdatamodel; sourceTree = "<group>"; };
+		A8F5E5E2142EAB3100CC4726 /* greencircle.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = greencircle.png; sourceTree = "<group>"; };
+		A8F5E5E3142EAB3100CC4726 /* redtriangle.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = redtriangle.png; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -142,8 +142,8 @@
 		A8B31D3B13E4D610001D593D /* Supporting Files */ = {
 			isa = PBXGroup;
 			children = (
-				A8E7858313EBB0B000811365 /* status-available-flat-etched.tif */,
-				A8E7858413EBB0B000811365 /* status-away-flat-etched.tif */,
+				A8F5E5E2142EAB3100CC4726 /* greencircle.png */,
+				A8F5E5E3142EAB3100CC4726 /* redtriangle.png */,
 				A8B31D3C13E4D611001D593D /* Zapp-Info.plist */,
 				A8B31D3D13E4D611001D593D /* InfoPlist.strings */,
 				A8B31D4013E4D611001D593D /* main.m */,
@@ -249,9 +249,9 @@
 				A8B31D3F13E4D611001D593D /* InfoPlist.strings in Resources */,
 				A8B31D4513E4D611001D593D /* Credits.rtf in Resources */,
 				A8B31D4B13E4D611001D593D /* MainMenu.xib in Resources */,
-				A8E7858513EBB0B000811365 /* status-available-flat-etched.tif in Resources */,
-				A8E7858613EBB0B000811365 /* status-away-flat-etched.tif in Resources */,
 				A8783CE413F114130001493A /* Zapp.icns in Resources */,
+				A8F5E5E4142EAB3100CC4726 /* greencircle.png in Resources */,
+				A8F5E5E5142EAB3100CC4726 /* redtriangle.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
