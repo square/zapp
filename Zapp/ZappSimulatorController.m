@@ -49,6 +49,7 @@
     NSString *path = self.appURL.path;
     DTiPhoneSimulatorApplicationSpecifier *specifier = [DTiPhoneSimulatorApplicationSpecifier specifierWithApplicationPath:path];
     if (!specifier) {
+        NSLog(@"Could not load application specifier for '%@'", path);
         return NO;
     }
     
@@ -93,7 +94,10 @@
     [[NSOperationQueue mainQueue] addOperationWithBlock:^() {
         NSError *error = nil;
         [[NSWorkspace sharedWorkspace] launchApplicationAtURL:simulatorURL options:NSWorkspaceLaunchDefault configuration:nil error:&error];
-        [session requestStartWithConfig:config timeout:30.0 error:&error];
+        if (![session requestStartWithConfig:config timeout:30.0 error:&error]) {
+            NSLog(@"Could not start simulator session: %@", error);
+            return;
+        }
         
         NSArray *runningApplications = [NSRunningApplication runningApplicationsWithBundleIdentifier:@"com.apple.iphonesimulator"];
         NSRunningApplication *simulator = [runningApplications lastObject];
