@@ -140,9 +140,10 @@
 - (void)clearSession;
 {
     self.session.delegate = nil;
-    self.session = nil;
+    self.session = nil;    
     [self.videoController stop];
     self.videoController = nil;
+    [ZappSimulatorController killSimulator];
 }
 
 - (void)readNewOutput;
