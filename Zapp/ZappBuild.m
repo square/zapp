@@ -231,7 +231,7 @@
         };
         
         // Step 1: Update
-        if (!runGitCommandWithArguments([NSArray arrayWithObject:@"fetch"])) { return; }
+        if (!runGitCommandWithArguments([NSArray arrayWithObjects:GitFetchSubcommand, @"--prune", nil])) { return; }
         if (!runGitCommandWithArguments([NSArray arrayWithObjects:@"checkout", self.branch, nil])) { return; }
         if (!runGitCommandWithArguments([NSArray arrayWithObjects:@"submodule", @"sync", nil])) { return; }
         if (!runGitCommandWithArguments([NSArray arrayWithObjects:@"submodule", @"update", @"--init", nil])) { return; }

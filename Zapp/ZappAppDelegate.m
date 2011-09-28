@@ -165,7 +165,7 @@
         return;
     }
     for (ZappRepository *repository in [self.repositoriesController arrangedObjects]) {
-        [repository runCommand:GitCommand withArguments:[NSArray arrayWithObject:@"fetch"] completionBlock:^(NSString *output) {
+        [repository runCommand:GitCommand withArguments:[NSArray arrayWithObjects:GitFetchSubcommand, @"--prune", nil] completionBlock:^(NSString *output) {
             [repository runCommand:GitCommand withArguments:[NSArray arrayWithObjects:@"rev-parse", repository.lastBranch, nil] completionBlock:^(NSString *output) {
                 NSArray *builds = [self.repositoriesController.managedObjectContext executeFetchRequest:repository.latestBuildsFetchRequest error:nil];
                 if (!builds.count || ![[[builds objectAtIndex:0] latestRevision] isEqualToString:output]) {

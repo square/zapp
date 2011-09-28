@@ -13,6 +13,7 @@
 
 extern NSString *const GitCommand;
 extern NSString *const XcodebuildCommand;
+extern NSString *const GitFetchSubcommand;
 
 
 @class ZappBuild;

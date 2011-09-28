@@ -94,6 +94,11 @@
         NSError *error = nil;
         [[NSWorkspace sharedWorkspace] launchApplicationAtURL:simulatorURL options:NSWorkspaceLaunchDefault configuration:nil error:&error];
         [session requestStartWithConfig:config timeout:30.0 error:&error];
+        
+        NSArray *runningApplications = [NSRunningApplication runningApplicationsWithBundleIdentifier:@"com.apple.iphonesimulator"];
+        NSRunningApplication *simulator = [runningApplications lastObject];
+        [simulator activateWithOptions:(NSApplicationActivateAllWindows | NSApplicationActivateIgnoringOtherApps)];
+        
         [self readNewOutput];
     }];
     

@@ -14,7 +14,7 @@
 static NSOperationQueue *ZappRepositoryBackgroundQueue = nil;
 NSString *const GitCommand = @"/usr/bin/git";
 NSString *const XcodebuildCommand = @"/Developer/usr/bin/xcodebuild";
-
+NSString *const GitFetchSubcommand = @"fetch";
 
 @interface ZappRepository ()
 
@@ -247,6 +247,13 @@ NSString *const XcodebuildCommand = @"/Developer/usr/bin/xcodebuild";
     NSData *errorData = [errorHandle readDataToEndOfFile];
     if (errorString) {
         *errorString = [[NSString alloc] initWithData:errorData encoding:NSUTF8StringEncoding];
+    }
+    
+    if ([arguments containsObject:GitFetchSubcommand]) {
+        [[NSOperationQueue mainQueue] addOperationWithBlock:^{
+            // After a fetch, clear our branches so that we re-populate the UI.
+            self.branches = nil;
+        }];
     }
     
     return [task terminationStatus];
