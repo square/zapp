@@ -10,6 +10,8 @@
 
 @interface ZappMessageController : NSObject
 
++ (ZappMessageController *)sharedInstance;
+
 - (void)sendMessageForLatestBuildInRepository:(ZappRepository *)repository;
 - (void)sendMessageForBuild:(ZappBuild *)build;
 

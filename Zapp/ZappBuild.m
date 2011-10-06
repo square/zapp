@@ -74,17 +74,8 @@
     [dateFormatter setTimeStyle:NSDateFormatterMediumStyle];
     [dateFormatter setDateStyle:NSDateFormatterMediumStyle];
     
-    NSString *revision = [self.latestRevision substringToIndex:MIN(6, self.latestRevision.length)];
-    
-    NSString *statusDescription = nil;
-    switch (self.status) {
-        case ZappBuildStatusPending: statusDescription = ZappLocalizedString(@"pending"); break;
-        case ZappBuildStatusRunning: statusDescription = ZappLocalizedString(@"running"); break;
-        case ZappBuildStatusFailed: statusDescription = ZappLocalizedString(@"failure"); break;
-        case ZappBuildStatusSucceeded: statusDescription = ZappLocalizedString(@"success"); break;
-        default: break;
-    }
-
+    NSString *revision = self.abbreviatedLatestRevision;
+    NSString *statusDescription = [self.statusDescription lowercaseString];
     
     return [NSString stringWithFormat:@"Built %@ on %@: %@", revision, [dateFormatter stringFromDate:self.startDate], statusDescription];
 }
@@ -100,7 +91,7 @@
     [dateFormatter setTimeStyle:NSDateFormatterMediumStyle];
     [dateFormatter setDateStyle:NSDateFormatterMediumStyle];
     
-    NSString *revision = [self.latestRevision substringToIndex:MIN(6, self.latestRevision.length)];
+    NSString *revision = self.abbreviatedLatestRevision;
     
     if (self.status == ZappBuildStatusPending) {
         return [NSString stringWithFormat:@"%@: %@", self.statusDescription, revision];
@@ -180,6 +171,16 @@
 + (NSSet *)keyPathsForValuesAffectingStatusDescription;
 {
     return [NSSet setWithObject:@"status"];
+}
+
+- (NSString *)abbreviatedLatestRevision;
+{
+    return [self.latestRevision substringToIndex:MIN(6, self.latestRevision.length)];
+}
+
++ (NSSet *)keyPathsForValuesAffectingAbbreviatedLatestRevision;
+{
+    return [NSSet setWithObject:@"latestRevision"];
 }
 
 #pragma mark ZappBuild
