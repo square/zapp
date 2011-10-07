@@ -13,26 +13,16 @@
 
 @interface ZappMessageController ()
 
-- (BOOL)sendEmailWithSubject:(NSString *)subject headers:(NSDictionary *)headers body:(NSString *)body error:(out NSError **)error;
+@property (nonatomic, retain) ZappMailConfiguration *mailConfiguration;
+
+- (void)sendEmailWithSubject:(NSString *)subject headers:(NSDictionary *)headers body:(NSString *)body;
 
 @end
 
 
 @implementation ZappMessageController
 
-#pragma mark Initialization
-
-+ (id)sharedInstance;
-{
-    static ZappMessageController *sharedInstance;
-    
-    static dispatch_once_t onceToken;
-    dispatch_once(&onceToken, ^{
-        sharedInstance = [[ZappMessageController alloc] init];
-    });
-    
-    return nil;
-}
+@synthesize mailConfiguration;
 
 #pragma mark Public Methods
 
@@ -43,14 +33,9 @@
 
 - (void)sendMessageForBuild:(ZappBuild *)build;
 {
-    // get the long since the last build
-    // current sha + author
-    
-    NSString *oldRevision = nil;
-    
-    
-    // since last build
+    // get the log since the last build
     // last red red-green or last green-red
+    NSString *oldRevision = nil;
     
     NSString *delta = oldRevision ? [NSString stringWithFormat:@"%@..%@", oldRevision, build.latestRevision] : @"HEAD^..HEAD";
     NSString *format = [NSString stringWithFormat:@"--format=\"%@%%h %%s (%%an)\"", build.repository.remoteURL.absoluteString];
@@ -69,29 +54,14 @@
         
         NSString *message = [[NSArray arrayWithObjects:beginString, latestBuildString, latestBuildStatusString, @"", gitLogOutput, endString, nil] componentsJoinedByString:@"\n"];
         
-        [self sendEmailWithSubject:subject headers:nil body:message error:nil];
-/*
- ===== BEGIN TRANSMISSION =====
- 
- Latest build:
- a895jf9 SUCCESS
- 
- Intermediate commits:
- aaf8d5f Author: Some commit message (8 hours ago)
- 88486a3 Author + Author: Another commit message. (8 days ago)
- 19a938f Author: The same one as before (8 days ago)
- 21ab6e4 Author: A new commit message (8 days ago)
- 
- ====== END TRANSMISSION ======
-*/
+        [self sendEmailWithSubject:subject headers:nil body:message];
     }];
 }
-     
+
 #pragma mark Private Methods
 
-- (BOOL)sendEmailWithSubject:(NSString *)subject headers:(NSDictionary *)headers body:(NSString *)body error:(out NSError **)error;
+- (void)sendEmailWithSubject:(NSString *)subject headers:(NSDictionary *)headers body:(NSString *)body;
 {
-    return YES;
 }
      
 @end

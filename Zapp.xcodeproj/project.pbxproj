@@ -380,6 +380,7 @@
 				);
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "Zapp/Zapp-Prefix.pch";
+				HEADER_SEARCH_PATHS = "$(SRCROOT)/Frameworks/Pantomime/**";
 				INFOPLIST_FILE = "Zapp/Zapp-Info.plist";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				RUN_CLANG_STATIC_ANALYZER = YES;
@@ -397,6 +398,7 @@
 				);
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "Zapp/Zapp-Prefix.pch";
+				HEADER_SEARCH_PATHS = "$(SRCROOT)/Frameworks/Pantomime/**";
 				INFOPLIST_FILE = "Zapp/Zapp-Info.plist";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				RUN_CLANG_STATIC_ANALYZER = YES;

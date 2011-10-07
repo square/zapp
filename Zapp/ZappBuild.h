@@ -13,6 +13,7 @@
 
 @class ZappRepository;
 
+
 @interface ZappBuild : NSManagedObject
 
 @property (nonatomic, strong) NSString *branch;

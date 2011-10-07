@@ -17,6 +17,7 @@ extern NSString *const GitFetchSubcommand;
 
 
 @class ZappBuild;
+@class ZappMailConfiguration;
 
 
 @interface ZappRepository : NSManagedObject
