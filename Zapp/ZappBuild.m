@@ -218,7 +218,7 @@
         BOOL (^runGitCommandWithArguments)(NSArray *) = ^(NSArray *arguments) {
             NSString *errorOutput = nil;
             NSLog(@"running %@ %@", GitCommand, [arguments componentsJoinedByString:@" "]);
-            int exitStatus = [repository runCommandAndWait:GitCommand withArguments:arguments errorOutput:&errorOutput outputBlock:^(NSString *output) {
+            int exitStatus = [repository runCommandAndWait:GitCommand withArguments:arguments standardInput:nil errorOutput:&errorOutput outputBlock:^(NSString *output) {
                 [fileHandle writeData:[output dataUsingEncoding:NSUTF8StringEncoding]];
                 [self appendLogLines:output];
             }];
@@ -236,7 +236,7 @@
         if (!runGitCommandWithArguments([NSArray arrayWithObjects:@"checkout", self.branch, nil])) { return; }
         if (!runGitCommandWithArguments([NSArray arrayWithObjects:@"submodule", @"sync", nil])) { return; }
         if (!runGitCommandWithArguments([NSArray arrayWithObjects:@"submodule", @"update", @"--init", nil])) { return; }
-        [repository runCommandAndWait:GitCommand withArguments:[NSArray arrayWithObjects:@"rev-parse", @"HEAD", nil] errorOutput:&errorOutput outputBlock:^(NSString *output) {
+        [repository runCommandAndWait:GitCommand withArguments:[NSArray arrayWithObjects:@"rev-parse", @"HEAD", nil] standardInput:nil errorOutput:&errorOutput outputBlock:^(NSString *output) {
             [[NSOperationQueue mainQueue] addOperationWithBlock:^() {
                 self.latestRevision = [output stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
             }];
@@ -244,7 +244,7 @@
 
         // Step 2: Build
         NSRegularExpression *appPathRegex = [NSRegularExpression regularExpressionWithPattern:@"^SetMode .+? \"([^\"]+\\.app)\"" options:NSRegularExpressionAnchorsMatchLines error:nil];
-        exitStatus = [repository runCommandAndWait:XcodebuildCommand withArguments:buildArguments errorOutput:&errorOutput outputBlock:^(NSString *output) {
+        exitStatus = [repository runCommandAndWait:XcodebuildCommand withArguments:buildArguments standardInput:nil errorOutput:&errorOutput outputBlock:^(NSString *output) {
             [fileHandle writeData:[output dataUsingEncoding:NSUTF8StringEncoding]];
             [self appendLogLines:output];
             [appPathRegex enumerateMatchesInString:output options:0 range:NSMakeRange(0, output.length) usingBlock:^(NSTextCheckingResult *result, NSMatchingFlags flags, BOOL *stop) {
