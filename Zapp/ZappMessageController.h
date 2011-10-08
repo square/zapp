@@ -10,7 +10,6 @@
 
 @interface ZappMessageController : NSObject
 
-- (void)sendMessageForLatestBuildInRepository:(ZappRepository *)repository;
-- (void)sendMessageForBuild:(ZappBuild *)build;
++ (void)sendMessageForBuild:(ZappBuild *)build;
 
 @end

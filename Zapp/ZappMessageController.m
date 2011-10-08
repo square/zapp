@@ -16,7 +16,7 @@ NSString *const SendmailCommand = @"/usr/sbin/sendmail";
 
 @interface ZappMessageController ()
 
-- (void)sendEmailFromRepository:(ZappRepository*)repository withSubject:(NSString *)subject headers:(NSDictionary *)headers body:(NSString *)body;
++ (void)sendEmailFromRepository:(ZappRepository*)repository withSubject:(NSString *)subject headers:(NSDictionary *)headers body:(NSString *)body;
 
 @end
 
@@ -25,12 +25,7 @@ NSString *const SendmailCommand = @"/usr/sbin/sendmail";
 
 #pragma mark Public Methods
 
-- (void)sendMessageForLatestBuildInRepository:(ZappRepository *)repository;
-{
-    
-}
-
-- (void)sendMessageForBuild:(ZappBuild *)build;
++ (void)sendMessageForBuild:(ZappBuild *)build;
 {
     // get the log since the last build
     // last red red-green or last green-red
@@ -59,7 +54,7 @@ NSString *const SendmailCommand = @"/usr/sbin/sendmail";
 
 #pragma mark Private Methods
 
-- (void)sendEmailFromRepository:(ZappRepository*)repository withSubject:(NSString *)subject headers:(NSDictionary *)headers body:(NSString *)body;
++ (void)sendEmailFromRepository:(ZappRepository*)repository withSubject:(NSString *)subject headers:(NSDictionary *)headers body:(NSString *)body;
 {
     NSString *subjectHeaderLine = [NSString stringWithFormat:@"Subject: %@", subject];
     // TODO: break headers into key: value lines
