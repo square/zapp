@@ -11,11 +11,15 @@
 #import "ZappRepository.h"
 
 
+NSString *const EchoCommand = @"echo";
+NSString *const SendmailCommand = @"sendmail";
+
+
 @interface ZappMessageController ()
 
 @property (nonatomic, retain) ZappMailConfiguration *mailConfiguration;
 
-- (void)sendEmailWithSubject:(NSString *)subject headers:(NSDictionary *)headers body:(NSString *)body;
+- (void)sendEmailFromRepository:(ZappRepository*)repository withSubject:(NSString *)subject headers:(NSDictionary *)headers body:(NSString *)body;
 
 @end
 
@@ -54,14 +58,22 @@
         
         NSString *message = [[NSArray arrayWithObjects:beginString, latestBuildString, latestBuildStatusString, @"", gitLogOutput, endString, nil] componentsJoinedByString:@"\n"];
         
-        [self sendEmailWithSubject:subject headers:nil body:message];
+        [self sendEmailFromRepository:build.repository withSubject:subject headers:nil body:message];
     }];
 }
 
 #pragma mark Private Methods
 
-- (void)sendEmailWithSubject:(NSString *)subject headers:(NSDictionary *)headers body:(NSString *)body;
+- (void)sendEmailFromRepository:(ZappRepository*)repository withSubject:(NSString *)subject headers:(NSDictionary *)headers body:(NSString *)body;
 {
+    NSString *subjectHeaderLine = [NSString stringWithFormat:@"Subject: %@", subject];
+    NSString *combinedHeadersAndMessage = [[NSArray arrayWithObjects:subjectHeaderLine, body, nil] componentsJoinedByString:@"\n"];
+    
+    NSString *toAddress = @"";
+    NSArray *arguments = [NSArray arrayWithObjects:combinedHeadersAndMessage, @"|", SendmailCommand, @"-v", toAddress, nil];
+    [repository runCommand:EchoCommand withArguments:arguments completionBlock:^(NSString *output) {
+        
+    }];
 }
      
 @end
