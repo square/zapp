@@ -41,11 +41,11 @@ NSString *const SendmailCommand = @"/usr/sbin/sendmail";
     NSString *oldRevision = nil;
     
     NSString *delta = oldRevision ? [NSString stringWithFormat:@"%@..%@", oldRevision, build.latestRevision] : @"HEAD^..HEAD";
-    NSString *format = [NSString stringWithFormat:@"--format=\"%@%%h %%s (%%an)\"", build.repository.remoteURL.absoluteString];
+    NSString *format = @"--format=\"%h %s (%an)\"";
     
-    NSArray *logCommand = [NSArray arrayWithObjects:GitCommand, @"log", delta, format, nil];
+    NSArray *arguments = [NSArray arrayWithObjects:@"log", delta, format, nil];
     
-    [build.repository runCommand:GitCommand withArguments:logCommand completionBlock:^(NSString *gitLogOutput) {
+    [build.repository runCommand:GitCommand withArguments:arguments completionBlock:^(NSString *gitLogOutput) {
         
         NSString *subject = [NSString stringWithFormat:ZappLocalizedString(@"ZAPP: %@ Build %@ %@"), build.repository.name, build.abbreviatedLatestRevision, [build.statusDescription uppercaseString]];
         
@@ -66,8 +66,9 @@ NSString *const SendmailCommand = @"/usr/sbin/sendmail";
 - (void)sendEmailFromRepository:(ZappRepository*)repository withSubject:(NSString *)subject headers:(NSDictionary *)headers body:(NSString *)body;
 {
     NSString *subjectHeaderLine = [NSString stringWithFormat:@"Subject: %@", subject];
-    // TODO: properly escape
-    NSString *combinedHeadersAndMessage = [[NSArray arrayWithObjects:subjectHeaderLine, body, nil] componentsJoinedByString:@"\n"];
+    // TODO: break headers into key: value lines
+    NSString *headerLines = @"";
+    NSString *combinedHeadersAndMessage = [[NSArray arrayWithObjects:subjectHeaderLine, headerLines, body, nil] componentsJoinedByString:@"\n"];
     
     NSString *temporaryFilePath = [NSString stringWithFormat:@"%@/output.msg", NSTemporaryDirectory()];
     [combinedHeadersAndMessage writeToFile:temporaryFilePath atomically:YES encoding:NSUTF8StringEncoding error:nil];
@@ -78,10 +79,9 @@ NSString *const SendmailCommand = @"/usr/sbin/sendmail";
     NSArray *arguments = [NSArray arrayWithObjects:@"-v", toAddress, temporaryFilePath, nil];
     NSLog(@"running %@", SendmailCommand);
     
-    // runCommandAndWait must be called from a background queue
+    // runCommandAndWait must be called from a background queue.
     dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_LOW, 0), ^{  
         [repository runCommandAndWait:SendmailCommand withArguments:arguments standardInput:mailFileHandle errorOutput:nil outputBlock:^(NSString *output) {
-            NSLog(@"%@", output);
             [[NSFileManager defaultManager] removeItemAtPath:temporaryFilePath error:nil];
         }];
     });
