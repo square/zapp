@@ -217,7 +217,7 @@ NSString *const GitFetchSubcommand = @"fetch";
     return build;
 }
 
-- (int)runCommandAndWait:(NSString *)command withArguments:(NSArray *)arguments errorOutput:(NSString **)errorString outputBlock:(void (^)(NSString *))block;
+- (int)runCommandAndWait:(NSString *)command withArguments:(NSArray *)arguments standardInput:(id)standardInput errorOutput:(NSString **)errorString outputBlock:(void (^)(NSString *))block;
 {
     NSAssert(![NSThread isMainThread], @"Can only run command and wait from a background thread");
     NSTask *task = [NSTask new];
@@ -234,6 +234,10 @@ NSString *const GitFetchSubcommand = @"fetch";
     [task setLaunchPath:command];
     [task setArguments:arguments];
     [task setCurrentDirectoryPath:self.localURL.path];
+    
+    if (standardInput) {
+        [task setStandardInput:standardInput];
+    }
     
     [task launch];
     
@@ -278,7 +282,7 @@ NSString *const GitFetchSubcommand = @"fetch";
         NSString *errorString = nil;
         
         NSMutableString *finalString = [NSMutableString string];
-        [self runCommandAndWait:command withArguments:arguments errorOutput:&errorString outputBlock:^(NSString *inString) {
+        [self runCommandAndWait:command withArguments:arguments standardInput:nil errorOutput:&errorString outputBlock:^(NSString *inString) {
             [finalString appendString:inString];
         }];
         
