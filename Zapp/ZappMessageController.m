@@ -16,16 +16,12 @@ NSString *const SendmailCommand = @"/usr/sbin/sendmail";
 
 @interface ZappMessageController ()
 
-@property (nonatomic, retain) ZappMailConfiguration *mailConfiguration;
-
 - (void)sendEmailFromRepository:(ZappRepository*)repository withSubject:(NSString *)subject headers:(NSDictionary *)headers body:(NSString *)body;
 
 @end
 
 
 @implementation ZappMessageController
-
-@synthesize mailConfiguration;
 
 #pragma mark Public Methods
 
