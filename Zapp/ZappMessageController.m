@@ -66,7 +66,7 @@ NSString *const SendmailCommand = @"/usr/sbin/sendmail";
     NSString *headerLines = @"";
     NSString *combinedHeadersAndMessage = [[NSArray arrayWithObjects:subjectHeaderLine, headerLines, body, nil] componentsJoinedByString:@"\n"];
     
-    NSString *temporaryFilePath = [NSString stringWithFormat:@"%@/output.msg", NSTemporaryDirectory()];
+    NSString *temporaryFilePath = [NSString stringWithFormat:@"%@/output-%d.msg", NSTemporaryDirectory(), rand()];
     [combinedHeadersAndMessage writeToFile:temporaryFilePath atomically:YES encoding:NSUTF8StringEncoding error:nil];
     NSFileHandle *mailFileHandle = [NSFileHandle fileHandleForReadingAtPath:temporaryFilePath];
     
@@ -75,12 +75,9 @@ NSString *const SendmailCommand = @"/usr/sbin/sendmail";
     NSArray *arguments = [NSArray arrayWithObjects:@"-v", toAddress, temporaryFilePath, nil];
     NSLog(@"running %@", SendmailCommand);
     
-    // runCommandAndWait must be called from a background queue.
-    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_LOW, 0), ^{  
-        [repository runCommandAndWait:SendmailCommand withArguments:arguments standardInput:mailFileHandle errorOutput:nil outputBlock:^(NSString *output) {
-            [[NSFileManager defaultManager] removeItemAtPath:temporaryFilePath error:nil];
-        }];
-    });
+    [repository runCommand:SendmailCommand withArguments:arguments standardInput:mailFileHandle completionBlock:^(NSString *output) {
+        [[NSFileManager defaultManager] removeItemAtPath:temporaryFilePath error:nil];
+    }];
 }
      
 @end
