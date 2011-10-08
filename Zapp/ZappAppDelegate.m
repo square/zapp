@@ -187,8 +187,7 @@
     [build startWithCompletionBlock:^{
         self.building = NO;
         
-        ZappMessageController *messageController = [ZappMessageController new];
-        [messageController sendMessageForBuild:build];
+        [ZappMessageController sendMessageForBuild:build];
         
         [self pumpBuildQueue];
     }];
