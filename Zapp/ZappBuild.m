@@ -17,6 +17,7 @@
 @property (nonatomic, strong, readwrite) NSArray logLines;
 @property (nonatomic, strong) ZappSimulatorController *simulatorController;
 @property (nonatomic, copy) void (^completionBlock)(void);
+@property (nonatomic, strong, readwrite) NSFetchRequest *lastOppositeStatusBuildFetchRequest;
 
 - (void)appendLogLines:(NSString *)newLogLinesString;
 - (NSURL *)appSupportURLWithExtension:(NSString *)extension;
@@ -35,7 +36,9 @@
 @dynamic scheme;
 @dynamic startTimestamp;
 @dynamic status;
+
 @synthesize commitLog;
+@synthesize lastOppositeStatusBuildFetchRequest;
 @synthesize logLines;
 @synthesize simulatorController;
 @synthesize completionBlock;
@@ -186,6 +189,23 @@
 + (NSSet *)keyPathsForValuesAffectingAbbreviatedLatestRevision;
 {
     return [NSSet setWithObject:@"latestRevision"];
+}
+
+- (NSFetchRequest *)lastOppositeStatusBuildFetchRequest;
+{
+    if (!lastOppositeStatusBuildFetchRequest) {
+        NSFetchRequest *fetchRequest = [NSFetchRequest new];
+        fetchRequest.entity = [NSEntityDescription entityForName:@"Build" inManagedObjectContext:self.managedObjectContext];
+        
+        ZappBuildStatus oppositeStatus = (self.status == ZappBuildStatusSucceeded) ? ZappBuildStatusFailed : ZappBuildStatusFailed;
+        
+        fetchRequest.predicate = [NSPredicate predicateWithFormat:@"repository = %@ AND status = %d AND latestRevision != %@", self.repository, oppositeStatus, self.latestRevision];
+        fetchRequest.sortDescriptors = [NSArray arrayWithObject:[[NSSortDescriptor alloc] initWithKey:@"startTimestamp" ascending:NO]];
+        fetchRequest.fetchLimit = 1;
+        self.lastOppositeStatusBuildFetchRequest = fetchRequest;
+    }
+    
+    return lastOppositeStatusBuildFetchRequest;
 }
 
 #pragma mark ZappBuild

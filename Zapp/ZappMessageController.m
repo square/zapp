@@ -27,10 +27,9 @@ NSString *const SendmailCommand = @"/usr/sbin/sendmail";
 
 + (void)sendMessageForBuild:(ZappBuild *)build;
 {
-    // get the log since the last build
-    // last red red-green or last green-red
-    NSString *oldRevision = nil;
-
+    ZappBuild *lastOppositeBuild = [[build.managedObjectContext executeFetchRequest:build.lastOppositeStatusBuildFetchRequest error:nil] lastObject];
+    NSString *oldRevision = lastOppositeBuild.latestRevision;
+    
     NSString *delta = oldRevision ? [NSString stringWithFormat:@"%@..%@", oldRevision, build.latestRevision] : @"HEAD^..HEAD";
         
     NSArray *arguments = [NSArray arrayWithObjects:@"log", delta, @"--format=%h %s (%an)", @"--no-merges", nil];
