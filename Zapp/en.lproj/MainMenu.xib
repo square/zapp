@@ -2429,9 +2429,9 @@
 				<int key="NSConcurrencyType">0</int>
 			</object>
 			<object class="NSWindowTemplate" id="459346980">
-				<int key="NSWindowStyleMask">271</int>
+				<int key="NSWindowStyleMask">15</int>
 				<int key="NSWindowBacking">2</int>
-				<string key="NSWindowRect">{{109, 132}, {480, 270}}</string>
+				<string key="NSWindowRect">{{439, 275}, {480, 270}}</string>
 				<int key="NSWTFlags">611845120</int>
 				<string key="NSWindowTitle">Preferences</string>
 				<string key="NSWindowClass">NSWindow</string>
@@ -2464,7 +2464,7 @@
 							<string key="NSToolbarItemMinSize">{0, 0}</string>
 							<string key="NSToolbarItemMaxSize">{0, 0}</string>
 							<bool key="NSToolbarItemEnabled">YES</bool>
-							<bool key="NSToolbarItemAutovalidates">YES</bool>
+							<bool key="NSToolbarItemAutovalidates">NO</bool>
 							<int key="NSToolbarItemTag">-1</int>
 							<bool key="NSToolbarIsUserRemovable">YES</bool>
 							<int key="NSToolbarItemVisibilityPriority">0</int>
@@ -2631,7 +2631,7 @@
 							</object>
 						</object>
 					</dictionary>
-					<array class="NSMutableArray" key="NSToolbarIBAllowedItems">
+					<array key="NSToolbarIBAllowedItems">
 						<reference ref="545742298"/>
 						<reference ref="676671563"/>
 						<reference ref="184207420"/>
@@ -2641,7 +2641,7 @@
 						<reference ref="834634097"/>
 						<reference ref="768958684"/>
 					</array>
-					<array class="NSMutableArray" key="NSToolbarIBDefaultItems">
+					<array key="NSToolbarIBDefaultItems">
 						<reference ref="545742298"/>
 					</array>
 					<array key="NSToolbarIBSelectableItems" id="0"/>
@@ -2654,7 +2654,7 @@
 						<object class="NSTextField" id="438425368">
 							<reference key="NSNextResponder" ref="830555784"/>
 							<int key="NSvFlags">268</int>
-							<string key="NSFrame">{{57, 233}, {158, 17}}</string>
+							<string key="NSFrame">{{57, 231}, {158, 17}}</string>
 							<reference key="NSSuperview" ref="830555784"/>
 							<reference key="NSWindow"/>
 							<reference key="NSNextKeyView" ref="178373835"/>
@@ -2674,7 +2674,7 @@
 						<object class="NSTextField" id="324139571">
 							<reference key="NSNextResponder" ref="830555784"/>
 							<int key="NSvFlags">268</int>
-							<string key="NSFrame">{{190, 206}, {25, 17}}</string>
+							<string key="NSFrame">{{190, 204}, {25, 17}}</string>
 							<reference key="NSSuperview" ref="830555784"/>
 							<reference key="NSWindow"/>
 							<reference key="NSNextKeyView" ref="742940169"/>
@@ -2694,7 +2694,7 @@
 						<object class="NSTextField" id="755560598">
 							<reference key="NSNextResponder" ref="830555784"/>
 							<int key="NSvFlags">268</int>
-							<string key="NSFrame">{{148, 181}, {67, 17}}</string>
+							<string key="NSFrame">{{148, 177}, {67, 17}}</string>
 							<reference key="NSSuperview" ref="830555784"/>
 							<reference key="NSWindow"/>
 							<reference key="NSNextKeyView" ref="62501693"/>
@@ -2784,7 +2784,7 @@
 						<object class="NSTextField" id="742940169">
 							<reference key="NSNextResponder" ref="830555784"/>
 							<int key="NSvFlags">268</int>
-							<string key="NSFrame">{{220, 203}, {201, 22}}</string>
+							<string key="NSFrame">{{220, 201}, {201, 22}}</string>
 							<reference key="NSSuperview" ref="830555784"/>
 							<reference key="NSWindow"/>
 							<reference key="NSNextKeyView" ref="755560598"/>
@@ -2795,7 +2795,7 @@
 								<int key="NSCellFlags2">272630784</int>
 								<string key="NSContents"/>
 								<reference key="NSSupport" ref="831199643"/>
-								<string key="NSPlaceholderString">ci-bot@example.com</string>
+								<string key="NSPlaceholderString">project-ci@example.com</string>
 								<string key="NSCellIdentifier">_NS:903</string>
 								<reference key="NSControlView" ref="742940169"/>
 								<bool key="NSDrawsBackground">YES</bool>
@@ -2806,7 +2806,7 @@
 						<object class="NSTextField" id="62501693">
 							<reference key="NSNextResponder" ref="830555784"/>
 							<int key="NSvFlags">268</int>
-							<string key="NSFrame">{{220, 178}, {201, 22}}</string>
+							<string key="NSFrame">{{220, 174}, {201, 22}}</string>
 							<reference key="NSSuperview" ref="830555784"/>
 							<reference key="NSWindow"/>
 							<reference key="NSNextKeyView"/>
@@ -4305,6 +4305,14 @@
 						</object>
 					</object>
 					<int key="connectionID">895</int>
+				</object>
+				<object class="IBConnectionRecord">
+					<object class="IBActionConnection" key="connection">
+						<string key="label">makeKeyAndOrderFront:</string>
+						<reference key="source" ref="459346980"/>
+						<reference key="destination" ref="609285721"/>
+					</object>
+					<int key="connectionID">939</int>
 				</object>
 			</array>
 			<object class="IBMutableOrderedSet" key="objectRecords">
@@ -5958,10 +5966,10 @@
 						<int key="objectID">897</int>
 						<reference key="object" ref="830555784"/>
 						<array class="NSMutableArray" key="children">
+							<reference ref="178373835"/>
 							<reference ref="438425368"/>
 							<reference ref="324139571"/>
 							<reference ref="755560598"/>
-							<reference ref="178373835"/>
 							<reference ref="742940169"/>
 							<reference ref="62501693"/>
 						</array>
@@ -6389,7 +6397,7 @@
 				<string key="886.IBPluginDependency">com.apple.InterfaceBuilder.CocoaPlugin</string>
 				<string key="887.IBPluginDependency">com.apple.InterfaceBuilder.CocoaPlugin</string>
 				<string key="896.IBPluginDependency">com.apple.InterfaceBuilder.CocoaPlugin</string>
-				<boolean value="YES" key="896.NSWindowTemplate.visibleAtLaunch"/>
+				<boolean value="NO" key="896.NSWindowTemplate.visibleAtLaunch"/>
 				<string key="897.IBPluginDependency">com.apple.InterfaceBuilder.CocoaPlugin</string>
 				<string key="907.IBPluginDependency">com.apple.InterfaceBuilder.CocoaPlugin</string>
 				<string key="908.IBPluginDependency">com.apple.InterfaceBuilder.CocoaPlugin</string>
@@ -6400,7 +6408,7 @@
 				<string key="913.IBPluginDependency">com.apple.InterfaceBuilder.CocoaPlugin</string>
 				<string key="914.IBPluginDependency">com.apple.InterfaceBuilder.CocoaPlugin</string>
 				<string key="915.IBPluginDependency">com.apple.InterfaceBuilder.CocoaPlugin</string>
-				<boolean value="NO" key="915.toolbarItem.selectable"/>
+				<boolean value="YES" key="915.toolbarItem.selectable"/>
 				<string key="919.IBPluginDependency">com.apple.InterfaceBuilder.CocoaPlugin</string>
 				<string key="92.IBPluginDependency">com.apple.InterfaceBuilder.CocoaPlugin</string>
 				<string key="920.IBPluginDependency">com.apple.InterfaceBuilder.CocoaPlugin</string>
@@ -6423,7 +6431,7 @@
 			<nil key="activeLocalization"/>
 			<dictionary class="NSMutableDictionary" key="localizations"/>
 			<nil key="sourceID"/>
-			<int key="maxID">938</int>
+			<int key="maxID">939</int>
 		</object>
 		<object class="IBClassDescriber" key="IBDocument.Classes">
 			<array class="NSMutableArray" key="referencedPartialClassDescriptions">
