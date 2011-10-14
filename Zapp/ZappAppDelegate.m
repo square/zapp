@@ -10,7 +10,6 @@
 #import "ZappAppDelegate.h"
 #import "ZappBackgroundView.h"
 #import "ZappRepositoriesController.h"
-#import "ZappMessageController.h"
 #import "ZappWebServer.h"
 #import "ZappSSHURLFormatter.h"
 #import "iPhoneSimulatorRemoteClient.h"
@@ -186,9 +185,6 @@
     self.building = YES;
     [build startWithCompletionBlock:^{
         self.building = NO;
-        
-        [ZappMessageController sendMessageForBuild:build];
-        
         [self pumpBuildQueue];
     }];
     [self.buildQueue removeObject:build];
