@@ -8,6 +8,7 @@
 //  which Square, Inc. licenses this file to you.
 
 #import "ZappBuild.h"
+#import "ZappMessageController.h"
 #import "ZappSimulatorController.h"
 
 
@@ -283,6 +284,7 @@
             NSLog(@"Simulator exited with code %d, failure count is %@. Last output is %@", exitCode, failureCount, lastOutput);
             exitCode = failureCount ? [failureCount intValue] : -1;
             self.simulatorController = nil;
+            [ZappMessageController sendMessageForBuild:self];
             callCompletionBlock(exitCode);
         }];
     }];
