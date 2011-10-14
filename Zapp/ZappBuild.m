@@ -8,6 +8,7 @@
 //  which Square, Inc. licenses this file to you.
 
 #import "ZappBuild.h"
+#import "ZappMessageController.h"
 #import "ZappSimulatorController.h"
 
 
@@ -74,17 +75,8 @@
     [dateFormatter setTimeStyle:NSDateFormatterMediumStyle];
     [dateFormatter setDateStyle:NSDateFormatterMediumStyle];
     
-    NSString *revision = [self.latestRevision substringToIndex:MIN(6, self.latestRevision.length)];
-    
-    NSString *statusDescription = nil;
-    switch (self.status) {
-        case ZappBuildStatusPending: statusDescription = ZappLocalizedString(@"pending"); break;
-        case ZappBuildStatusRunning: statusDescription = ZappLocalizedString(@"running"); break;
-        case ZappBuildStatusFailed: statusDescription = ZappLocalizedString(@"failure"); break;
-        case ZappBuildStatusSucceeded: statusDescription = ZappLocalizedString(@"success"); break;
-        default: break;
-    }
-
+    NSString *revision = self.abbreviatedLatestRevision;
+    NSString *statusDescription = [self.statusDescription lowercaseString];
     
     return [NSString stringWithFormat:@"Built %@ on %@: %@", revision, [dateFormatter stringFromDate:self.startDate], statusDescription];
 }
@@ -100,7 +92,7 @@
     [dateFormatter setTimeStyle:NSDateFormatterMediumStyle];
     [dateFormatter setDateStyle:NSDateFormatterMediumStyle];
     
-    NSString *revision = [self.latestRevision substringToIndex:MIN(6, self.latestRevision.length)];
+    NSString *revision = self.abbreviatedLatestRevision;
     
     if (self.status == ZappBuildStatusPending) {
         return [NSString stringWithFormat:@"%@: %@", self.statusDescription, revision];
@@ -182,6 +174,16 @@
     return [NSSet setWithObject:@"status"];
 }
 
+- (NSString *)abbreviatedLatestRevision;
+{
+    return [self.latestRevision substringToIndex:MIN(6, self.latestRevision.length)];
+}
+
++ (NSSet *)keyPathsForValuesAffectingAbbreviatedLatestRevision;
+{
+    return [NSSet setWithObject:@"latestRevision"];
+}
+
 #pragma mark ZappBuild
 
 - (void)startWithCompletionBlock:(void (^)(void))completionBlock;
@@ -215,7 +217,7 @@
         BOOL (^runGitCommandWithArguments)(NSArray *) = ^(NSArray *arguments) {
             NSString *errorOutput = nil;
             NSLog(@"running %@ %@", GitCommand, [arguments componentsJoinedByString:@" "]);
-            int exitStatus = [repository runCommandAndWait:GitCommand withArguments:arguments errorOutput:&errorOutput outputBlock:^(NSString *output) {
+            int exitStatus = [repository runCommandAndWait:GitCommand withArguments:arguments standardInput:nil errorOutput:&errorOutput outputBlock:^(NSString *output) {
                 [fileHandle writeData:[output dataUsingEncoding:NSUTF8StringEncoding]];
                 [self appendLogLines:output];
             }];
@@ -233,7 +235,7 @@
         if (!runGitCommandWithArguments([NSArray arrayWithObjects:@"checkout", self.branch, nil])) { return; }
         if (!runGitCommandWithArguments([NSArray arrayWithObjects:@"submodule", @"sync", nil])) { return; }
         if (!runGitCommandWithArguments([NSArray arrayWithObjects:@"submodule", @"update", @"--init", nil])) { return; }
-        [repository runCommandAndWait:GitCommand withArguments:[NSArray arrayWithObjects:@"rev-parse", @"HEAD", nil] errorOutput:&errorOutput outputBlock:^(NSString *output) {
+        [repository runCommandAndWait:GitCommand withArguments:[NSArray arrayWithObjects:@"rev-parse", @"HEAD", nil] standardInput:nil errorOutput:&errorOutput outputBlock:^(NSString *output) {
             [[NSOperationQueue mainQueue] addOperationWithBlock:^() {
                 self.latestRevision = [output stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
             }];
@@ -242,7 +244,7 @@
         // Step 2: Build
         NSArray *buildArguments = [NSArray arrayWithObjects:@"-sdk", [NSString stringWithFormat:@"iphonesimulator%@", [self.platform objectForKey:@"version"]], @"-scheme", self.scheme, @"ARCHS=i386", @"ONLY_ACTIVE_ARCH=NO", @"DSTROOT=build", @"install", nil];
         NSRegularExpression *appPathRegex = [NSRegularExpression regularExpressionWithPattern:@"^SetMode .+? \"([^\"]+\\.app)\"" options:NSRegularExpressionAnchorsMatchLines error:nil];
-        exitStatus = [repository runCommandAndWait:XcodebuildCommand withArguments:buildArguments errorOutput:&errorOutput outputBlock:^(NSString *output) {
+        exitStatus = [repository runCommandAndWait:XcodebuildCommand withArguments:buildArguments standardInput:nil errorOutput:&errorOutput outputBlock:^(NSString *output) {
             [fileHandle writeData:[output dataUsingEncoding:NSUTF8StringEncoding]];
             [self appendLogLines:output];
             [appPathRegex enumerateMatchesInString:output options:0 range:NSMakeRange(0, output.length) usingBlock:^(NSTextCheckingResult *result, NSMatchingFlags flags, BOOL *stop) {
@@ -281,6 +283,7 @@
             NSLog(@"Simulator exited with code %d, failure count is %@. Last output is %@", exitCode, failureCount, lastOutput);
             exitCode = failureCount ? [failureCount intValue] : -1;
             self.simulatorController = nil;
+            [ZappMessageController sendMessageForBuild:self];
             callCompletionBlock(exitCode);
         }];
     }];

@@ -13,6 +13,7 @@
 
 @class ZappRepository;
 
+
 @interface ZappBuild : NSManagedObject
 
 @property (nonatomic, strong) NSString *branch;
@@ -32,6 +33,7 @@
 @property (nonatomic, readonly) NSString *feedDescription;
 @property (nonatomic, readonly) NSURL *buildLogURL;
 @property (nonatomic, readonly) NSURL *buildVideoURL;
+@property (nonatomic, readonly) NSString *abbreviatedLatestRevision;
 
 - (void)startWithCompletionBlock:(void (^)(void))completionBlock;
 
