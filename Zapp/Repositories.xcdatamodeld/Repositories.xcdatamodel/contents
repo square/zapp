@@ -24,6 +24,6 @@
     </entity>
     <elements>
         <element name="Build" positionX="412" positionY="189" width="128" height="165"/>
-        <element name="Repository" positionX="160" positionY="192" width="128" height="195"/>
+        <element name="Repository" positionX="187" positionY="-54" width="128" height="195"/>
     </elements>
 </model>
