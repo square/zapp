@@ -41,7 +41,8 @@ extern NSString *const GitFetchSubcommand;
 
 - (ZappBuild *)createNewBuild;
 - (void)runCommand:(NSString *)command withArguments:(NSArray *)arguments completionBlock:(ZappOutputBlock)block;
-- (int)runCommandAndWait:(NSString *)command withArguments:(NSArray *)arguments errorOutput:(NSString **)errorString outputBlock:(void (^)(NSString *))block;
+- (void)runCommand:(NSString *)command withArguments:(NSArray *)arguments standardInput:(id)standardInput completionBlock:(ZappOutputBlock)block;
+- (int)runCommandAndWait:(NSString *)command withArguments:(NSArray *)arguments standardInput:(id)standardInput errorOutput:(NSString **)errorString outputBlock:(void (^)(NSString *))block;
 
 @end
 

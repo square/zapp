@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		2F08D06A143D012C0042B746 /* ZappMessageController.m in Sources */ = {isa = PBXBuildFile; fileRef = 2F08D069143D012B0042B746 /* ZappMessageController.m */; };
 		A83BBA8413FB8ABF002D6310 /* ZappSimulatorController.m in Sources */ = {isa = PBXBuildFile; fileRef = A83BBA8313FB8ABF002D6310 /* ZappSimulatorController.m */; };
 		A846C17014021BD400E5B1B2 /* ZappWebServer.m in Sources */ = {isa = PBXBuildFile; fileRef = A846C16F14021BD400E5B1B2 /* ZappWebServer.m */; };
 		A848E80613ECA621004A55DA /* ZappRepository.m in Sources */ = {isa = PBXBuildFile; fileRef = A848E80513ECA621004A55DA /* ZappRepository.m */; };
@@ -31,6 +32,8 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		2F08D068143D012B0042B746 /* ZappMessageController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ZappMessageController.h; sourceTree = "<group>"; };
+		2F08D069143D012B0042B746 /* ZappMessageController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ZappMessageController.m; sourceTree = "<group>"; };
 		A82B17CD13EB2583009F0B40 /* iPhoneSimulatorRemoteClient.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = iPhoneSimulatorRemoteClient.h; sourceTree = "<group>"; };
 		A83BBA8213FB8ABF002D6310 /* ZappSimulatorController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ZappSimulatorController.h; sourceTree = "<group>"; };
 		A83BBA8313FB8ABF002D6310 /* ZappSimulatorController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ZappSimulatorController.m; sourceTree = "<group>"; };
@@ -191,6 +194,8 @@
 				A83BBA8313FB8ABF002D6310 /* ZappSimulatorController.m */,
 				A8DB670614061E3400149EB8 /* ZappVideoController.h */,
 				A8DB670714061E3400149EB8 /* ZappVideoController.m */,
+				2F08D068143D012B0042B746 /* ZappMessageController.h */,
+				2F08D069143D012B0042B746 /* ZappMessageController.m */,
 			);
 			name = Controller;
 			sourceTree = "<group>";
@@ -274,6 +279,7 @@
 				A83BBA8413FB8ABF002D6310 /* ZappSimulatorController.m in Sources */,
 				A846C17014021BD400E5B1B2 /* ZappWebServer.m in Sources */,
 				A8DB670814061E3400149EB8 /* ZappVideoController.m in Sources */,
+				2F08D06A143D012C0042B746 /* ZappMessageController.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -374,6 +380,7 @@
 				);
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "Zapp/Zapp-Prefix.pch";
+				HEADER_SEARCH_PATHS = "$(SRCROOT)/Frameworks/Pantomime/**";
 				INFOPLIST_FILE = "Zapp/Zapp-Info.plist";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				RUN_CLANG_STATIC_ANALYZER = YES;
@@ -391,6 +398,7 @@
 				);
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "Zapp/Zapp-Prefix.pch";
+				HEADER_SEARCH_PATHS = "$(SRCROOT)/Frameworks/Pantomime/**";
 				INFOPLIST_FILE = "Zapp/Zapp-Info.plist";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				RUN_CLANG_STATIC_ANALYZER = YES;
