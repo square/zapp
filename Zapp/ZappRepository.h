@@ -36,7 +36,6 @@ extern NSString *const GitFetchSubcommand;
 @property (nonatomic, strong, readonly) NSArray *platforms;
 @property (nonatomic, strong) NSURL *remoteURL;
 @property (nonatomic, strong, readonly) NSArray *schemes;
-@property (nonatomic, strong, readonly) NSString *workspacePath;
 @property (nonatomic, readonly) NSImage *statusImage;
 @property (nonatomic, strong, readonly) NSFetchRequest *latestBuildsFetchRequest;
 

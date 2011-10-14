@@ -192,8 +192,6 @@
     self.platform = self.repository.lastPlatform;
     self.branch = self.repository.lastBranch;
     
-    NSArray *buildArguments = [NSArray arrayWithObjects:@"-workspace", self.repository.workspacePath, @"-sdk", [NSString stringWithFormat:@"iphonesimulator%@", [self.platform objectForKey:@"version"]], @"-scheme", self.scheme, @"ARCHS=i386", @"ONLY_ACTIVE_ARCH=NO", @"DSTROOT=build", @"install", nil];
-    
     self.logLines = nil;
     ZappRepository *repository = self.repository;
     void (^callCompletionBlock)(int) = ^(int exitStatus) {
@@ -242,6 +240,7 @@
         }];
 
         // Step 2: Build
+        NSArray *buildArguments = [NSArray arrayWithObjects:@"-sdk", [NSString stringWithFormat:@"iphonesimulator%@", [self.platform objectForKey:@"version"]], @"-scheme", self.scheme, @"ARCHS=i386", @"ONLY_ACTIVE_ARCH=NO", @"DSTROOT=build", @"install", nil];
         NSRegularExpression *appPathRegex = [NSRegularExpression regularExpressionWithPattern:@"^SetMode .+? \"([^\"]+\\.app)\"" options:NSRegularExpressionAnchorsMatchLines error:nil];
         exitStatus = [repository runCommandAndWait:XcodebuildCommand withArguments:buildArguments errorOutput:&errorOutput outputBlock:^(NSString *output) {
             [fileHandle writeData:[output dataUsingEncoding:NSUTF8StringEncoding]];

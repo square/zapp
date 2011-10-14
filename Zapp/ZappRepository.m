@@ -22,7 +22,6 @@ NSString *const GitFetchSubcommand = @"fetch";
 @property (nonatomic, strong) NSMutableSet *enqueuedCommands;
 @property (nonatomic, strong, readwrite) NSArray *platforms;
 @property (nonatomic, strong, readwrite) NSArray *schemes;
-@property (nonatomic, strong, readwrite) NSString *workspacePath;
 @property (nonatomic, strong, readwrite) NSFetchRequest *latestBuildsFetchRequest;
 
 - (void)registerObservers;
@@ -47,7 +46,6 @@ NSString *const GitFetchSubcommand = @"fetch";
 @synthesize enqueuedCommands;
 @synthesize platforms;
 @synthesize schemes;
-@synthesize workspacePath;
 @synthesize latestBuildsFetchRequest;
 
 #pragma mark Class methods
@@ -150,33 +148,6 @@ NSString *const GitFetchSubcommand = @"fetch";
 }
 
 + (NSSet *)keyPathsForValuesAffectingSchemes;
-{
-    return [NSSet setWithObjects:@"localURL", @"clonedAlready", nil];
-}
-
-- (NSString *)workspacePath;
-{
-    if (!workspacePath && ![self.enqueuedCommands containsObject:@"workspacePath"] && self.clonedAlready) {
-        [self.enqueuedCommands addObject:@"workspacePath"];
-        [self runCommand:XcodebuildCommand withArguments:[NSArray arrayWithObject:@"-list"] completionBlock:^(NSString *output) {
-            NSRange workspaceRange = [output rangeOfString:@"wrapper workspace:\n"];
-            if (workspaceRange.location == NSNotFound) {
-                [self.enqueuedCommands removeObject:@"workspacePath"];
-                return;
-            }
-            NSUInteger start = workspaceRange.location;
-            NSRegularExpression *workspaceRegex = [NSRegularExpression regularExpressionWithPattern:@"workspace:\\s+(.+)\n" options:0 error:NULL];
-            [workspaceRegex enumerateMatchesInString:output options:0 range:NSMakeRange(start, output.length - start) usingBlock:^(NSTextCheckingResult *result, NSMatchingFlags flags, BOOL *stop) {
-                self.workspacePath = [output substringWithRange:[result rangeAtIndex:1]];
-                *stop = YES;
-            }];
-            [self.enqueuedCommands removeObject:@"workspacePath"];
-        }];
-    }
-    return workspacePath;
-}
-
-+ (NSSet *)keyPathsForValuesAffectingWorkspacePath;
 {
     return [NSSet setWithObjects:@"localURL", @"clonedAlready", nil];
 }
