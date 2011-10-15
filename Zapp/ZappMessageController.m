@@ -34,7 +34,7 @@ NSString *const SendmailCommand = @"/usr/sbin/sendmail";
     NSString *delta = oldRevision ? [NSString stringWithFormat:@"%@..%@", oldRevision, build.latestRevision] : @"HEAD^..HEAD";
     NSString *format = @"--format=\"%h %s (%an)\"";
     
-    NSArray *arguments = [NSArray arrayWithObjects:@"log", delta, format, nil];
+    NSArray *arguments = [NSArray arrayWithObjects:@"log", delta, format, @"--no-merges", nil];
     
     [build.repository runCommand:GitCommand withArguments:arguments completionBlock:^(NSString *gitLogOutput) {
         
