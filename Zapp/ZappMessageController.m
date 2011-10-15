@@ -30,11 +30,10 @@ NSString *const SendmailCommand = @"/usr/sbin/sendmail";
     // get the log since the last build
     // last red red-green or last green-red
     NSString *oldRevision = nil;
-    
+
     NSString *delta = oldRevision ? [NSString stringWithFormat:@"%@..%@", oldRevision, build.latestRevision] : @"HEAD^..HEAD";
-    NSString *format = @"--format=\"%h %s (%an)\"";
-    
-    NSArray *arguments = [NSArray arrayWithObjects:@"log", delta, format, @"--no-merges", nil];
+        
+    NSArray *arguments = [NSArray arrayWithObjects:@"log", delta, @"--format=\"%h %s (%an)\"", @"--no-merges", nil];
     
     [build.repository runCommand:GitCommand withArguments:arguments completionBlock:^(NSString *gitLogOutput) {
         
