@@ -199,6 +199,7 @@
     void (^callCompletionBlock)(int) = ^(int exitStatus) {
         [[NSOperationQueue mainQueue] addOperationWithBlock:^() {
             self.status = exitStatus != 0 ? ZappBuildStatusFailed : ZappBuildStatusSucceeded;
+            [ZappMessageController sendMessageForBuild:self];
             NSLog(@"build complete, exit status %d", exitStatus);
             self.endDate = [NSDate date];
             self.repository.latestBuildStatus = self.status;
@@ -283,7 +284,6 @@
             NSLog(@"Simulator exited with code %d, failure count is %@. Last output is %@", exitCode, failureCount, lastOutput);
             exitCode = failureCount ? [failureCount intValue] : -1;
             self.simulatorController = nil;
-            [ZappMessageController sendMessageForBuild:self];
             callCompletionBlock(exitCode);
         }];
     }];
