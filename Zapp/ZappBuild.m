@@ -167,7 +167,7 @@
         case ZappBuildStatusPending: return ZappLocalizedString(@"Pending");
         case ZappBuildStatusRunning: return ZappLocalizedString(@"Running");
         case ZappBuildStatusFailed: return ZappLocalizedString(@"Failed");
-        case ZappBuildStatusSucceeded: return ZappLocalizedString(@"Succeeded");
+        case ZappBuildStatusSucceeded: return ZappLocalizedString(@"Success");
         default: break;
     }
     return nil;
