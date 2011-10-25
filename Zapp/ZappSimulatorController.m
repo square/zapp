@@ -82,7 +82,8 @@
     
     NSFileManager *fileManager = [NSFileManager defaultManager];
     NSError *error = nil;
-    NSURL *simulatorAppsURL = [[fileManager URLForDirectory:NSApplicationSupportDirectory inDomain:NSUserDomainMask appropriateForURL:nil create:NO error:&error] URLByAppendingPathComponent:@"iPhone Simulator/4.3.2/Applications"];
+    NSString *pathComponent = [NSString stringWithFormat:@"iPhone Simulator/%@/Applications", [self.sdk isEqualToString:@"5.0"] ? @"5.0" : @"4.3.2"];
+    NSURL *simulatorAppsURL = [[fileManager URLForDirectory:NSApplicationSupportDirectory inDomain:NSUserDomainMask appropriateForURL:nil create:NO error:&error] URLByAppendingPathComponent:pathComponent];
     NSAssert(!error, @"Got an error finding the simulator applications folder");
 
     if ([fileManager fileExistsAtPath:simulatorAppsURL.path]) {

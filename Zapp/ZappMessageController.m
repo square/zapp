@@ -33,19 +33,23 @@ NSString *const SendmailCommand = @"/usr/sbin/sendmail";
 
     NSString *delta = oldRevision ? [NSString stringWithFormat:@"%@..%@", oldRevision, build.latestRevision] : @"HEAD^..HEAD";
         
-    NSArray *arguments = [NSArray arrayWithObjects:@"log", delta, @"--format=\"%h %s (%an)\"", @"--no-merges", nil];
+    NSArray *arguments = [NSArray arrayWithObjects:@"log", delta, @"--format=%h %s (%an)", @"--no-merges", nil];
     
     [build.repository runCommand:GitCommand withArguments:arguments completionBlock:^(NSString *gitLogOutput) {
         
         NSString *subject = [NSString stringWithFormat:ZappLocalizedString(@"ZAPP: %@ Build %@ %@"), build.repository.name, build.abbreviatedLatestRevision, [build.statusDescription uppercaseString]];
         
+        NSString *baseURLString = [NSString stringWithFormat:@"http://%@:%d/file/", [[NSHost currentHost] name], ZAPP_WEB_PORT];
+        
         NSString *beginString = ZappLocalizedString(@"===== BEGIN TRANSMISSION =====");
         NSString *latestBuildString = ZappLocalizedString(@"Latest build:");
         NSString *latestBuildStatusString = [NSString stringWithFormat:@"%@ %@", build.abbreviatedLatestRevision, [build.statusDescription uppercaseString]];
+        NSString *logLinkString = [NSString stringWithFormat:@"Log: %@/%@", baseURLString, [build.buildLogURL lastPathComponent]];
+        NSString *videoLinkString = [NSString stringWithFormat:@"Video: %@/%@", baseURLString, [build.buildVideoURL lastPathComponent]];
         
         NSString *endString = ZappLocalizedString(@"====== END TRANSMISSION ======");
         
-        NSString *message = [[NSArray arrayWithObjects:beginString, latestBuildString, latestBuildStatusString, @"", gitLogOutput, endString, nil] componentsJoinedByString:@"\n"];
+        NSString *message = [[NSArray arrayWithObjects:beginString, latestBuildString, latestBuildStatusString, @"", logLinkString, videoLinkString, @"", gitLogOutput, endString, nil] componentsJoinedByString:@"\n"];
         
         [self sendEmailFromRepository:build.repository withSubject:subject headers:nil body:message];
     }];

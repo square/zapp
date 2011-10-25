@@ -11,6 +11,7 @@
 #define Zapp_ZappGlobals_h
 
 #define ZappLocalizedString(str) NSLocalizedString(str, str)
+#define ZAPP_WEB_PORT 1729
 
 typedef enum {
     ZappBuildStatusPending,

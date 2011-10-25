@@ -39,7 +39,7 @@
     NSAssert(!server, @"ZappRSSServer can only start once.");
     server = [self new];
     [server setManagedObjectContext:context];
-    [NSThread detachNewThreadSelector:@selector(listenOnPort:) toTarget:server withObject:[NSNumber numberWithUnsignedShort:1729]];
+    [NSThread detachNewThreadSelector:@selector(listenOnPort:) toTarget:server withObject:[NSNumber numberWithUnsignedShort:ZAPP_WEB_PORT]];
     return server;
 }
 
