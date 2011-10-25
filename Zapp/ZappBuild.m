@@ -20,7 +20,7 @@
 
 - (void)appendLogLines:(NSString *)newLogLinesString;
 - (NSURL *)appSupportURLWithExtension:(NSString *)extension;
-- (void)runSimulatorWithAppPath:(NSString *)appPath initialSkip:(NSInteger)initialSkip;
+- (void)runSimulatorWithAppPath:(NSString *)appPath initialSkip:(NSInteger)initialSkip failureCount:(NSInteger)initialFailureCount;
 - (void)callCompletionBlockWithStatus:(int)exitStatus;
 
 @end
@@ -257,13 +257,13 @@
         }
         
         // Step 3: Run
-        [self runSimulatorWithAppPath:appPath initialSkip:0];
+        [self runSimulatorWithAppPath:appPath initialSkip:0 failureCount:0];
     }];
 }
 
 #pragma mark Private methods
 
-- (void)runSimulatorWithAppPath:(NSString *)appPath initialSkip:(NSInteger)initialSkip;
+- (void)runSimulatorWithAppPath:(NSString *)appPath initialSkip:(NSInteger)initialSkip failureCount:(NSInteger)initialFailureCount;
 {
     NSString __block *lastOutput = nil;
     NSInteger __block lastStartedScenario = initialSkip;
@@ -297,10 +297,16 @@
         // exitCode is probably always going to be 0 (success) coming from the simulator. Use the failure count as our status instead.
         NSLog(@"Simulator exited with code %d, failure count is %ld after %ld of %ld scenarios. Last output is %@", exitCode, failureCount, lastStartedScenario, scenarioCount, lastOutput);
         self.simulatorController = nil;
+        
+        // If failureCount is still -1 by the time we get here, it means the simulated app crashed. That's a failure.
+        if (failureCount < 0) {
+            failureCount = 1;
+        }
+        NSInteger newFailureCount = failureCount + initialFailureCount;
         if (lastStartedScenario >= scenarioCount) {
-            [self callCompletionBlockWithStatus:(int)failureCount];
+            [self callCompletionBlockWithStatus:(int)newFailureCount];
         } else {
-            [self runSimulatorWithAppPath:appPath initialSkip:lastStartedScenario];
+            [self runSimulatorWithAppPath:appPath initialSkip:lastStartedScenario failureCount:newFailureCount];
         }
     }];
 }
