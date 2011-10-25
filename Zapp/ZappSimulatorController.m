@@ -20,6 +20,7 @@
 @property NSInteger consecutiveBlankReads;
 @property BOOL hasSuccessfulRead;
 @property (strong) ZappVideoController *videoController;
+@property (weak) NSOperationQueue *callingQueue;
 
 - (void)readNewOutput;
 - (void)clearSession;
@@ -30,6 +31,7 @@
 
 @synthesize appURL;
 @synthesize arguments;
+@synthesize callingQueue;
 @synthesize completionBlock;
 @synthesize consecutiveBlankReads;
 @synthesize environment;
@@ -55,6 +57,7 @@
     
     self.outputBlock = theOutputBlock;
     self.completionBlock = theCompletionBlock;
+    self.callingQueue = [NSOperationQueue currentQueue];
     self.hasSuccessfulRead = NO;
     self.consecutiveBlankReads = 0;
     
@@ -123,7 +126,9 @@
 - (void)session:(DTiPhoneSimulatorSession *)session didEndWithError:(NSError *)error {
     NSLog(@"ended: %@", error);
     [self clearSession];
-    self.completionBlock(error != nil);
+    [self.callingQueue addOperationWithBlock:^{
+        self.completionBlock(error != nil);
+    }];
 }
 
 #pragma mark Private methods
