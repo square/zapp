@@ -16,7 +16,7 @@
 
 @property (nonatomic, strong, readwrite) NSArray logLines;
 @property (nonatomic, strong) ZappSimulatorController *simulatorController;
-@property (nonatomic, strong) void (^completionBlock)(void);
+@property (nonatomic, copy) void (^completionBlock)(void);
 
 - (void)appendLogLines:(NSString *)newLogLinesString;
 - (NSURL *)appSupportURLWithExtension:(NSString *)extension;
@@ -307,6 +307,7 @@
 
 - (void)callCompletionBlockWithStatus:(int)exitStatus;
 {
+    NSAssert(self.completionBlock, @"Expected a completion block");
     [[NSOperationQueue mainQueue] addOperationWithBlock:^() {
         self.status = exitStatus != 0 ? ZappBuildStatusFailed : ZappBuildStatusSucceeded;
         [ZappMessageController sendMessageForBuild:self];
