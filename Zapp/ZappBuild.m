@@ -16,9 +16,12 @@
 
 @property (nonatomic, strong, readwrite) NSArray logLines;
 @property (nonatomic, strong) ZappSimulatorController *simulatorController;
+@property (nonatomic, strong) void (^completionBlock)(void);
 
 - (void)appendLogLines:(NSString *)newLogLinesString;
 - (NSURL *)appSupportURLWithExtension:(NSString *)extension;
+- (void)runSimulatorWithAppPath:(NSString *)appPath initialSkip:(NSInteger)initialSkip;
+- (void)callCompletionBlockWithStatus:(int)exitStatus;
 
 @end
 
@@ -35,6 +38,7 @@
 @synthesize commitLog;
 @synthesize logLines;
 @synthesize simulatorController;
+@synthesize completionBlock;
 
 #pragma mark Accessors
 
@@ -186,26 +190,17 @@
 
 #pragma mark ZappBuild
 
-- (void)startWithCompletionBlock:(void (^)(void))completionBlock;
+- (void)startWithCompletionBlock:(void (^)(void))theCompletionBlock;
 {
     self.status = ZappBuildStatusRunning;
     self.startDate = [NSDate date];
     self.scheme = self.repository.lastScheme;
     self.platform = self.repository.lastPlatform;
     self.branch = self.repository.lastBranch;
+    self.completionBlock = theCompletionBlock;
     
     self.logLines = nil;
     ZappRepository *repository = self.repository;
-    void (^callCompletionBlock)(int) = ^(int exitStatus) {
-        [[NSOperationQueue mainQueue] addOperationWithBlock:^() {
-            self.status = exitStatus != 0 ? ZappBuildStatusFailed : ZappBuildStatusSucceeded;
-            [ZappMessageController sendMessageForBuild:self];
-            NSLog(@"build complete, exit status %d", exitStatus);
-            self.endDate = [NSDate date];
-            self.repository.latestBuildStatus = self.status;
-            completionBlock();
-        }];
-    };
 
     [[ZappRepository sharedBackgroundQueue] addOperationWithBlock:^() {
         NSString *errorOutput = nil;
@@ -225,7 +220,7 @@
             [fileHandle writeData:[errorOutput dataUsingEncoding:NSUTF8StringEncoding]];
             [self appendLogLines:errorOutput];
             if (exitStatus > 0) {
-                callCompletionBlock(exitStatus);
+                [self callCompletionBlockWithStatus:exitStatus];
                 return NO;
             }
             return YES;
@@ -257,39 +252,71 @@
         [fileHandle closeFile];
         [self appendLogLines:errorOutput];
         if (exitStatus > 0) {
-            callCompletionBlock(exitStatus);
+            [self callCompletionBlockWithStatus:exitStatus];
             return;
         }
         
         // Step 3: Run
-        NSString __block *failureCount = nil;
-        NSString __block *lastOutput = nil;
-        NSRegularExpression *failureRegex = [NSRegularExpression regularExpressionWithPattern:@"KIF TESTING FINISHED: (\\d+) failure" options:0 error:NULL];
-        self.simulatorController = [ZappSimulatorController new];
-        self.simulatorController.sdk = [self.platform objectForKey:@"version"];
-        self.simulatorController.platform = [[self.platform objectForKey:@"device"] isEqualToString:@"ipad"] ? ZappSimulatorControllerPlatformiPad : ZappSimulatorControllerPlatformiPhone;
-        self.simulatorController.appURL = [self.repository.localURL URLByAppendingPathComponent:appPath];
-        self.simulatorController.environment = [NSDictionary dictionaryWithObjectsAndKeys:@"1", @"KIF_AUTORUN", nil];
-        self.simulatorController.simulatorOutputPath = self.buildLogURL.path;
-        self.simulatorController.videoOutputURL = self.buildVideoURL;
-        [self.simulatorController launchSessionWithOutputBlock:^(NSString *output) {
-            [self appendLogLines:output];
-            lastOutput = output;
-            [failureRegex enumerateMatchesInString:output options:0 range:NSMakeRange(0, output.length) usingBlock:^(NSTextCheckingResult *result, NSMatchingFlags flags, BOOL *stop) {
-                failureCount = [output substringWithRange:[result rangeAtIndex:1]];
-                *stop = YES;
-            }];
-        } completionBlock:^(int exitCode) {
-            // exitCode is probably always going to be 0 (success) coming from the simulator. Use the failure count as our status instead.
-            NSLog(@"Simulator exited with code %d, failure count is %@. Last output is %@", exitCode, failureCount, lastOutput);
-            exitCode = failureCount ? [failureCount intValue] : -1;
-            self.simulatorController = nil;
-            callCompletionBlock(exitCode);
-        }];
+        [self runSimulatorWithAppPath:appPath initialSkip:0];
     }];
 }
 
 #pragma mark Private methods
+
+- (void)runSimulatorWithAppPath:(NSString *)appPath initialSkip:(NSInteger)initialSkip;
+{
+    NSString __block *lastOutput = nil;
+    NSInteger __block lastStartedScenario = initialSkip;
+    NSInteger __block scenarioCount = 0;
+    NSInteger __block failureCount = -1;
+    NSRegularExpression *progressRegex = [NSRegularExpression regularExpressionWithPattern:@"BEGIN SCENARIO (\\d+)/(\\d+) " options:0 error:NULL];
+    NSRegularExpression *failureRegex = [NSRegularExpression regularExpressionWithPattern:@"KIF TESTING FINISHED: (\\d+) failure" options:0 error:NULL];
+    self.simulatorController = [ZappSimulatorController new];
+    self.simulatorController.sdk = [self.platform objectForKey:@"version"];
+    self.simulatorController.platform = [[self.platform objectForKey:@"device"] isEqualToString:@"ipad"] ? ZappSimulatorControllerPlatformiPad : ZappSimulatorControllerPlatformiPhone;
+    self.simulatorController.appURL = [self.repository.localURL URLByAppendingPathComponent:appPath];
+    self.simulatorController.simulatorOutputPath = self.buildLogURL.path;
+    self.simulatorController.videoOutputURL = self.buildVideoURL;
+    self.simulatorController.environment = [NSDictionary dictionaryWithObjectsAndKeys:@"1", @"KIF_AUTORUN", @"1", @"KIF_EXIT_ON_FAILURE", [NSString stringWithFormat:@"%d", lastStartedScenario], @"KIF_INITIAL_SKIP_COUNT", nil];
+    NSLog(@"starting simulator with skip count of %ld", lastStartedScenario);
+    [self.simulatorController launchSessionWithOutputBlock:^(NSString *output) {
+        [self appendLogLines:output];
+        lastOutput = output;
+        [progressRegex enumerateMatchesInString:output options:0 range:NSMakeRange(0, output.length) usingBlock:^(NSTextCheckingResult *result, NSMatchingFlags flags, BOOL *stop) {
+            lastStartedScenario = [[output substringWithRange:[result rangeAtIndex:1]] integerValue];
+            scenarioCount = [[output substringWithRange:[result rangeAtIndex:2]] integerValue];
+        }];
+        [failureRegex enumerateMatchesInString:output options:0 range:NSMakeRange(0, output.length) usingBlock:^(NSTextCheckingResult *result, NSMatchingFlags flags, BOOL *stop) {
+            if (failureCount < 0) {
+                failureCount = 0;
+            }
+            failureCount += [[output substringWithRange:[result rangeAtIndex:1]] integerValue];
+            *stop = YES;
+        }];
+    } completionBlock:^(int exitCode) {
+        // exitCode is probably always going to be 0 (success) coming from the simulator. Use the failure count as our status instead.
+        NSLog(@"Simulator exited with code %d, failure count is %ld after %ld of %ld scenarios. Last output is %@", exitCode, failureCount, lastStartedScenario, scenarioCount, lastOutput);
+        self.simulatorController = nil;
+        if (lastStartedScenario >= scenarioCount) {
+            [self callCompletionBlockWithStatus:(int)failureCount];
+        } else {
+            [self runSimulatorWithAppPath:appPath initialSkip:lastStartedScenario];
+        }
+    }];
+}
+
+- (void)callCompletionBlockWithStatus:(int)exitStatus;
+{
+    [[NSOperationQueue mainQueue] addOperationWithBlock:^() {
+        self.status = exitStatus != 0 ? ZappBuildStatusFailed : ZappBuildStatusSucceeded;
+        [ZappMessageController sendMessageForBuild:self];
+        NSLog(@"build complete, exit status %d", exitStatus);
+        self.endDate = [NSDate date];
+        self.repository.latestBuildStatus = self.status;
+        self.completionBlock();
+        self.completionBlock = nil;
+    }];
+}
 
 - (void)appendLogLines:(NSString *)newLogLinesString;
 {
