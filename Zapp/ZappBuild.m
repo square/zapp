@@ -22,7 +22,7 @@
 
 - (void)appendLogLines:(NSString *)newLogLinesString;
 - (NSURL *)appSupportURLWithExtension:(NSString *)extension;
-- (void)runSimulatorWithAppPath:(NSString *)appPath initialSkip:(NSInteger)initialSkip failureCount:(NSInteger)initialFailureCount;
+- (void)runSimulatorWithAppPath:(NSString *)appPath initialSkip:(NSInteger)initialSkip failureCount:(NSInteger)initialFailureCount startsWithRetry:(BOOL)startsWithRetry;
 - (void)callCompletionBlockWithStatus:(int)exitStatus;
 
 @end
@@ -224,7 +224,7 @@
         NSFetchRequest *fetchRequest = [NSFetchRequest new];
         fetchRequest.entity = [NSEntityDescription entityForName:@"Build" inManagedObjectContext:self.managedObjectContext];
         
-        fetchRequest.predicate = [NSPredicate predicateWithFormat:@"repository = %@ AND startTimestamp <= %@ ", self.repository, self.startTimestamp];
+        fetchRequest.predicate = [NSPredicate predicateWithFormat:@"repository = %@ AND startTimestamp <= %f ", self.repository, self.startTimestamp];
         fetchRequest.sortDescriptors = [NSArray arrayWithObject:[[NSSortDescriptor alloc] initWithKey:@"startTimestamp" ascending:NO]];
         fetchRequest.fetchLimit = 1;
         previousBuildFetchRequest = fetchRequest;
@@ -302,13 +302,13 @@
         }
         
         // Step 3: Run
-        [self runSimulatorWithAppPath:appPath initialSkip:0 failureCount:0];
+        [self runSimulatorWithAppPath:appPath initialSkip:0 failureCount:0 startsWithRetry:NO];
     }];
 }
 
 #pragma mark Private methods
 
-- (void)runSimulatorWithAppPath:(NSString *)appPath initialSkip:(NSInteger)initialSkip failureCount:(NSInteger)initialFailureCount;
+- (void)runSimulatorWithAppPath:(NSString *)appPath initialSkip:(NSInteger)initialSkip failureCount:(NSInteger)initialFailureCount startsWithRetry:(BOOL)startsWithRetry;
 {
     NSString __block *lastOutput = nil;
     NSInteger __block lastStartedScenario = initialSkip;
@@ -349,9 +349,14 @@
         }
         NSInteger newFailureCount = failureCount + initialFailureCount;
         if (lastStartedScenario >= scenarioCount) {
+            NSLog(@"finished: %ld/%ld", lastStartedScenario, scenarioCount);
             [self callCompletionBlockWithStatus:(int)newFailureCount];
+        } else if (startsWithRetry && lastStartedScenario == initialSkip + 1) {
+            NSLog(@"retry failed: %ld/%ld", lastStartedScenario, scenarioCount);
+            [self runSimulatorWithAppPath:appPath initialSkip:lastStartedScenario failureCount:newFailureCount startsWithRetry:NO];
         } else {
-            [self runSimulatorWithAppPath:appPath initialSkip:lastStartedScenario failureCount:newFailureCount];
+            NSLog(@"retrying: %ld/%ld", lastStartedScenario, scenarioCount);
+            [self runSimulatorWithAppPath:appPath initialSkip:lastStartedScenario - 1 failureCount:newFailureCount - 1 startsWithRetry:YES];
         }
     }];
 }

@@ -11,7 +11,7 @@
 #import "ZappRepository.h"
 
 
-NSString *const SendmailCommand = @"/usr/sbin/sendmail";
+NSString *const SendmailCommand = @"/bin/echo";
 
 
 @interface ZappMessageController ()
