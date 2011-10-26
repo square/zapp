@@ -34,7 +34,9 @@
 @property (nonatomic, readonly) NSURL *buildLogURL;
 @property (nonatomic, readonly) NSURL *buildVideoURL;
 @property (nonatomic, readonly) NSString *abbreviatedLatestRevision;
-@property (nonatomic, strong, readonly) NSFetchRequest *lastOppositeStatusBuildFetchRequest;
+
+@property (nonatomic, readonly) ZappBuild *previousBuild;
+@property (nonatomic, readonly) ZappBuild *previousSuccessfulBuild;
 
 - (void)startWithCompletionBlock:(void (^)(void))completionBlock;
 

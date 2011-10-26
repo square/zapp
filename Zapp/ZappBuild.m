@@ -17,7 +17,8 @@
 @property (nonatomic, strong, readwrite) NSArray logLines;
 @property (nonatomic, strong) ZappSimulatorController *simulatorController;
 @property (nonatomic, copy) void (^completionBlock)(void);
-@property (nonatomic, strong, readwrite) NSFetchRequest *lastOppositeStatusBuildFetchRequest;
+@property (nonatomic, strong, readwrite) NSFetchRequest *previousBuildFetchRequest;
+@property (nonatomic, strong, readwrite) NSFetchRequest *previousSuccessfulBuildFetchRequest;
 
 - (void)appendLogLines:(NSString *)newLogLinesString;
 - (NSURL *)appSupportURLWithExtension:(NSString *)extension;
@@ -38,8 +39,9 @@
 @dynamic status;
 
 @synthesize commitLog;
-@synthesize lastOppositeStatusBuildFetchRequest;
 @synthesize logLines;
+@synthesize previousBuildFetchRequest;
+@synthesize previousSuccessfulBuildFetchRequest;
 @synthesize simulatorController;
 @synthesize completionBlock;
 
@@ -191,21 +193,44 @@
     return [NSSet setWithObject:@"latestRevision"];
 }
 
-- (NSFetchRequest *)lastOppositeStatusBuildFetchRequest;
+- (ZappBuild *)previousSuccessfulBuild;
 {
-    if (!lastOppositeStatusBuildFetchRequest) {
+    return [[self.managedObjectContext executeFetchRequest:self. previousSuccessfulBuildFetchRequest error:nil] lastObject];
+}
+
+- (NSFetchRequest *)previousSuccessfulBuildFetchRequest;
+{
+    if (!previousSuccessfulBuildFetchRequest) {
         NSFetchRequest *fetchRequest = [NSFetchRequest new];
         fetchRequest.entity = [NSEntityDescription entityForName:@"Build" inManagedObjectContext:self.managedObjectContext];
         
-        ZappBuildStatus oppositeStatus = (self.status == ZappBuildStatusSucceeded) ? ZappBuildStatusFailed : ZappBuildStatusFailed;
-        
-        fetchRequest.predicate = [NSPredicate predicateWithFormat:@"repository = %@ AND status = %d AND latestRevision != %@", self.repository, oppositeStatus, self.latestRevision];
+        fetchRequest.predicate = [NSPredicate predicateWithFormat:@"repository = %@ AND status = %d AND latestRevision != %@", self.repository, ZappBuildStatusSucceeded, self.latestRevision];
         fetchRequest.sortDescriptors = [NSArray arrayWithObject:[[NSSortDescriptor alloc] initWithKey:@"startTimestamp" ascending:NO]];
         fetchRequest.fetchLimit = 1;
-        self.lastOppositeStatusBuildFetchRequest = fetchRequest;
+        previousSuccessfulBuildFetchRequest = fetchRequest;
     }
     
-    return lastOppositeStatusBuildFetchRequest;
+    return previousSuccessfulBuildFetchRequest;
+}
+
+- (ZappBuild *)previousBuild;
+{
+    return [[self.managedObjectContext executeFetchRequest:self.previousBuildFetchRequest error:nil] lastObject];
+}
+
+- (NSFetchRequest *)previousBuildFetchRequest;
+{
+    if (!previousBuildFetchRequest) {
+        NSFetchRequest *fetchRequest = [NSFetchRequest new];
+        fetchRequest.entity = [NSEntityDescription entityForName:@"Build" inManagedObjectContext:self.managedObjectContext];
+        
+        fetchRequest.predicate = [NSPredicate predicateWithFormat:@"repository = %@ AND startTimestamp <= %@ ", self.repository, self.startTimestamp];
+        fetchRequest.sortDescriptors = [NSArray arrayWithObject:[[NSSortDescriptor alloc] initWithKey:@"startTimestamp" ascending:NO]];
+        fetchRequest.fetchLimit = 1;
+        previousBuildFetchRequest = fetchRequest;
+    }
+    
+    return previousBuildFetchRequest;
 }
 
 #pragma mark ZappBuild
@@ -336,7 +361,7 @@
     NSAssert(self.completionBlock, @"Expected a completion block");
     [[NSOperationQueue mainQueue] addOperationWithBlock:^() {
         self.status = exitStatus != 0 ? ZappBuildStatusFailed : ZappBuildStatusSucceeded;
-        [ZappMessageController sendMessageForBuild:self];
+        [ZappMessageController sendMessageIfNeededForBuild:self];
         NSLog(@"build complete, exit status %d", exitStatus);
         self.endDate = [NSDate date];
         self.repository.latestBuildStatus = self.status;
