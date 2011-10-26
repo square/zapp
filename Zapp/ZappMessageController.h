@@ -10,6 +10,6 @@
 
 @interface ZappMessageController : NSObject
 
-+ (void)sendMessageForBuild:(ZappBuild *)build;
++ (void)sendMessageIfNeededForBuild:(ZappBuild *)build;
 
 @end
