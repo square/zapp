@@ -25,12 +25,20 @@ NSString *const SendmailCommand = @"/usr/sbin/sendmail";
 
 #pragma mark Public Methods
 
-+ (void)sendMessageForBuild:(ZappBuild *)build;
++ (void)sendMessageIfNeededForBuild:(ZappBuild *)build;
 {
-    // get the log since the last build
-    // last red red-green or last green-red
-    NSString *oldRevision = nil;
-
+    // Only send messages for red builds or green-red transitions.
+    ZappBuild *previousBuild = build.previousBuild;
+    
+    if (build.status == ZappBuildStatusSucceeded && previousBuild.status == ZappBuildStatusSucceeded) {
+        NSLog(@"Skipping message for green-green transition, %@..%@", previousBuild.abbreviatedLatestRevision, build.abbreviatedLatestRevision);
+        return;
+    }
+    
+    // Send the diff since the previous green build, if we have one.
+    ZappBuild *previousGreenBuild = build.previousSuccessfulBuild;
+    NSString *oldRevision = previousGreenBuild.latestRevision;
+    
     NSString *delta = oldRevision ? [NSString stringWithFormat:@"%@..%@", oldRevision, build.latestRevision] : @"HEAD^..HEAD";
         
     NSArray *arguments = [NSArray arrayWithObjects:@"log", delta, @"--format=%h %s (%an)", @"--no-merges", nil];

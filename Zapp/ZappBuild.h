@@ -35,6 +35,9 @@
 @property (nonatomic, readonly) NSURL *buildVideoURL;
 @property (nonatomic, readonly) NSString *abbreviatedLatestRevision;
 
+@property (nonatomic, readonly) ZappBuild *previousBuild;
+@property (nonatomic, readonly) ZappBuild *previousSuccessfulBuild;
+
 - (void)startWithCompletionBlock:(void (^)(void))completionBlock;
 
 @end
