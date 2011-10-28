@@ -204,7 +204,18 @@ NSString *const GitFetchSubcommand = @"fetch";
     NSData *inData = nil;
     [task setLaunchPath:command];
     [task setArguments:arguments];
-    [task setCurrentDirectoryPath:self.localURL.path];
+    NSURL *currentDirectoryURL = self.localURL;
+    if ([command isEqualToString:GitCommand]) {
+        NSFileManager *fileManager = [NSFileManager defaultManager];
+        while (![fileManager fileExistsAtPath:[currentDirectoryURL.path stringByAppendingPathComponent:@".git"]]) {
+            currentDirectoryURL = [currentDirectoryURL URLByDeletingLastPathComponent];
+            if ([currentDirectoryURL.path isEqualToString:@"/"]) {
+                NSLog(@"Couldn't find git repo above %@", self.localURL);
+                return -1;
+            }
+        }
+    }
+    [task setCurrentDirectoryPath:currentDirectoryURL.path];
     
     if (standardInput) {
         [task setStandardInput:standardInput];
@@ -262,7 +273,7 @@ NSString *const GitFetchSubcommand = @"fetch";
             [finalString appendString:inString];
         }];
         
-        if ([command isEqualToString:GitCommand] && errorString.length) {
+        if ([command isEqualToString:GitCommand] && (errorString.length || !finalString.length)) {
             if ([errorString rangeOfString:@"Not a git repository"].location != NSNotFound) {
                 [[NSOperationQueue mainQueue] addOperationWithBlock:^{
                     self.clonedAlready = NO;
