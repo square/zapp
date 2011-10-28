@@ -20,7 +20,9 @@ NSString *const SendmailCommand = @"/usr/sbin/sendmail";
 
 @interface ZappMessageController ()
 
-+ (void)sendEmailFromRepository:(ZappRepository*)repository withSubject:(NSString *)subject headers:(NSDictionary *)headers body:(NSString *)body;
++ (BOOL)shouldSendNotificationForBuild:(ZappBuild *)build;
+
++ (void)sendEmailFromRepository:(ZappRepository *)repository withSubject:(NSString *)subject body:(NSString *)body;
 
 @end
 
@@ -31,11 +33,7 @@ NSString *const SendmailCommand = @"/usr/sbin/sendmail";
 
 + (void)sendMessageIfNeededForBuild:(ZappBuild *)build;
 {
-    // Only send messages for red builds or green-red transitions.
-    ZappBuild *previousBuild = build.previousBuild;
-    
-    if (build.status == ZappBuildStatusSucceeded && previousBuild.status == ZappBuildStatusSucceeded) {
-        NSLog(@"Skipping message for green-green transition, %@..%@", previousBuild.abbreviatedLatestRevision, build.abbreviatedLatestRevision);
+    if (![self shouldSendNotificationForBuild:build]) {
         return;
     }
     
@@ -44,7 +42,7 @@ NSString *const SendmailCommand = @"/usr/sbin/sendmail";
     NSString *oldRevision = previousGreenBuild.latestRevision;
     
     NSString *delta = oldRevision ? [NSString stringWithFormat:@"%@..%@", oldRevision, build.latestRevision] : @"HEAD^..HEAD";
-        
+    
     NSArray *arguments = [NSArray arrayWithObjects:@"log", delta, @"--format=%h %s (%an)", @"--no-merges", nil];
     
     [build.repository runCommand:GitCommand withArguments:arguments completionBlock:^(NSString *gitLogOutput) {
@@ -63,21 +61,25 @@ NSString *const SendmailCommand = @"/usr/sbin/sendmail";
         
         NSString *message = [[NSArray arrayWithObjects:beginString, latestBuildString, latestBuildStatusString, @"", logLinkString, videoLinkString, @"", gitLogOutput, endString, nil] componentsJoinedByString:@"\n"];
         
-        [self sendEmailFromRepository:build.repository withSubject:subject headers:nil body:message];
+        [self sendEmailFromRepository:build.repository withSubject:subject body:message];
     }];
 }
 
 #pragma mark Private Methods
 
-+ (void)sendEmailFromRepository:(ZappRepository*)repository withSubject:(NSString *)subject headers:(NSDictionary *)headers body:(NSString *)body;
++ (void)sendEmailFromRepository:(ZappRepository *)repository withSubject:(NSString *)subject body:(NSString *)body;
 {
-    // TODO: get to-address from somewhere
-    NSString *toAddress = @"";
-
+    NSString *toAddress = [[NSUserDefaults standardUserDefaults] stringForKey:@"EmailNotificationsTo"];
+    if (!toAddress.length) {
+        return;
+    }
+    
+    NSString *replyToAddress = [[NSUserDefaults standardUserDefaults] stringForKey:@"EmailNotificationsReplyTo"];
+    
     NSString *subjectHeaderLine = [NSString stringWithFormat:@"Subject: %@", subject];
-    // TODO: break headers into key: value lines
-    NSString *headerLines = [NSString stringWithFormat:@"To: %@", toAddress];
-    NSString *combinedHeadersAndMessage = [[NSArray arrayWithObjects:subjectHeaderLine, headerLines, body, nil] componentsJoinedByString:@"\n"];
+    NSString *toHeaderLine = [NSString stringWithFormat:@"To: %@", toAddress];
+    NSString *replyToHeaderLine = [NSString stringWithFormat:@"Reply-To: %@", replyToAddress];
+    NSString *combinedHeadersAndMessage = [[NSArray arrayWithObjects:subjectHeaderLine, toHeaderLine, replyToHeaderLine, body, nil] componentsJoinedByString:@"\n"];
     
     NSString *temporaryFilePath = [NSString stringWithFormat:@"%@/output-%d.msg", NSTemporaryDirectory(), rand()];
     [combinedHeadersAndMessage writeToFile:temporaryFilePath atomically:YES encoding:NSUTF8StringEncoding error:nil];
@@ -90,5 +92,29 @@ NSString *const SendmailCommand = @"/usr/sbin/sendmail";
         [[NSFileManager defaultManager] removeItemAtPath:temporaryFilePath error:nil];
     }];
 }
-     
+
++ (BOOL)shouldSendNotificationForBuild:(ZappBuild *)build;
+{
+    ZappNotificationOption notificationOption = (ZappNotificationOption)[[NSUserDefaults standardUserDefaults] integerForKey:@"EmailNotificationOption"];
+    switch (notificationOption) {
+        case ZappNotificationOptionAlways:
+            return YES;
+        case ZappNotificationOptionNever:
+            return NO;
+        case ZappNotificationOptionSmart:
+        default:
+            break;
+    }
+    
+    // For smart builds, only send messages for red builds or green-red transitions.
+    ZappBuild *previousBuild = build.previousBuild;
+    
+    if (build.status == ZappBuildStatusSucceeded && previousBuild.status == ZappBuildStatusSucceeded) {
+        NSLog(@"Skipping message for green-green transition, %@..%@", previousBuild.abbreviatedLatestRevision, build.abbreviatedLatestRevision);
+        return NO;
+    }
+    
+    return YES;
+}
+
 @end

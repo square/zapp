@@ -21,6 +21,13 @@ typedef enum {
     ZappBuildStatusCount
 } ZappBuildStatus;
 
+typedef enum {
+    ZappNotificationOptionNever,
+    ZappNotificationOptionAlways,
+    ZappNotificationOptionSmart,
+    ZappNotificationOptionCount
+} ZappNotificationOption;
+
 typedef void (^ZappOutputBlock)(NSString *output);
 typedef void (^ZappResultBlock)(int exitCode);
 
