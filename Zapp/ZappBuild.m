@@ -87,7 +87,7 @@
     NSString *revision = self.abbreviatedLatestRevision;
     NSString *statusDescription = [self.statusDescription lowercaseString];
     
-    return [NSString stringWithFormat:@"Built %@ on %@: %@", revision, [dateFormatter stringFromDate:self.startDate], statusDescription];
+    return [NSString stringWithFormat:@"Built %@ on %@: %@", revision, [dateFormatter stringFromDate:self.startTimestamp], statusDescription];
 }
 
 + (NSSet *)keyPathsForValuesAffectingFeedDescription;
@@ -107,27 +107,12 @@
         return [NSString stringWithFormat:@"%@: %@", self.statusDescription, revision];
     }
     
-    return [NSString stringWithFormat:@"%@: %@ on %@", self.statusDescription, revision, [dateFormatter stringFromDate:self.startDate]];
+    return [NSString stringWithFormat:@"%@: %@ on %@", self.statusDescription, revision, [dateFormatter stringFromDate:self.startTimestamp]];
 }
 
 + (NSSet *)keyPathsForValuesAffectingDescription;
 {
     return [NSSet setWithObjects:@"startTimestamp", @"status", @"latestRevision", nil];
-}
-
-- (NSDate *)endDate;
-{
-    return [NSDate dateWithTimeIntervalSinceReferenceDate:self.endTimestamp];
-}
-
-- (void)setEndDate:(NSDate *)endDate;
-{
-    self.endTimestamp = [endDate timeIntervalSinceReferenceDate];
-}
-
-+ (NSSet *)keyPathsForValuesAffectingEndDate;
-{
-    return [NSSet setWithObject:@"endTimestamp"];
 }
 
 - (NSArray *)logLines;
@@ -149,21 +134,6 @@
     }
     [self didAccessValueForKey:@"logLines"];
     return logLines;
-}
-
-- (NSDate *)startDate;
-{
-    return [NSDate dateWithTimeIntervalSinceReferenceDate:self.startTimestamp];
-}
-
-- (void)setStartDate:(NSDate *)startDate;
-{
-    self.startTimestamp = [startDate timeIntervalSinceReferenceDate];
-}
-
-+ (NSSet *)keyPathsForValuesAffectingStartDate;
-{
-    return [NSSet setWithObject:@"startTimestamp"];
 }
 
 - (NSString *)statusDescription;
@@ -224,7 +194,7 @@
         NSFetchRequest *fetchRequest = [NSFetchRequest new];
         fetchRequest.entity = [NSEntityDescription entityForName:@"Build" inManagedObjectContext:self.managedObjectContext];
         
-        fetchRequest.predicate = [NSPredicate predicateWithFormat:@"repository = %@ AND startTimestamp <= %f ", self.repository, self.startTimestamp];
+        fetchRequest.predicate = [NSPredicate predicateWithFormat:@"repository = %@ AND startTimestamp < %@ ", self.repository, self.startTimestamp];
         fetchRequest.sortDescriptors = [NSArray arrayWithObject:[[NSSortDescriptor alloc] initWithKey:@"startTimestamp" ascending:NO]];
         fetchRequest.fetchLimit = 1;
         previousBuildFetchRequest = fetchRequest;
@@ -238,7 +208,7 @@
 - (void)startWithCompletionBlock:(void (^)(void))theCompletionBlock;
 {
     self.status = ZappBuildStatusRunning;
-    self.startDate = [NSDate date];
+    self.startTimestamp = [NSDate date];
     self.scheme = self.repository.lastScheme;
     self.platform = self.repository.lastPlatform;
     self.branch = self.repository.lastBranch;
@@ -368,7 +338,7 @@
         self.status = exitStatus != 0 ? ZappBuildStatusFailed : ZappBuildStatusSucceeded;
         [ZappMessageController sendMessageIfNeededForBuild:self];
         NSLog(@"build complete, exit status %d", exitStatus);
-        self.endDate = [NSDate date];
+        self.endTimestamp = [NSDate date];
         self.repository.latestBuildStatus = self.status;
         self.completionBlock();
         self.completionBlock = nil;

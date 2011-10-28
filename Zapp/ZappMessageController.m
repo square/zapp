@@ -11,7 +11,11 @@
 #import "ZappRepository.h"
 
 
+#if DEBUG
 NSString *const SendmailCommand = @"/bin/echo";
+#else
+NSString *const SendmailCommand = @"/usr/sbin/sendmail";
+#endif
 
 
 @interface ZappMessageController ()
@@ -67,17 +71,18 @@ NSString *const SendmailCommand = @"/bin/echo";
 
 + (void)sendEmailFromRepository:(ZappRepository*)repository withSubject:(NSString *)subject headers:(NSDictionary *)headers body:(NSString *)body;
 {
+    // TODO: get to-address from somewhere
+    NSString *toAddress = @"";
+
     NSString *subjectHeaderLine = [NSString stringWithFormat:@"Subject: %@", subject];
     // TODO: break headers into key: value lines
-    NSString *headerLines = @"";
+    NSString *headerLines = [NSString stringWithFormat:@"To: %@", toAddress];
     NSString *combinedHeadersAndMessage = [[NSArray arrayWithObjects:subjectHeaderLine, headerLines, body, nil] componentsJoinedByString:@"\n"];
     
     NSString *temporaryFilePath = [NSString stringWithFormat:@"%@/output-%d.msg", NSTemporaryDirectory(), rand()];
     [combinedHeadersAndMessage writeToFile:temporaryFilePath atomically:YES encoding:NSUTF8StringEncoding error:nil];
     NSFileHandle *mailFileHandle = [NSFileHandle fileHandleForReadingAtPath:temporaryFilePath];
     
-    // TODO: get to-address from somewhere
-    NSString *toAddress = @"";
     NSArray *arguments = [NSArray arrayWithObjects:@"-v", toAddress, temporaryFilePath, nil];
     NSLog(@"running %@", SendmailCommand);
     

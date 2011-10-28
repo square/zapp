@@ -38,7 +38,7 @@
 		A83BBA8213FB8ABF002D6310 /* ZappSimulatorController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ZappSimulatorController.h; sourceTree = "<group>"; };
 		A83BBA8313FB8ABF002D6310 /* ZappSimulatorController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ZappSimulatorController.m; sourceTree = "<group>"; };
 		A846C16E14021BD400E5B1B2 /* ZappWebServer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ZappWebServer.h; sourceTree = "<group>"; };
-		A846C16F14021BD400E5B1B2 /* ZappWebServer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ZappWebServer.m; sourceTree = "<group>"; };
+		A846C16F14021BD400E5B1B2 /* ZappWebServer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; lineEnding = 0; path = ZappWebServer.m; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objc; };
 		A848E80413ECA621004A55DA /* ZappRepository.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ZappRepository.h; sourceTree = "<group>"; };
 		A848E80513ECA621004A55DA /* ZappRepository.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ZappRepository.m; sourceTree = "<group>"; };
 		A855039314061F29004CA7AA /* AVFoundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AVFoundation.framework; path = System/Library/Frameworks/AVFoundation.framework; sourceTree = SDKROOT; };
@@ -56,11 +56,11 @@
 		A8B31D4213E4D611001D593D /* Zapp-Prefix.pch */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "Zapp-Prefix.pch"; sourceTree = "<group>"; };
 		A8B31D4413E4D611001D593D /* en */ = {isa = PBXFileReference; lastKnownFileType = text.rtf; name = en; path = en.lproj/Credits.rtf; sourceTree = "<group>"; };
 		A8B31D4613E4D611001D593D /* ZappAppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ZappAppDelegate.h; sourceTree = "<group>"; };
-		A8B31D4713E4D611001D593D /* ZappAppDelegate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ZappAppDelegate.m; sourceTree = "<group>"; };
+		A8B31D4713E4D611001D593D /* ZappAppDelegate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; lineEnding = 0; path = ZappAppDelegate.m; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objc; };
 		A8B31D4A13E4D611001D593D /* en */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = en; path = en.lproj/MainMenu.xib; sourceTree = "<group>"; };
 		A8B31D5413E4DC0F001D593D /* ZappGlobals.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ZappGlobals.h; sourceTree = "<group>"; };
-		A8DA278F13ECA4ED001305B4 /* ZappBuild.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ZappBuild.h; sourceTree = "<group>"; };
-		A8DA279013ECA4ED001305B4 /* ZappBuild.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ZappBuild.m; sourceTree = "<group>"; };
+		A8DA278F13ECA4ED001305B4 /* ZappBuild.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; lineEnding = 0; path = ZappBuild.h; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objcpp; };
+		A8DA279013ECA4ED001305B4 /* ZappBuild.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; lineEnding = 0; path = ZappBuild.m; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objc; };
 		A8DB670614061E3400149EB8 /* ZappVideoController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ZappVideoController.h; sourceTree = "<group>"; };
 		A8DB670714061E3400149EB8 /* ZappVideoController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ZappVideoController.m; sourceTree = "<group>"; };
 		A8DD434D13FB92C000AE6C3D /* iPhoneSimulatorRemoteClient.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = iPhoneSimulatorRemoteClient.framework; path = Platforms/iPhoneSimulator.platform/Developer/Library/PrivateFrameworks/iPhoneSimulatorRemoteClient.framework; sourceTree = DEVELOPER_DIR; };

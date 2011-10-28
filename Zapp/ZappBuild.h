@@ -19,15 +19,13 @@
 @property (nonatomic, strong) NSString *branch;
 @property (nonatomic, strong) NSString *commitLog;
 @property (nonatomic, readonly) NSString *description;
-@property (nonatomic, copy) NSDate *endDate;
-@property (nonatomic) NSTimeInterval endTimestamp;
+@property (nonatomic, strong) NSDate *endTimestamp;
 @property (nonatomic, strong) NSString *latestRevision;
 @property (nonatomic, strong, readonly) NSArray *logLines;
 @property (nonatomic, strong) NSDictionary *platform;
 @property (nonatomic, strong) ZappRepository *repository;
 @property (nonatomic, strong) NSString *scheme;
-@property (nonatomic, copy) NSDate *startDate;
-@property (nonatomic) NSTimeInterval startTimestamp;
+@property (nonatomic, strong) NSDate *startTimestamp;
 @property (nonatomic) ZappBuildStatus status;
 @property (nonatomic, readonly) NSString *statusDescription;
 @property (nonatomic, readonly) NSString *feedDescription;

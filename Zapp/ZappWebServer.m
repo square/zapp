@@ -145,7 +145,7 @@
             ZappBuild *build = [builds objectAtIndex:0];
             NSString *buildStatus = build.statusDescription;
             NSString *activity = build.status == ZappBuildStatusRunning ? @"Building" : @"Sleeping";
-            NSString *lastBuildTime = [dateFormatter stringFromDate:build.endDate];
+            NSString *lastBuildTime = [dateFormatter stringFromDate:build.endTimestamp];
             [entry setAttributesWithDictionary:[NSDictionary dictionaryWithObjectsAndKeys:repository.abbreviation, @"name", buildStatus, @"lastBuildStatus", activity, @"activity", lastBuildTime, @"lastBuildTime", nil]];
         }];
         NSXMLDocument *document = [[NSXMLDocument alloc] initWithRootElement:root];
@@ -173,7 +173,10 @@
     [root addChild:[NSXMLElement elementWithName:@"title" stringValue:[NSString stringWithFormat:@"%@ builds", repository.name]]];
     [builds enumerateObjectsUsingBlock:^(ZappBuild *build, NSUInteger idx, BOOL *stop) {
         if (idx == 0) {
-            [root addChild:[NSXMLNode elementWithName:@"updated" stringValue:[dateFormatter stringFromDate:build.endDate]]];
+            [root addChild:[NSXMLNode elementWithName:@"updated" stringValue:[dateFormatter stringFromDate:build.endTimestamp]]];
+        }
+        if (build.status == ZappBuildStatusRunning) {
+            return;
         }
         NSXMLElement *entry = [NSXMLElement elementWithName:@"entry"];
         [root addChild:entry];
@@ -182,8 +185,8 @@
         NSString *urlString = [NSString stringWithFormat:@"http://%@:%@/file/%@", [url host], [url port], [build.buildLogURL lastPathComponent]];
         [link setAttributesWithDictionary:[NSDictionary dictionaryWithObject:urlString forKey:@"href"]];
         [entry addChild:link];
-        [entry addChild:[NSXMLElement elementWithName:@"published" stringValue:[dateFormatter stringFromDate:build.startDate]]];
-        [entry addChild:[NSXMLElement elementWithName:@"updated" stringValue:[dateFormatter stringFromDate:build.endDate]]];
+        [entry addChild:[NSXMLElement elementWithName:@"published" stringValue:[dateFormatter stringFromDate:build.startTimestamp]]];
+        [entry addChild:[NSXMLElement elementWithName:@"updated" stringValue:[dateFormatter stringFromDate:build.endTimestamp]]];
     }];
     NSXMLDocument *document = [[NSXMLDocument alloc] initWithRootElement:root];
     bodyData = [document XMLDataWithOptions:NSXMLNodePrettyPrint];

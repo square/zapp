@@ -126,6 +126,10 @@
 
 - (void)session:(DTiPhoneSimulatorSession *)session didEndWithError:(NSError *)error {
     NSLog(@"ended: %@", error);
+    if (!error) {
+        // Holy buckets, the simulator ended correctly! Read the output once more.
+        [self readNewOutput];
+    }
     [self clearSession];
     [self.callingQueue addOperationWithBlock:^{
         self.completionBlock(error != nil);

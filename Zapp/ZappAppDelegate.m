@@ -108,6 +108,7 @@
     [self.searchBackgroundView setNeedsDisplay:YES];
     
     [self.logController addObserver:self forKeyPath:@"content" options:0 context:NULL];
+    [self.logController addObserver:self forKeyPath:@"filterPredicate" options:0 context:NULL];
     
     [NSTimer scheduledTimerWithTimeInterval:90.0 target:self selector:@selector(pollRepositoriesForUpdates) userInfo:nil repeats:YES];
     
@@ -120,17 +121,30 @@
 
 - (void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary *)change context:(void *)context;
 {
-    if ([object isEqual:self.logController] && [keyPath isEqual:@"content"]) {
+    if ([object isEqual:self.logController]) {
+        // Either the content changed or the filter predicate changed
         NSPoint newScrollOrigin;
-        
-        // assume that the scrollview is an existing variable
-        if ([[self.logScrollView documentView] isFlipped]) {
-            newScrollOrigin = NSMakePoint(0.0, NSMaxY([[self.logScrollView documentView] frame]) - NSHeight([[self.logScrollView contentView] bounds]));
+        NSTableView *logTableView = [self.logScrollView documentView];
+        if ([self.logController.selectionIndexes count]) {
+            if ([keyPath isEqualToString:@"filterPredicate"]) {
+                // If we have a selection, scroll to the first row of it
+                NSInteger filteredSelectionIndex = [self.logController.arrangedObjects indexOfObject:[self.logController.selectedObjects objectAtIndex:0]];
+                NSRect rowRect = [logTableView rectOfRow:filteredSelectionIndex];
+                newScrollOrigin = rowRect.origin;
+            } else {
+                return;
+            }
         } else {
-            newScrollOrigin = NSZeroPoint;
+            // If there's no selection, scroll to the bottom
+            if ([[self.logScrollView documentView] isFlipped]) {
+                newScrollOrigin = NSMakePoint(0.0, NSMaxY([[self.logScrollView documentView] frame]) - NSHeight([[self.logScrollView contentView] bounds]));
+            } else {
+                newScrollOrigin = NSZeroPoint;
+            }
         }
-        
-        [[self.logScrollView documentView] scrollPoint:newScrollOrigin];
+        [logTableView scrollPoint:newScrollOrigin];
+    } else {
+        [super observeValueForKeyPath:keyPath ofObject:object change:change context:context];
     }
 }
 
@@ -193,7 +207,7 @@
 - (ZappBuild *)scheduleBuildForRepository:(ZappRepository *)repository;
 {
     ZappBuild *build = [repository createNewBuild];
-    build.startDate = [NSDate date];
+    build.startTimestamp = [NSDate date];
     [repository runCommand:GitCommand withArguments:[NSArray arrayWithObjects:@"rev-parse", repository.lastBranch, nil] completionBlock:^(NSString *revision) {
         build.latestRevision = revision;
         [self.buildQueue addObject:build];
