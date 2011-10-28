@@ -6,7 +6,7 @@ Zapp is that way: it's an app that continuously runs your KIF tests, polling you
 
 Like KIF, **Zapp also uses undocumented Apple APIs.** You won't find it on the Mac App Store, because the frameworks to control the iOS Simulator are private. Any other developer tools that have any iOS Simulator integration do the same thing.
 
-Zapp's only dependency to test your apps is [**Xcode 4.1**](http://developer.apple.com/xcode/index.php).
+Zapp's only dependency to test your apps is [**Xcode 4.2**](http://developer.apple.com/xcode/index.php).
 
 ## Features
 
@@ -22,9 +22,12 @@ Zapp has a built-in web server that will serve up RSS feeds of your builds and t
 #### Video recording
 If you look in `~/Library/Application Support/Zapp`, you'll find video recordings of the simulator from your test runs.
 
+#### Email notifications
+Zapp sends an email to your team every time a build fails and every time the build goes from red to green. You can configure this in Zapp's preferences:
+
 ## Installation
 
-Even though Zapp depends on having Xcode 4.1 installed at `/Developer` to run KIF test suites, *it will only build in Xcode 4.2 Developer Preview.* Unless you're seasoned at juggling multiple Xcode installations or you have multiple machines at your disposal, your best bet is a pre-built version of the app from the downloads page.
+Simple: clone this repository, open `Zapp.xcodeproj` in Xcode 4.2, and click the Run button. 
 
 ## Usage
 
