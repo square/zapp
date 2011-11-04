@@ -9,6 +9,7 @@
 /* Begin PBXBuildFile section */
 		2F08D06A143D012C0042B746 /* ZappMessageController.m in Sources */ = {isa = PBXBuildFile; fileRef = 2F08D069143D012B0042B746 /* ZappMessageController.m */; };
 		2FF09B951440FA07008E2AF9 /* ZappMail.png in Resources */ = {isa = PBXBuildFile; fileRef = 2FF09B941440FA07008E2AF9 /* ZappMail.png */; };
+		A81A90091464715800232B33 /* Credits.rtf in Resources */ = {isa = PBXBuildFile; fileRef = A81A90071464715800232B33 /* Credits.rtf */; };
 		A83BBA8413FB8ABF002D6310 /* ZappSimulatorController.m in Sources */ = {isa = PBXBuildFile; fileRef = A83BBA8313FB8ABF002D6310 /* ZappSimulatorController.m */; };
 		A846C17014021BD400E5B1B2 /* ZappWebServer.m in Sources */ = {isa = PBXBuildFile; fileRef = A846C16F14021BD400E5B1B2 /* ZappWebServer.m */; };
 		A848E80613ECA621004A55DA /* ZappRepository.m in Sources */ = {isa = PBXBuildFile; fileRef = A848E80513ECA621004A55DA /* ZappRepository.m */; };
@@ -18,7 +19,6 @@
 		A8B31D3513E4D610001D593D /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A8B31D3413E4D610001D593D /* Cocoa.framework */; };
 		A8B31D3F13E4D611001D593D /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = A8B31D3D13E4D611001D593D /* InfoPlist.strings */; };
 		A8B31D4113E4D611001D593D /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = A8B31D4013E4D611001D593D /* main.m */; };
-		A8B31D4513E4D611001D593D /* Credits.rtf in Resources */ = {isa = PBXBuildFile; fileRef = A8B31D4313E4D611001D593D /* Credits.rtf */; };
 		A8B31D4813E4D611001D593D /* ZappAppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = A8B31D4713E4D611001D593D /* ZappAppDelegate.m */; };
 		A8B31D4B13E4D611001D593D /* MainMenu.xib in Resources */ = {isa = PBXBuildFile; fileRef = A8B31D4913E4D611001D593D /* MainMenu.xib */; };
 		A8DA279113ECA4ED001305B4 /* ZappBuild.m in Sources */ = {isa = PBXBuildFile; fileRef = A8DA279013ECA4ED001305B4 /* ZappBuild.m */; };
@@ -36,6 +36,7 @@
 		2F08D068143D012B0042B746 /* ZappMessageController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ZappMessageController.h; sourceTree = "<group>"; };
 		2F08D069143D012B0042B746 /* ZappMessageController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ZappMessageController.m; sourceTree = "<group>"; };
 		2FF09B941440FA07008E2AF9 /* ZappMail.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = ZappMail.png; sourceTree = "<group>"; };
+		A81A90081464715800232B33 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.rtf; name = en; path = en.lproj/Credits.rtf; sourceTree = "<group>"; };
 		A82B17CD13EB2583009F0B40 /* iPhoneSimulatorRemoteClient.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = iPhoneSimulatorRemoteClient.h; sourceTree = "<group>"; };
 		A83BBA8213FB8ABF002D6310 /* ZappSimulatorController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ZappSimulatorController.h; sourceTree = "<group>"; };
 		A83BBA8313FB8ABF002D6310 /* ZappSimulatorController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ZappSimulatorController.m; sourceTree = "<group>"; };
@@ -56,7 +57,6 @@
 		A8B31D3E13E4D611001D593D /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
 		A8B31D4013E4D611001D593D /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
 		A8B31D4213E4D611001D593D /* Zapp-Prefix.pch */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "Zapp-Prefix.pch"; sourceTree = "<group>"; };
-		A8B31D4413E4D611001D593D /* en */ = {isa = PBXFileReference; lastKnownFileType = text.rtf; name = en; path = en.lproj/Credits.rtf; sourceTree = "<group>"; };
 		A8B31D4613E4D611001D593D /* ZappAppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ZappAppDelegate.h; sourceTree = "<group>"; };
 		A8B31D4713E4D611001D593D /* ZappAppDelegate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; lineEnding = 0; path = ZappAppDelegate.m; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objc; };
 		A8B31D4A13E4D611001D593D /* en */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = en; path = en.lproj/MainMenu.xib; sourceTree = "<group>"; };
@@ -147,6 +147,7 @@
 		A8B31D3B13E4D610001D593D /* Supporting Files */ = {
 			isa = PBXGroup;
 			children = (
+				A81A90071464715800232B33 /* Credits.rtf */,
 				2FF09B941440FA07008E2AF9 /* ZappMail.png */,
 				A8F5E5E2142EAB3100CC4726 /* greencircle.png */,
 				A8F5E5E3142EAB3100CC4726 /* redtriangle.png */,
@@ -155,7 +156,6 @@
 				A8B31D4013E4D611001D593D /* main.m */,
 				A8B31D4213E4D611001D593D /* Zapp-Prefix.pch */,
 				A82B17CD13EB2583009F0B40 /* iPhoneSimulatorRemoteClient.h */,
-				A8B31D4313E4D611001D593D /* Credits.rtf */,
 			);
 			name = "Supporting Files";
 			sourceTree = "<group>";
@@ -213,6 +213,7 @@
 				A8B31D2C13E4D610001D593D /* Sources */,
 				A8B31D2D13E4D610001D593D /* Frameworks */,
 				A8B31D2E13E4D610001D593D /* Resources */,
+				A81A900514646C6E00232B33 /* ShellScript */,
 			);
 			buildRules = (
 			);
@@ -255,16 +256,32 @@
 			buildActionMask = 2147483647;
 			files = (
 				A8B31D3F13E4D611001D593D /* InfoPlist.strings in Resources */,
-				A8B31D4513E4D611001D593D /* Credits.rtf in Resources */,
 				A8B31D4B13E4D611001D593D /* MainMenu.xib in Resources */,
 				A8783CE413F114130001493A /* Zapp.icns in Resources */,
 				A8F5E5E4142EAB3100CC4726 /* greencircle.png in Resources */,
 				A8F5E5E5142EAB3100CC4726 /* redtriangle.png in Resources */,
 				2FF09B951440FA07008E2AF9 /* ZappMail.png in Resources */,
+				A81A90091464715800232B33 /* Credits.rtf in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXResourcesBuildPhase section */
+
+/* Begin PBXShellScriptBuildPhase section */
+		A81A900514646C6E00232B33 /* ShellScript */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "VERSION=`git log -1 --pretty=oneline | cut -c-7`\ncd $BUILT_PRODUCTS_DIR\n/usr/libexec/PlistBuddy -c \"Set CFBundleVersion $VERSION\" $INFOPLIST_PATH\n";
+		};
+/* End PBXShellScriptBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
 		A8B31D2C13E4D610001D593D /* Sources */ = {
@@ -290,20 +307,20 @@
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXVariantGroup section */
+		A81A90071464715800232B33 /* Credits.rtf */ = {
+			isa = PBXVariantGroup;
+			children = (
+				A81A90081464715800232B33 /* en */,
+			);
+			name = Credits.rtf;
+			sourceTree = "<group>";
+		};
 		A8B31D3D13E4D611001D593D /* InfoPlist.strings */ = {
 			isa = PBXVariantGroup;
 			children = (
 				A8B31D3E13E4D611001D593D /* en */,
 			);
 			name = InfoPlist.strings;
-			sourceTree = "<group>";
-		};
-		A8B31D4313E4D611001D593D /* Credits.rtf */ = {
-			isa = PBXVariantGroup;
-			children = (
-				A8B31D4413E4D611001D593D /* en */,
-			);
-			name = Credits.rtf;
 			sourceTree = "<group>";
 		};
 		A8B31D4913E4D611001D593D /* MainMenu.xib */ = {
