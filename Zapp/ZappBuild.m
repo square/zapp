@@ -254,7 +254,7 @@
 
         // Step 2: Build
         NSArray *buildArguments = [NSArray arrayWithObjects:@"-sdk", @"iphonesimulator", @"-scheme", self.scheme, @"VALID_ARCHS=i386", @"ARCHS=i386", @"ONLY_ACTIVE_ARCH=NO", @"DSTROOT=build", @"install", nil];
-        NSRegularExpression *appPathRegex = [NSRegularExpression regularExpressionWithPattern:@"^SetMode .+? \"([^\"]+\\.app)\"" options:NSRegularExpressionAnchorsMatchLines error:nil];
+        NSRegularExpression *appPathRegex = [NSRegularExpression regularExpressionWithPattern:@"^SetMode .+? ([^\"]+\\.app)" options:NSRegularExpressionAnchorsMatchLines error:nil];
         exitStatus = [repository runCommandAndWait:XcodebuildCommand withArguments:buildArguments standardInput:nil errorOutput:&errorOutput outputBlock:^(NSString *output) {
             [fileHandle writeData:[output dataUsingEncoding:NSUTF8StringEncoding]];
             [self appendLogLines:output];
