@@ -14,6 +14,9 @@
 
 @interface ZappAppDelegate : NSObject <NSApplicationDelegate, NSOutlineViewDelegate>
 
+@property (nonatomic, strong) IBOutlet NSButton *activityButton;
+@property (nonatomic, strong) IBOutlet NSArrayController *activityController;
+@property (nonatomic, strong) IBOutlet NSSplitView *activitySplitView;
 @property (nonatomic, strong) IBOutlet NSArrayController *buildsController;
 @property (nonatomic, strong) IBOutlet NSArrayController *logController;
 @property (nonatomic, strong) IBOutlet NSScrollView *logScrollView;
@@ -28,9 +31,13 @@
 @property (nonatomic, strong) IBOutlet NSTableView *sourceListView;
 @property (nonatomic, strong) IBOutlet NSWindow *window;
 @property (nonatomic, getter = isBuilding) BOOL building;
+@property (nonatomic, strong, readonly) NSMutableArray *buildQueue;
+@property (nonatomic, strong) IBOutlet NSTableView *activityTableView;
 
 - (IBAction)build:(id)sender;
 - (IBAction)chooseLocalPath:(id)sender;
 - (IBAction)clone:(id)sender;
+- (IBAction)toggleActivity:(id)sender;
+- (IBAction)cancelBuild:(id)sender;
 
 @end

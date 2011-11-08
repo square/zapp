@@ -36,6 +36,10 @@
 @property (nonatomic, readonly) ZappBuild *previousBuild;
 @property (nonatomic, readonly) ZappBuild *previousSuccessfulBuild;
 
+@property (nonatomic) double progress;
+@property (nonatomic, readonly) NSString *activityTitle;
+
 - (void)startWithCompletionBlock:(void (^)(void))completionBlock;
+- (void)cancel;
 
 @end

@@ -12,6 +12,10 @@
 #import "ZappSimulatorController.h"
 
 
+#define UPDATE_PHASE_PROGRESS 0.1
+#define BUILD_PHASE_PROGRESS 0.1
+
+
 @interface ZappBuild ()
 
 @property (nonatomic, strong, readwrite) NSArray logLines;
@@ -19,6 +23,8 @@
 @property (nonatomic, copy) void (^completionBlock)(void);
 @property (nonatomic, strong, readwrite) NSFetchRequest *previousBuildFetchRequest;
 @property (nonatomic, strong, readwrite) NSFetchRequest *previousSuccessfulBuildFetchRequest;
+
+@property (readonly, getter = isRunning) BOOL running;
 
 - (void)appendLogLines:(NSString *)newLogLinesString;
 - (NSURL *)appSupportURLWithExtension:(NSString *)extension;
@@ -44,8 +50,16 @@
 @synthesize previousSuccessfulBuildFetchRequest;
 @synthesize simulatorController;
 @synthesize completionBlock;
+@synthesize progress;
 
 #pragma mark Accessors
+
+- (BOOL)isRunning;
+{
+    @synchronized(self) {
+        return self.status == ZappBuildStatusRunning;
+    }
+}
 
 - (NSString *)commitLog;
 {
@@ -113,6 +127,16 @@
 + (NSSet *)keyPathsForValuesAffectingDescription;
 {
     return [NSSet setWithObjects:@"startTimestamp", @"status", @"latestRevision", nil];
+}
+
+- (NSString *)activityTitle;
+{
+    return [NSString stringWithFormat:@"%@: %@", self.repository.name, self.abbreviatedLatestRevision];
+}
+
++ (NSSet *)keyPathsForValuesAffectingActivityTitle;
+{
+    return [NSSet setWithObjects:@"repository.name", @"abbreviatedLatestRevision", nil];
 }
 
 - (NSArray *)logLines;
@@ -205,14 +229,27 @@
 
 #pragma mark ZappBuild
 
+- (void)cancel;
+{
+    @synchronized (self) {
+        if (self.status <= ZappBuildStatusRunning) {
+            self.status = ZappBuildStatusFailed;
+        }
+    }
+}
+
 - (void)startWithCompletionBlock:(void (^)(void))theCompletionBlock;
 {
-    self.status = ZappBuildStatusRunning;
+    @synchronized (self) {
+        self.status = ZappBuildStatusRunning;
+    }
     self.startTimestamp = [NSDate date];
     self.scheme = self.repository.lastScheme;
     self.platform = self.repository.lastPlatform;
     self.branch = self.repository.lastBranch;
     self.completionBlock = theCompletionBlock;
+    
+    self.progress = 0.0;
     
     self.logLines = nil;
     ZappRepository *repository = self.repository;
@@ -228,13 +265,15 @@
         BOOL (^runGitCommandWithArguments)(NSArray *) = ^(NSArray *arguments) {
             NSString *errorOutput = nil;
             NSLog(@"running %@ %@", GitCommand, [arguments componentsJoinedByString:@" "]);
-            int exitStatus = [repository runCommandAndWait:GitCommand withArguments:arguments standardInput:nil errorOutput:&errorOutput outputBlock:^(NSString *output) {
+            int exitStatus = [repository runCommandAndWait:GitCommand withArguments:arguments standardInput:nil errorOutput:&errorOutput outputBlock:^(NSString *output, BOOL *stop) {
                 [fileHandle writeData:[output dataUsingEncoding:NSUTF8StringEncoding]];
                 [self appendLogLines:output];
+                
+                *stop = (self.status != ZappBuildStatusRunning);
             }];
             [fileHandle writeData:[errorOutput dataUsingEncoding:NSUTF8StringEncoding]];
             [self appendLogLines:errorOutput];
-            if (exitStatus > 0) {
+            if (exitStatus > 0 || !self.running) {
                 [self callCompletionBlockWithStatus:exitStatus];
                 return NO;
             }
@@ -246,27 +285,31 @@
         if (!runGitCommandWithArguments([NSArray arrayWithObjects:@"checkout", self.branch, nil])) { return; }
         if (!runGitCommandWithArguments([NSArray arrayWithObjects:@"submodule", @"sync", nil])) { return; }
         if (!runGitCommandWithArguments([NSArray arrayWithObjects:@"submodule", @"update", @"--init", nil])) { return; }
-        [repository runCommandAndWait:GitCommand withArguments:[NSArray arrayWithObjects:@"rev-parse", @"HEAD", nil] standardInput:nil errorOutput:&errorOutput outputBlock:^(NSString *output) {
+        [repository runCommandAndWait:GitCommand withArguments:[NSArray arrayWithObjects:@"rev-parse", @"HEAD", nil] standardInput:nil errorOutput:&errorOutput outputBlock:^(NSString *output, BOOL *stop) {
             [[NSOperationQueue mainQueue] addOperationWithBlock:^() {
                 self.latestRevision = [output stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
+                self.progress = UPDATE_PHASE_PROGRESS;
+                
+                *stop = !self.running;
             }];
         }];
 
         // Step 2: Build
         NSArray *buildArguments = [NSArray arrayWithObjects:@"-sdk", @"iphonesimulator", @"-scheme", self.scheme, @"VALID_ARCHS=i386", @"ARCHS=i386", @"ONLY_ACTIVE_ARCH=NO", @"DSTROOT=build", @"install", nil];
         NSRegularExpression *appPathRegex = [NSRegularExpression regularExpressionWithPattern:@"^SetMode .+? \"?([^\"]+\\.app)\"?$" options:NSRegularExpressionAnchorsMatchLines error:nil];
-        exitStatus = [repository runCommandAndWait:XcodebuildCommand withArguments:buildArguments standardInput:nil errorOutput:&errorOutput outputBlock:^(NSString *output) {
+        exitStatus = [repository runCommandAndWait:XcodebuildCommand withArguments:buildArguments standardInput:nil errorOutput:&errorOutput outputBlock:^(NSString *output, BOOL *stop) {
             [fileHandle writeData:[output dataUsingEncoding:NSUTF8StringEncoding]];
             [self appendLogLines:output];
             [appPathRegex enumerateMatchesInString:output options:0 range:NSMakeRange(0, output.length) usingBlock:^(NSTextCheckingResult *result, NSMatchingFlags flags, BOOL *stop) {
                 appPath = [output substringWithRange:[result rangeAtIndex:1]];
                 *stop = YES;
             }];
+            *stop = !self.running;
         }];
         [fileHandle writeData:[errorOutput dataUsingEncoding:NSUTF8StringEncoding]];
         [fileHandle closeFile];
         [self appendLogLines:errorOutput];
-        if (exitStatus > 0) {
+        if (exitStatus > 0 || !self.running) {
             [self callCompletionBlockWithStatus:exitStatus];
             return;
         }
@@ -274,6 +317,10 @@
             [self callCompletionBlockWithStatus:-1];
             return;
         }
+        
+        [[NSOperationQueue mainQueue] addOperationWithBlock:^{
+            self.progress = UPDATE_PHASE_PROGRESS + BUILD_PHASE_PROGRESS;
+        }];
         
         // Step 3: Run
         [self runSimulatorWithAppPath:appPath initialSkip:0 failureCount:0 startsWithRetry:NO];
@@ -298,12 +345,15 @@
     self.simulatorController.videoOutputURL = self.buildVideoURL;
     self.simulatorController.environment = [NSDictionary dictionaryWithObjectsAndKeys:@"1", @"KIF_AUTORUN", @"1", @"KIF_EXIT_ON_FAILURE", [NSString stringWithFormat:@"%d", lastStartedScenario], @"KIF_INITIAL_SKIP_COUNT", nil];
     NSLog(@"starting simulator with skip count of %ld", lastStartedScenario);
-    [self.simulatorController launchSessionWithOutputBlock:^(NSString *output) {
+    [self.simulatorController launchSessionWithOutputBlock:^(NSString *output, BOOL *stop) {
         [self appendLogLines:output];
         lastOutput = output;
         [progressRegex enumerateMatchesInString:output options:0 range:NSMakeRange(0, output.length) usingBlock:^(NSTextCheckingResult *result, NSMatchingFlags flags, BOOL *stop) {
             lastStartedScenario = [[output substringWithRange:[result rangeAtIndex:1]] integerValue];
             scenarioCount = [[output substringWithRange:[result rangeAtIndex:2]] integerValue];
+            [[NSOperationQueue mainQueue] addOperationWithBlock:^{
+                self.progress = (double)lastStartedScenario / (double)scenarioCount * (1.0 - UPDATE_PHASE_PROGRESS - BUILD_PHASE_PROGRESS) + UPDATE_PHASE_PROGRESS + BUILD_PHASE_PROGRESS;
+            }];
         }];
         [failureRegex enumerateMatchesInString:output options:0 range:NSMakeRange(0, output.length) usingBlock:^(NSTextCheckingResult *result, NSMatchingFlags flags, BOOL *stop) {
             if (failureCount < 0) {
@@ -312,6 +362,7 @@
             failureCount += [[output substringWithRange:[result rangeAtIndex:1]] integerValue];
             *stop = YES;
         }];
+        *stop = !self.running;
     } completionBlock:^(int exitCode) {
         // exitCode is probably always going to be 0 (success) coming from the simulator. Use the failure count as our status instead.
         NSLog(@"Simulator exited with code %d, failure count is %ld after %ld of %ld scenarios. Last output is %@", exitCode, failureCount, lastStartedScenario, scenarioCount, lastOutput);
@@ -322,24 +373,36 @@
             failureCount = 1;
         }
         NSInteger newFailureCount = failureCount + initialFailureCount;
-        if (lastStartedScenario >= scenarioCount) {
-            NSLog(@"finished: %ld/%ld", lastStartedScenario, scenarioCount);
-            [self callCompletionBlockWithStatus:(int)newFailureCount];
-        } else if (startsWithRetry && lastStartedScenario == initialSkip + 1) {
-            NSLog(@"retry failed: %ld/%ld", lastStartedScenario, scenarioCount);
-            [self runSimulatorWithAppPath:appPath initialSkip:lastStartedScenario failureCount:newFailureCount startsWithRetry:NO];
+        if (self.running) {
+            if (lastStartedScenario >= scenarioCount) {
+                NSLog(@"finished: %ld/%ld", lastStartedScenario, scenarioCount);
+                [self callCompletionBlockWithStatus:(int)newFailureCount];
+            } else if (startsWithRetry && lastStartedScenario == initialSkip + 1) {
+                NSLog(@"retry failed: %ld/%ld", lastStartedScenario, scenarioCount);
+                [self runSimulatorWithAppPath:appPath initialSkip:lastStartedScenario failureCount:newFailureCount startsWithRetry:NO];
+            } else {
+                NSLog(@"retrying: %ld/%ld", lastStartedScenario, scenarioCount);
+                [self runSimulatorWithAppPath:appPath initialSkip:lastStartedScenario - 1 failureCount:newFailureCount - 1 startsWithRetry:YES];
+            }
         } else {
-            NSLog(@"retrying: %ld/%ld", lastStartedScenario, scenarioCount);
-            [self runSimulatorWithAppPath:appPath initialSkip:lastStartedScenario - 1 failureCount:newFailureCount - 1 startsWithRetry:YES];
+            [self callCompletionBlockWithStatus:-1];
         }
     }];
 }
 
 - (void)callCompletionBlockWithStatus:(int)exitStatus;
 {
-    NSAssert(self.completionBlock, @"Expected a completion block");
     [[NSOperationQueue mainQueue] addOperationWithBlock:^() {
-        self.status = exitStatus != 0 ? ZappBuildStatusFailed : ZappBuildStatusSucceeded;
+        if (!self.completionBlock) {
+            return;
+        }
+
+        @synchronized (self) {
+            if (self.running) {
+                self.status = exitStatus != 0 ? ZappBuildStatusFailed : ZappBuildStatusSucceeded;
+            }
+        }
+
         [ZappMessageController sendMessageIfNeededForBuild:self];
         NSLog(@"build complete, exit status %d", exitStatus);
         self.endTimestamp = [NSDate date];

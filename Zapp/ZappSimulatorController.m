@@ -16,7 +16,7 @@
 @property (copy) ZappResultBlock completionBlock;
 @property (strong) NSFileHandle *fileHandle;
 @property (strong) DTiPhoneSimulatorSession *session;
-@property (copy) ZappOutputBlock outputBlock;
+@property (copy) ZappIntermediateOutputBlock outputBlock;
 @property NSInteger consecutiveBlankReads;
 @property BOOL hasSuccessfulRead;
 @property (strong) ZappVideoController *videoController;
@@ -45,7 +45,7 @@
 @synthesize videoController;
 @synthesize videoOutputURL;
 
-- (BOOL)launchSessionWithOutputBlock:(ZappOutputBlock)theOutputBlock completionBlock:(ZappResultBlock)theCompletionBlock;
+- (BOOL)launchSessionWithOutputBlock:(ZappIntermediateOutputBlock)theOutputBlock completionBlock:(ZappResultBlock)theCompletionBlock;
 {
     NSAssert(![NSThread isMainThread], @"%s called from main thread", _cmd);
     NSString *path = self.appURL.path;
@@ -163,18 +163,22 @@
     }
     
     NSData *outputData = [self.fileHandle readDataToEndOfFile];
+    BOOL shouldStop = NO;
     if (outputData.length) {
-        self.outputBlock([[NSString alloc] initWithData:outputData encoding:NSUTF8StringEncoding]);
+        self.outputBlock([[NSString alloc] initWithData:outputData encoding:NSUTF8StringEncoding], &shouldStop);
         self.consecutiveBlankReads = 0;
         self.hasSuccessfulRead = YES;
     } else {
         self.consecutiveBlankReads++;
         if (self.consecutiveBlankReads > 30) {
-            if (self.hasSuccessfulRead) {
-                [self session:self.session didEndWithError:[NSError errorWithDomain:NSStringFromClass([self class]) code:1 userInfo:nil]];
-            } else {
-                [self session:self.session didEndWithError:[NSError errorWithDomain:NSStringFromClass([self class]) code:2 userInfo:nil]];
-            }
+            shouldStop = YES;
+        }
+    }
+    if (shouldStop) {
+        if (self.hasSuccessfulRead) {
+            [self session:self.session didEndWithError:[NSError errorWithDomain:NSStringFromClass([self class]) code:1 userInfo:nil]];
+        } else {
+            [self session:self.session didEndWithError:[NSError errorWithDomain:NSStringFromClass([self class]) code:2 userInfo:nil]];
         }
     }
     if (self.session) {

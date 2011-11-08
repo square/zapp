@@ -29,6 +29,7 @@ typedef enum {
 } ZappNotificationOption;
 
 typedef void (^ZappOutputBlock)(NSString *output);
+typedef void (^ZappIntermediateOutputBlock)(NSString *output, BOOL *stop);
 typedef void (^ZappResultBlock)(int exitCode);
 
 #endif

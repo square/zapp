@@ -188,7 +188,7 @@ NSString *const GitFetchSubcommand = @"fetch";
     return build;
 }
 
-- (int)runCommandAndWait:(NSString *)command withArguments:(NSArray *)arguments standardInput:(id)standardInput errorOutput:(NSString **)errorString outputBlock:(void (^)(NSString *))block;
+- (int)runCommandAndWait:(NSString *)command withArguments:(NSArray *)arguments standardInput:(id)standardInput errorOutput:(NSString **)errorString outputBlock:(void (^)(NSString *output, BOOL *stop))block;
 {
     NSAssert(![NSThread isMainThread], @"Can only run command and wait from a background thread");
     NSTask *task = [NSTask new];
@@ -223,11 +223,15 @@ NSString *const GitFetchSubcommand = @"fetch";
     
     [task launch];
     
-    while ((inData = [outHandle availableData]) && [inData length]) {
+    BOOL shouldStop = NO;
+    while ((inData = [outHandle availableData]) && [inData length] && !shouldStop) {
         NSString *inString = [[NSString alloc] initWithData:inData encoding:NSUTF8StringEncoding];
-        block(inString);
+        block(inString, &shouldStop);
     }
     
+    if (shouldStop) {
+        [task terminate];
+    }
     [task waitUntilExit];
     
     NSData *errorData = [errorHandle readDataToEndOfFile];
@@ -269,7 +273,7 @@ NSString *const GitFetchSubcommand = @"fetch";
         NSString *errorString = nil;
         
         NSMutableString *finalString = [NSMutableString string];
-        [self runCommandAndWait:command withArguments:arguments standardInput:standardInput errorOutput:&errorString outputBlock:^(NSString *inString) {
+        [self runCommandAndWait:command withArguments:arguments standardInput:standardInput errorOutput:&errorString outputBlock:^(NSString *inString, BOOL *stop) {
             [finalString appendString:inString];
         }];
         

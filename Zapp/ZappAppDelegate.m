@@ -17,7 +17,7 @@
 
 @interface ZappAppDelegate ()
 
-@property (nonatomic, strong) NSMutableOrderedSet *buildQueue;
+@property (nonatomic, strong) NSMutableArray *buildQueue;
 @property (nonatomic, readonly) ZappRepository *selectedRepository;
 
 - (void)hideProgressPanel;
@@ -32,8 +32,12 @@
 
 @implementation ZappAppDelegate
 
+@synthesize activityButton;
+@synthesize activityController;
 @synthesize building;
+@synthesize activitySplitView;
 @synthesize buildQueue;
+@synthesize activityTableView;
 @synthesize buildsController;
 @synthesize logController;
 @synthesize logScrollView;
@@ -89,6 +93,34 @@
     }];
 }
 
+- (IBAction)toggleActivity:(id)sender;
+{
+    NSRect boundsRect = activitySplitView.bounds;
+    CGFloat multiplier = 0.8;
+    if (activityButton.state == NSOffState) {
+        multiplier = 1.0;
+    }
+    
+    NSRect newTopFrame, newBottomFrame;
+    NSDivideRect(boundsRect, &newTopFrame, &newBottomFrame, multiplier * boundsRect.size.height, NSMaxYEdge);
+    
+    newBottomFrame.size.height -= activitySplitView.dividerThickness;
+    [[[[activitySplitView subviews] objectAtIndex:0] animator] setFrame:newTopFrame];
+    [[[[activitySplitView subviews] objectAtIndex:1] animator] setFrame:newBottomFrame];
+}
+
+- (IBAction)cancelBuild:(id)sender;
+{
+    NSInteger row = [self.activityTableView rowForView:sender];
+    ZappBuild *build = [self.buildQueue objectAtIndex:row];
+    
+    if (build.status == ZappBuildStatusPending) {
+        [self.activityController removeObject:build];
+    }
+    
+    [build cancel];
+}
+
 #pragma mark NSApplicationDelegate
 
 - (void)applicationDidFinishLaunching:(NSNotification *)aNotification;
@@ -97,7 +129,10 @@
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(updateSourceListBackground:) name:NSApplicationDidBecomeActiveNotification object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(updateSourceListBackground:) name:NSApplicationDidResignActiveNotification object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(contextDidChange:) name:NSManagedObjectContextObjectsDidChangeNotification object:nil];
-    self.buildQueue = [NSMutableOrderedSet orderedSet];
+    
+    [self toggleActivity:nil];
+    
+    self.buildQueue = [NSMutableArray array];
     
     NSSortDescriptor *sortDescriptor = [NSSortDescriptor sortDescriptorWithKey:@"startTimestamp" ascending:NO];
     self.buildsController.sortDescriptors = [NSArray arrayWithObject:sortDescriptor];
@@ -192,6 +227,7 @@
 
 - (void)pumpBuildQueue;
 {
+    [self.activityController rearrangeObjects];
     if (!self.buildQueue.count || self.building) {
         return;
     }
@@ -199,9 +235,9 @@
     self.building = YES;
     [build startWithCompletionBlock:^{
         self.building = NO;
+        [self.buildQueue removeObject:build];
         [self pumpBuildQueue];
     }];
-    [self.buildQueue removeObject:build];
 }
 
 - (ZappBuild *)scheduleBuildForRepository:(ZappRepository *)repository;
