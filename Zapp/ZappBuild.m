@@ -335,8 +335,8 @@
     // Not sure whether it will like the newlines in the string literal?
     // TODO: tidy up the regexp, and stop this from blocking the main thread
     // TODO: seems like it's not always extracting the correct failingError - investigate my regexp
-    NSRegularExpression *failureReportRegex = [NSRegularExpression regularExpressionWithPattern:@"(?:BEGIN SCENARIO.*?$)\\n(.*?)\\n.*?(FAILING ERROR:.*?$)"
-                                                                                        options:NSRegularExpressionDotMatchesLineSeparators | NSRegularExpressionAnchorsMatchLines
+    NSRegularExpression *failureReportRegex = [NSRegularExpression regularExpressionWithPattern:@"(?:BEGIN SCENARIO.*?$)\\n(.*?)[.\\n].*?(FAILING ERROR:.*)\\n"
+                                                                                        options:0
                                                                                           error:&error];
 
     if (!error)
@@ -352,7 +352,7 @@
     }
     else
     {
-        NSLog(@"Error enumerating regexp matches: %@", error);
+        NSLog(@"Error in creating regexp: %@", error);
     }
 
     return retVal;
