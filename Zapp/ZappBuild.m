@@ -327,6 +327,29 @@
     }];
 }
 
+- (NSArray *)failureLogStrings
+{
+    NSError *error = nil;
+    NSMutableArray *result = [NSMutableArray array];
+
+    // Not sure whether it will like the newlines in the string literal?
+    NSRegularExpression *failureReportRegex = [NSRegularExpression regularExpressionWithPattern:@"(?:BEGIN SCENARIO.*?$)\n(.*?)\n.*?(FAILING ERROR:.*?$)"
+                                                                                        options:NSRegularExpressionDotMatchesLineSeparators
+                                                                                          error:&error];
+
+    // Should probably check that all of these options are sensible
+    [failureReportRegex enumerateMatchesInString:output options:0 range:NSMakeRange(0, output.length) usingBlock:^(NSTextCheckingResult *result, NSMatchingFlags flags, BOOL *stop) {
+        NSString *scenarioDescription = [output substringWithRange:[result rangeAtIndex:1]];
+        NSString *failingError = [output substringWithRange:[result rangeAtIndex:2]];
+
+        [result addObject:[NSString stringWithFormat:@"%@\n%@", scenarioDescription, failingError]];
+    }];
+
+    // Should probably do something useful with |error|
+
+    return result;
+}
+
 #pragma mark Private methods
 
 - (void)runSimulatorWithAppPath:(NSString *)appPath initialSkip:(NSInteger)initialSkip failureCount:(NSInteger)initialFailureCount startsWithRetry:(BOOL)startsWithRetry;

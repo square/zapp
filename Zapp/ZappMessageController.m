@@ -57,10 +57,11 @@ NSString *const SendmailCommand = @"/usr/sbin/sendmail";
         NSString *latestBuildStatusString = [NSString stringWithFormat:@"%@ %@", build.abbreviatedLatestRevision, [build.statusDescription uppercaseString]];
         NSString *logLinkString = [NSString stringWithFormat:@"Log: %@/%@", baseURLString, [build.buildLogURL lastPathComponent]];
         NSString *videoLinkString = [NSString stringWithFormat:@"Video: %@/%@", baseURLString, [build.buildVideoURL lastPathComponent]];
+        NSString *failureLogString = [build.failureLogStrings componentsJoinedByString:@"\n"];
         
         NSString *endString = ZappLocalizedString(@"====== END TRANSMISSION ======");
         
-        NSString *message = [[NSArray arrayWithObjects:beginString, latestBuildString, latestBuildStatusString, @"", logLinkString, videoLinkString, @"", gitLogOutput, endString, nil] componentsJoinedByString:@"\n"];
+        NSString *message = [[NSArray arrayWithObjects:beginString, latestBuildString, latestBuildStatusString, @"", logLinkString, videoLinkString, @"", gitLogOutput, failureLogString, endString, nil] componentsJoinedByString:@"\n"];
         
         [self sendEmailFromRepository:build.repository withSubject:subject body:message];
     }];
