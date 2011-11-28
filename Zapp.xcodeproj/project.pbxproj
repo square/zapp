@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		2147C227148449C400C1BAB3 /* ZappLogScanner.m in Sources */ = {isa = PBXBuildFile; fileRef = 2147C226148449C400C1BAB3 /* ZappLogScanner.m */; };
 		2F08D06A143D012C0042B746 /* ZappMessageController.m in Sources */ = {isa = PBXBuildFile; fileRef = 2F08D069143D012B0042B746 /* ZappMessageController.m */; };
 		2FF09B951440FA07008E2AF9 /* ZappMail.png in Resources */ = {isa = PBXBuildFile; fileRef = 2FF09B941440FA07008E2AF9 /* ZappMail.png */; };
 		A81A90091464715800232B33 /* Credits.rtf in Resources */ = {isa = PBXBuildFile; fileRef = A81A90071464715800232B33 /* Credits.rtf */; };
@@ -35,6 +36,8 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		2147C225148449C400C1BAB3 /* ZappLogScanner.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ZappLogScanner.h; sourceTree = "<group>"; };
+		2147C226148449C400C1BAB3 /* ZappLogScanner.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ZappLogScanner.m; sourceTree = "<group>"; };
 		2F08D068143D012B0042B746 /* ZappMessageController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ZappMessageController.h; sourceTree = "<group>"; };
 		2F08D069143D012B0042B746 /* ZappMessageController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ZappMessageController.m; sourceTree = "<group>"; };
 		2FF09B941440FA07008E2AF9 /* ZappMail.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = ZappMail.png; sourceTree = "<group>"; };
@@ -95,6 +98,15 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		2147C2231484499400C1BAB3 /* Utility */ = {
+			isa = PBXGroup;
+			children = (
+				2147C225148449C400C1BAB3 /* ZappLogScanner.h */,
+				2147C226148449C400C1BAB3 /* ZappLogScanner.m */,
+			);
+			name = Utility;
+			sourceTree = "<group>";
+		};
 		A8B31D2513E4D610001D593D = {
 			isa = PBXGroup;
 			children = (
@@ -141,6 +153,7 @@
 				A8DA278E13ECA422001305B4 /* View */,
 				A8DA278D13ECA417001305B4 /* Model */,
 				A8E785D013ECA3A100811365 /* Controller */,
+				2147C2231484499400C1BAB3 /* Utility */,
 				A8B31D4913E4D611001D593D /* MainMenu.xib */,
 				A8E785AF13EC6C4E00811365 /* Repositories.xcdatamodeld */,
 				A8B31D3B13E4D610001D593D /* Supporting Files */,
@@ -309,6 +322,7 @@
 				A846C17014021BD400E5B1B2 /* ZappWebServer.m in Sources */,
 				A8DB670814061E3400149EB8 /* ZappVideoController.m in Sources */,
 				2F08D06A143D012C0042B746 /* ZappMessageController.m in Sources */,
+				2147C227148449C400C1BAB3 /* ZappLogScanner.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

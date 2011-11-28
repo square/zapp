@@ -10,6 +10,7 @@
 #import "ZappBuild.h"
 #import "ZappMessageController.h"
 #import "ZappSimulatorController.h"
+#import "ZappLogScanner.h"
 
 
 #define UPDATE_PHASE_PROGRESS 0.1
@@ -329,33 +330,9 @@
 
 - (NSArray *)failureLogStrings
 {
-    NSError *error = nil;
-    NSMutableArray *retVal = [NSMutableArray array];
-
-    // Not sure whether it will like the newlines in the string literal?
-    // TODO: tidy up the regexp, and stop this from blocking the main thread
-    // TODO: seems like it's not always extracting the correct failingError - investigate my regexp
-    NSRegularExpression *failureReportRegex = [NSRegularExpression regularExpressionWithPattern:@"(?:BEGIN SCENARIO.*?$)\\n(.*?)[.\\n].*?(FAILING ERROR:.*)\\n"
-                                                                                        options:0
-                                                                                          error:&error];
-
-    if (!error)
-    {
-        // Should probably check that all of these options are sensible
-        NSString *logOutput = [self.logLines componentsJoinedByString:@"\n"];
-        [failureReportRegex enumerateMatchesInString:logOutput options:0 range:NSMakeRange(0, logOutput.length) usingBlock:^(NSTextCheckingResult *result, NSMatchingFlags flags, BOOL *stop) {
-            NSString *scenarioDescription = [logOutput substringWithRange:[result rangeAtIndex:1]];
-            NSString *failingError = [logOutput substringWithRange:[result rangeAtIndex:2]];
-            
-            [retVal addObject:[NSString stringWithFormat:@"%@\n%@", scenarioDescription, failingError]];
-        }];
-    }
-    else
-    {
-        NSLog(@"Error in creating regexp: %@", error);
-    }
-
-    return retVal;
+    ZappLogScanner *scanner = [[ZappLogScanner alloc] init];
+    scanner.logLines = self.logLines;
+    return scanner.arrayOfKIFFailureSummaries;
 }
 
 #pragma mark Private methods
