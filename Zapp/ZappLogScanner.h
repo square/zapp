@@ -3,7 +3,7 @@
 //  Zapp
 //
 //  Created by Lawrence Forooghian on 28/11/2011.
-//  Copyright (c) 2011 Square, Inc. All rights reserved.
+//  Copyright (c) 2011 Lawrence Forooghian. All rights reserved.
 //
 
 #import <Foundation/Foundation.h>
