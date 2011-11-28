@@ -57,7 +57,8 @@ NSString *const SendmailCommand = @"/usr/sbin/sendmail";
         NSString *latestBuildStatusString = [NSString stringWithFormat:@"%@ %@", build.abbreviatedLatestRevision, [build.statusDescription uppercaseString]];
         NSString *logLinkString = [NSString stringWithFormat:@"Log: %@/%@", baseURLString, [build.buildLogURL lastPathComponent]];
         NSString *videoLinkString = [NSString stringWithFormat:@"Video: %@/%@", baseURLString, [build.buildVideoURL lastPathComponent]];
-        NSString *failureLogString = [build.failureLogStrings componentsJoinedByString:@"\n"];
+        // TODO: only add this if the tests actually failed, and of course get the failure reasons working properly
+        NSString *failureLogString = [@"\n\nThese are the tests that failed (the failure reasons are probably wrong so ignore them :-)):\n\n" stringByAppendingString:[build.failureLogStrings componentsJoinedByString:@"\n"]];
         
         NSString *endString = ZappLocalizedString(@"====== END TRANSMISSION ======");
         
