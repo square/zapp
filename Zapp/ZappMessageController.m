@@ -131,8 +131,17 @@ NSString *const SendmailCommand = @"/usr/sbin/sendmail";
 + (NSString *)failuresSummaryForBuild:(ZappBuild *)build
 {
     if ([self shouldIncludeFailuresSummaryInMessage] && ZappBuildStatusFailed == build.status) {
-        NSMutableString *retVal = [NSMutableString stringWithString:ZappLocalizedString(@"\nSummary of failed KIF tests:\n")];
-        [retVal appendString:[build.failureLogStrings componentsJoinedByString:@"\n"]];
+        NSMutableString *retVal = [NSMutableString stringWithString:ZappLocalizedString(@"\nSummary of failed KIF tests:\n\n")];
+        
+        NSArray *failureSummaries = build.failureLogStrings;
+        NSUInteger total = failureSummaries.count, currentIndex = 1;
+        
+        for (NSString *failureSummary in build.failureLogStrings) {
+            [retVal appendFormat:@"%d of %d: %@\n", currentIndex, total, failureSummary];
+            currentIndex++;
+        }
+        
+        [retVal appendString:@"\n"];
 
         return retVal;
     } else {
