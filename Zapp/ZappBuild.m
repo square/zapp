@@ -10,6 +10,7 @@
 #import "ZappBuild.h"
 #import "ZappMessageController.h"
 #import "ZappSimulatorController.h"
+#import "ZappLogScanner.h"
 
 
 #define UPDATE_PHASE_PROGRESS 0.1
@@ -325,6 +326,13 @@
         // Step 3: Run
         [self runSimulatorWithAppPath:appPath initialSkip:0 failureCount:0 startsWithRetry:NO];
     }];
+}
+
+- (NSArray *)failureLogStrings
+{
+    ZappLogScanner *scanner = [[ZappLogScanner alloc] init];
+    scanner.logLines = self.logLines;
+    return scanner.arrayOfKIFFailureSummaries;
 }
 
 #pragma mark Private methods

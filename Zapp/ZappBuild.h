@@ -39,6 +39,8 @@
 @property (nonatomic) double progress;
 @property (nonatomic, readonly) NSString *activityTitle;
 
+@property (nonatomic, readonly) NSArray *failureLogStrings;
+
 - (void)startWithCompletionBlock:(void (^)(void))completionBlock;
 - (void)cancel;
 

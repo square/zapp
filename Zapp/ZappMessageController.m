@@ -25,6 +25,10 @@ NSString *const SendmailCommand = @"/usr/sbin/sendmail";
 
 + (void)sendEmailFromRepository:(ZappRepository *)repository withSubject:(NSString *)subject body:(NSString *)body;
 
++ (BOOL)shouldIncludeFailuresSummaryInMessage;
+
++ (NSString *)failuresSummaryForBuild:(ZappBuild *)build;
+
 @end
 
 
@@ -57,10 +61,10 @@ NSString *const SendmailCommand = @"/usr/sbin/sendmail";
         NSString *latestBuildStatusString = [NSString stringWithFormat:@"%@ %@", build.abbreviatedLatestRevision, [build.statusDescription uppercaseString]];
         NSString *logLinkString = [NSString stringWithFormat:@"Log: %@/%@", baseURLString, [build.buildLogURL lastPathComponent]];
         NSString *videoLinkString = [NSString stringWithFormat:@"Video: %@/%@", baseURLString, [build.buildVideoURL lastPathComponent]];
-        
+        NSString *failuresSummaryString = [self failuresSummaryForBuild:build];
         NSString *endString = ZappLocalizedString(@"====== END TRANSMISSION ======");
         
-        NSString *message = [[NSArray arrayWithObjects:beginString, latestBuildString, latestBuildStatusString, @"", logLinkString, videoLinkString, @"", gitLogOutput, endString, nil] componentsJoinedByString:@"\n"];
+        NSString *message = [[NSArray arrayWithObjects:beginString, latestBuildString, latestBuildStatusString, @"", logLinkString, videoLinkString, @"", gitLogOutput, failuresSummaryString, endString, nil] componentsJoinedByString:@"\n"];
         
         [self sendEmailFromRepository:build.repository withSubject:subject body:message];
     }];
@@ -116,6 +120,33 @@ NSString *const SendmailCommand = @"/usr/sbin/sendmail";
     }
     
     return YES;
+}
+
++ (BOOL)shouldIncludeFailuresSummaryInMessage
+{
+    // TODO: Make this a user preference
+    return YES;
+}
+
++ (NSString *)failuresSummaryForBuild:(ZappBuild *)build
+{
+    if ([self shouldIncludeFailuresSummaryInMessage] && ZappBuildStatusFailed == build.status) {
+        NSMutableString *retVal = [NSMutableString stringWithString:ZappLocalizedString(@"\nSummary of failed KIF tests:\n\n")];
+        
+        NSArray *failureSummaries = build.failureLogStrings;
+        NSUInteger total = failureSummaries.count, currentIndex = 1;
+        
+        for (NSString *failureSummary in build.failureLogStrings) {
+            [retVal appendFormat:@"%d of %d: %@\n", currentIndex, total, failureSummary];
+            currentIndex++;
+        }
+        
+        [retVal appendString:@"\n"];
+
+        return retVal;
+    } else {
+        return @"";
+    }
 }
 
 @end
