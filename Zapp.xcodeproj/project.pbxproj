@@ -236,7 +236,7 @@
 		A8B31D2713E4D610001D593D /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
-				LastUpgradeCheck = 0420;
+				LastUpgradeCheck = 0450;
 				ORGANIZATIONNAME = "Square, Inc";
 			};
 			buildConfigurationList = A8B31D2A13E4D610001D593D /* Build configuration list for PBXProject "Zapp" */;
@@ -403,14 +403,16 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				CLANG_ENABLE_OBJC_ARC = YES;
+				COMBINE_HIDPI_IMAGES = YES;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
-					/Developer/Platforms/iPhoneSimulator.platform/Developer/Library/PrivateFrameworks,
+					"\"$(DEVELOPER_DIR)/Platforms/iPhoneSimulator.platform/Developer/Library/PrivateFrameworks\"",
 				);
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "Zapp/Zapp-Prefix.pch";
 				HEADER_SEARCH_PATHS = "$(SRCROOT)/Frameworks/Pantomime/**";
 				INFOPLIST_FILE = "Zapp/Zapp-Info.plist";
+				LD_RUNPATH_SEARCH_PATHS = "/Applications/XCode.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/Library/PrivateFrameworks /Applications/Xcode.app/Contents/OtherFrameworks";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				RUN_CLANG_STATIC_ANALYZER = YES;
 				WRAPPER_EXTENSION = app;
@@ -421,14 +423,16 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				CLANG_ENABLE_OBJC_ARC = YES;
+				COMBINE_HIDPI_IMAGES = YES;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
-					/Developer/Platforms/iPhoneSimulator.platform/Developer/Library/PrivateFrameworks,
+					"\"$(DEVELOPER_DIR)/Platforms/iPhoneSimulator.platform/Developer/Library/PrivateFrameworks\"",
 				);
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "Zapp/Zapp-Prefix.pch";
 				HEADER_SEARCH_PATHS = "$(SRCROOT)/Frameworks/Pantomime/**";
 				INFOPLIST_FILE = "Zapp/Zapp-Info.plist";
+				LD_RUNPATH_SEARCH_PATHS = "/Applications/XCode.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/Library/PrivateFrameworks /Applications/Xcode.app/Contents/OtherFrameworks";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				RUN_CLANG_STATIC_ANALYZER = YES;
 				WRAPPER_EXTENSION = app;

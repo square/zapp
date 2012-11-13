@@ -47,7 +47,7 @@
 
 - (BOOL)launchSessionWithOutputBlock:(ZappIntermediateOutputBlock)theOutputBlock completionBlock:(ZappResultBlock)theCompletionBlock;
 {
-    NSAssert(![NSThread isMainThread], @"%s called from main thread", _cmd);
+    //NSAssert(![NSThread isMainThread], @"%s called from main thread", _cmd);
     NSString *path = self.appURL.path;
     DTiPhoneSimulatorApplicationSpecifier *specifier = [DTiPhoneSimulatorApplicationSpecifier specifierWithApplicationPath:path];
     if (!specifier) {
