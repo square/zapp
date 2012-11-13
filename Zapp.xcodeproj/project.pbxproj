@@ -412,7 +412,7 @@
 				GCC_PREFIX_HEADER = "Zapp/Zapp-Prefix.pch";
 				HEADER_SEARCH_PATHS = "$(SRCROOT)/Frameworks/Pantomime/**";
 				INFOPLIST_FILE = "Zapp/Zapp-Info.plist";
-				LD_RUNPATH_SEARCH_PATHS = /Applications/XCode.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/Library/PrivateFrameworks;
+				LD_RUNPATH_SEARCH_PATHS = "/Applications/XCode.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/Library/PrivateFrameworks /Applications/Xcode.app/Contents/OtherFrameworks";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				RUN_CLANG_STATIC_ANALYZER = YES;
 				WRAPPER_EXTENSION = app;
@@ -432,7 +432,7 @@
 				GCC_PREFIX_HEADER = "Zapp/Zapp-Prefix.pch";
 				HEADER_SEARCH_PATHS = "$(SRCROOT)/Frameworks/Pantomime/**";
 				INFOPLIST_FILE = "Zapp/Zapp-Info.plist";
-				LD_RUNPATH_SEARCH_PATHS = /Applications/XCode.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/Library/PrivateFrameworks;
+				LD_RUNPATH_SEARCH_PATHS = "/Applications/XCode.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/Library/PrivateFrameworks /Applications/Xcode.app/Contents/OtherFrameworks";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				RUN_CLANG_STATIC_ANALYZER = YES;
 				WRAPPER_EXTENSION = app;
