@@ -18,7 +18,7 @@
 
 @interface ZappBuild ()
 
-@property (nonatomic, strong, readwrite) NSArray logLines;
+@property (nonatomic, strong, readwrite) NSArray *logLines;
 @property (nonatomic, strong) ZappSimulatorController *simulatorController;
 @property (nonatomic, copy) void (^completionBlock)(void);
 @property (nonatomic, strong, readwrite) NSFetchRequest *previousBuildFetchRequest;
@@ -343,7 +343,7 @@
     self.simulatorController.appURL = [self.repository.localURL URLByAppendingPathComponent:appPath];
     self.simulatorController.simulatorOutputPath = self.buildLogURL.path;
     self.simulatorController.videoOutputURL = self.buildVideoURL;
-    self.simulatorController.environment = [NSDictionary dictionaryWithObjectsAndKeys:@"1", @"KIF_AUTORUN", @"1", @"KIF_EXIT_ON_FAILURE", [NSString stringWithFormat:@"%d", lastStartedScenario], @"KIF_INITIAL_SKIP_COUNT", nil];
+    self.simulatorController.environment = [NSDictionary dictionaryWithObjectsAndKeys:@"1", @"KIF_AUTORUN", @"1", @"KIF_EXIT_ON_FAILURE", [NSString stringWithFormat:@"%ld", lastStartedScenario], @"KIF_INITIAL_SKIP_COUNT", nil];
     NSLog(@"starting simulator with skip count of %ld", lastStartedScenario);
     [self.simulatorController launchSessionWithOutputBlock:^(NSString *output, BOOL *stop) {
         [self appendLogLines:output];
