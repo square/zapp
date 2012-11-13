@@ -13,7 +13,7 @@
 
 static NSOperationQueue *ZappRepositoryBackgroundQueue = nil;
 NSString *const GitCommand = @"/usr/bin/git";
-NSString *const XcodebuildCommand = @"/Developer/usr/bin/xcodebuild";
+NSString *const XcodebuildCommand = @"/usr/bin/xcodebuild";
 NSString *const GitFetchSubcommand = @"fetch";
 
 @interface ZappRepository ()
