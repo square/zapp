@@ -6,7 +6,7 @@ Zapp is that way: it's an app that continuously runs your KIF tests, polling you
 
 Like KIF, **Zapp also uses undocumented Apple APIs.** You won't find it on the Mac App Store, because the frameworks to control the iOS Simulator are private. Any other developer tools that have any iOS Simulator integration do the same thing.
 
-Zapp's only dependency to test your apps is [**Xcode 4.2**](http://developer.apple.com/xcode/index.php).
+Zapp's only dependency to test your apps is [**Xcode 4.2**](https://developer.apple.com/xcode/).
 
 ## Features
 
